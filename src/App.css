@@ -1,0 +1,136 @@
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+
+.section-head{
+  color:#9c27b0;
+  font-size: 25px;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+  font-weight:400;
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin:"16px"
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.leftText{
+  text-align: left;
+}
+.rightText{
+  text-align: right;
+}
+
+.mx-1{
+  margin-right: 8px;
+  margin-left: 8px;
+}
+.mx-2{
+  margin-right: 16px;
+  margin-left: 16px;
+}
+.mx-3{
+  margin-right: 24px;
+  margin-left: 24px;
+}
+.mx-4{
+  margin-right: 32px;
+  margin-left: 32px;
+}
+.my-1{
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.my-2{
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.my-3{
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+.my-4{
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+.centreFlex{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.border{
+  border:.1px solid lightgray;
+  padding: 32px;
+}
+.fCol{
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}
+.fRow{
+  display: flex;
+  flex-direction: row;
+  column-gap: 16px;
+}
+
+.fCenter{
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.fLeft{
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.fRight{
+  justify-content:flex-end;
+  align-items: flex-end;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #FFFFFF inset;
+}
+
+.errorMsg{
+  color: #d32f2f;
+  font-size: 0.75 rem;
+}
+
+.menuIcon{
+   background-color: "9c27b0";
+   color: white;
+   margin-right: 8px;
+}
+

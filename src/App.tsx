@@ -23,50 +23,51 @@ function App() {
   }, (error) => {
     return Promise.reject(error);
   });
-  
+
   axiosInstance.interceptors.response.use(
-      response => {
-        AppState.setLoading(false);
-        return response
-      },
-      error => {
-          AppState.setLoading(false);
-          Store.addNotification({
-              message: error.response?.data?.message || "Something went wrong.",
-              type: "danger",
-              insert: "top",
-              container: "top-right",
-              animationIn: ["animate__animated", "animate__fadeIn"],
-              animationOut: ["animate__animated", "animate__fadeOut"],
-              dismiss: {
-                duration: 2000,
-                onScreen: true
-              }
-            });
+    response => {
+      AppState.setLoading(false);
+      return response
+    },
+    error => {
+      AppState.setLoading(false);
+      Store.addNotification({
+        message: error.response?.data?.message || "Something went wrong.",
+        type: "danger",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
       });
+    });
   const theme = createTheme({
     components: {
       MuiInputLabel: {
         styleOverrides: {
-             shrink: {
-                  color: "purple",
-             }
+          shrink: {
+            color: "purple",
+            marginX:"16px"
+          }
         }
-   },
-   MuiOutlinedInput:{
-    styleOverrides:{
-      root:{
-        borderRadius:"50px"
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            borderRadius: "50px"
+          }
+        }
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: "50px"
+          }
+        }
       }
-    }
-   },
-   MuiButton:{
-    styleOverrides:{
-      root:{
-        borderRadius:"50px"
-      }
-    }
-   }
     },
     typography: {
       fontFamily: [
@@ -82,15 +83,15 @@ function App() {
         '"Segoe UI Symbol"',
       ].join(','),
     },
-    
+
   });
- 
+
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <Header></Header>
         <Drawer></Drawer>
-        <ReactNotifications/>
+        <ReactNotifications />
         <Loader isVisible={AppState.loading} />
         <Routes>
           <Route path="/product/showProducts" element={<AllProducts />} />
@@ -107,7 +108,7 @@ function App() {
         <Routes>
           <Route path="/admin/adminController" element={<AdminController />} />
         </Routes>
-        </ThemeProvider>
+      </ThemeProvider>
     </div>
   );
 }

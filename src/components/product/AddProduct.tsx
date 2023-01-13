@@ -131,7 +131,7 @@ function AddProduct() {
     return <FieldArray name="productDetails" render={arrayHelpers => (<>
       {Array.isArray(addProductForm.values.productDetails) && addProductForm.values.productDetails.map((item, index) => (
         <TableRow key={item.eleKey}>
-          <TableCell sx={{minWidth:"100px"}}>
+          <TableCell sx={{minWidth:"120px"}}>
             <TextField
               color="secondary"
               hiddenLabel
@@ -145,7 +145,7 @@ function AddProduct() {
             />
             <ErrorMessage name={`productDetails.${index}.propKey`} component="div" className="errorMsg" />
           </TableCell>
-          <TableCell sx={{minWidth:"100px"}}>
+          <TableCell sx={{minWidth:"120px"}}>
             <TextField
               color="secondary"
               hiddenLabel

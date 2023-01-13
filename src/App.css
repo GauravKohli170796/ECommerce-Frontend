@@ -3,6 +3,24 @@
   pointer-events: none;
 }
 
+:root {
+  --color-1: #186cb8;
+  --color-2: #2a9a9f;
+  --color-3: #f98d00;
+  --color-4: #e83611;
+  --color-5: #f1b211;
+}
+
+.mixBackground {
+  background-image: linear-gradient(45deg,#eeeeee, #757575,#212121)
+}
+
+body{
+  min-width: 350px;
+  max-width: 100vw;
+  overflow-y: scroll;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -27,14 +45,27 @@
 
 .section-head{
   color:#9c27b0;
-  font-size: 25px;
+  font-size: 50px;
   text-decoration: underline;
   text-underline-offset: 10px;
   font-weight:400;
   text-align: center;
   padding-left: 10px;
   padding-right: 10px;
-  margin:"16px"
+  margin:"16px";
+  background: linear-gradient(
+    220deg, var(--color-1) 19%,
+    transparent 19%, transparent 20%,
+    var(--color-2) 20%, var(--color-2) 39%,
+    transparent 39%, transparent 40%,
+    var(--color-3) 40%, var(--color-3) 59%,
+    transparent 59%,transparent 60%,
+    var(--color-4) 60%, var(--color-4) 79%,
+    transparent 79%, transparent 80%, 
+    var(--color-5) 80%
+  );
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 @keyframes App-logo-spin {

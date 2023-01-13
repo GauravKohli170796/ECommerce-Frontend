@@ -21,7 +21,7 @@ function Header() {
 
   useEffect(() => {
     async function checkLogInStatus() {
-      const authToken = await AppState.authDetails;
+      const authToken = await localStorage.getItem("auth");
       if (authToken) {
         setIsLoggedIn(true);
       }
@@ -51,7 +51,7 @@ function Header() {
 
   return (
     <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "sticky", top: 0, left: 0, zIndex: 1000 }}>
-      <AppBar position="static" sx={{ backgroundColor: "white", color: "black" }}>
+      <AppBar position="static" className="mixBackground">
         <Toolbar>
           <img src={logo} height="80px" alt="Main logo"></img>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>

@@ -6,5 +6,6 @@ export const AppConst = Object.freeze({
 export enum drawerShowOptions {
    filter = "filter",
    search = "search",
+   menu = "menu",
    default= "nothing"
 }

@@ -1,5 +1,5 @@
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import { Button, Chip, Divider, FormControl, InputLabel, MenuItem, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Button, Chip, Divider, FormControl, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ function ProductDetail() {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<any | {}>({});
   const priceWithoutDiscount: number = (productDetail?.price / (1 - (productDetail?.discount / 100))) || productDetail?.price;
+  const [showModel,setShowModel] = useState<boolean>(true);
 
   useEffect(() => {
     fetchProductDetail();
@@ -28,6 +29,24 @@ function ProductDetail() {
       console.error(err);
     }
   };
+
+  const handleClose = () =>{
+    setShowModel(false);
+  }
+
+
+  const showImageModel = () =>{
+    return <Modal
+              open={showModel}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+  >
+    <Box sx={{display:"flex",position:"fixed",top:"10%",left:"10%",width:"80%",height:"80%",overflow:"scroll",backgroundColor:"black",justifyContent:"center",alignItems:"center"}}>
+       <img src={productDetail && productDetail.images[0]} alt='product 1'></img>
+    </Box>
+  </Modal>
+  }
 
   const renderProductImages = () => {
     if (productDetail.images) {
@@ -82,10 +101,10 @@ function ProductDetail() {
   return <>
     {Object.keys(productDetail).length > 1 && <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
       <Box sx={{ width: { sm: "95vw", md: "45vw" }, marginY: "16px",alignSelf: "flex-start", justifyContent: "flex-start",  }}>
-        <Stack direction="column">
+        <Stack direction="column" sx={{marginX:"4px",display:"flex",justifyContent:"center",maxWidth:"99vw"}}>
           {renderProductImages()}
             <Stack direction="row" spacing={2}>
-              <Button variant="contained" fullWidth>Buy now</Button>
+              <Button variant="contained" fullWidth>Wishlist</Button>
               <Button variant="contained" fullWidth>Add to Cart</Button>
             </Stack>
 
@@ -93,7 +112,7 @@ function ProductDetail() {
         </Stack>
       </Box>
       <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
-      <Box sx={{ width: { sm: "95vw", md: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginLeft: "16px" }}>
+      <Box sx={{ width: { xs: "95vw", md: "45vw" },marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px" }}>
         <Stack spacing={2}>
           <Typography fontSize={24} className="leftText" variant="h5">{productDetail.name}</Typography>
           <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
@@ -123,6 +142,7 @@ function ProductDetail() {
           {renderQuantitySelector()}
         </Stack>
       </Box>
+      {/* {showImageModel()} */}
     </Box>}
   </>;
 }

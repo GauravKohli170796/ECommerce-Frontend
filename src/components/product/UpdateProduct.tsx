@@ -174,7 +174,7 @@ function UpdateProduct() {
     return <FieldArray name="productDetails" render={arrayHelpers => (<>
       {Array.isArray(updateProductForm.values.productDetails) && updateProductForm.values.productDetails.map((item, index) => (
         <TableRow key={item.eleKey}>
-          <TableCell>
+          <TableCell sx={{minWidth:"120px"}}>
             <TextField
               color="secondary"
               hiddenLabel
@@ -187,7 +187,7 @@ function UpdateProduct() {
             />
             <ErrorMessage name={`productDetails.${index}.propKey`} component="div" className="errorMsg" />
           </TableCell>
-          <TableCell>
+          <TableCell sx={{minWidth:"120px"}}>
             <TextField
               color="secondary"
               hiddenLabel

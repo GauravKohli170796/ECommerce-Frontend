@@ -77,7 +77,7 @@ function AllProducts() {
         }}
       >
         <Box>
-          <Typography className="section-head"  sx={{fontSize:"25px",fontWeight:"bold",textDecoration:"underline"}}>
+          <Typography className="section-head"  sx={{fontSize:"25px"}}>
             Latest Products
           </Typography>
         </Box>
@@ -100,7 +100,7 @@ function AllProducts() {
           {renderLatestProducts()}
         </Box>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <Typography ref={featureProductRef} className="section-head"  sx={{fontSize:"25px",fontWeight:"bold"}}>
+        <Typography ref={featureProductRef} className="section-head" sx={{fontSize:"25px"}}>
           Featured Products
         </Typography>
         <Box

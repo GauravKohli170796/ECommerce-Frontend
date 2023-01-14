@@ -9,6 +9,7 @@ import AdminController from "./components/adminController/AdminController";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import Drawer from "./components/drawer/Drawer";
+import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import Loader from "./components/loader/Loader";
 import AllProducts from "./components/product/AllProducts";
@@ -94,6 +95,7 @@ function App() {
         <Routes>
           <Route path="/admin/adminController" element={<AdminController />} />
         </Routes>
+        <Footer/>
       </ThemeProvider>
     </div>
   );

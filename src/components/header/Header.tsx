@@ -121,7 +121,7 @@ function Header() {
               onClick={handleClick}
             >
               {" "}
-              <MenuIcon color="secondary" />
+              <MenuIcon sx={{color:"white"}} />
             </Button>
             <Menu
               id="demo-positioned-menu"

@@ -7,6 +7,7 @@ import {
   FormGroup,
   InputAdornment,
   Slider,
+  Stack,
   SwipeableDrawer,
   TextField,
   Typography
@@ -74,7 +75,7 @@ function Drawer() {
           }}
           fullWidth
         />
-        <Button variant="contained" sx={{ alignSelf: "flex-end", marginTop: "20px" }}>
+        <Button variant="contained" color="secondary" sx={{ alignSelf: "flex-end", marginTop: "20px" }}>
           Search
         </Button>
       </Box>
@@ -83,7 +84,7 @@ function Drawer() {
   const renderFliterComponent = () => {
     return (
       <Box sx={{ width: "86%", margin: "5px 5px", display: "flex", flexDirection: "column" }}>
-          <Typography className="section-head"  sx={{fontSize:"20px",fontWeight:"bold"}}>
+          <Typography className="section-head"  sx={{fontSize:"20px"}}>
             Filters
           </Typography>
         <Button variant="outlined" color="secondary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={() => { dispatch({ type: eFilterOptionsAction.reset }) }}>
@@ -99,6 +100,21 @@ function Drawer() {
           max={8000}
           color="secondary"
         />
+        <Stack direction="row" spacing={4}>
+
+           <TextField
+              color="secondary"
+              label="From"
+              variant="outlined"
+              size="small"
+            />
+           <TextField
+              color="secondary"
+              label="To"
+              variant="outlined"
+              size="small"
+            />
+        </Stack>
         <Divider sx={{ marginY: "12px" }} />
         <Typography variant="h6">Categories</Typography>
         <FormGroup>

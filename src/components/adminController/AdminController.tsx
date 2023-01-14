@@ -9,7 +9,7 @@ import UpdateProduct from '../product/UpdateProduct';
 function AdminController() {
     return (
         <Box className="fCenter fCol my-2 mx-2">
-            <Typography className="section-head my-2" sx={{fontSize:"20px",fontWeight:"bold"}}>
+            <Typography className="section-head my-2" sx={{fontSize:"20px"}}>
                 Product
             </Typography>
 
@@ -50,7 +50,7 @@ function AdminController() {
                 </AccordionDetails>
             </Accordion>
             <Divider/>
-            <Typography className="section-head my-2" sx={{fontSize:"20px",fontWeight:"bold"}}>
+            <Typography className="section-head my-2" sx={{fontSize:"20px"}}>
                 Categories
             </Typography>
             <Accordion className='my-2' sx={{width:{xs:"100%",md:"60%"}}}>

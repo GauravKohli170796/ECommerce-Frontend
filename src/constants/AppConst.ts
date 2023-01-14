@@ -1,5 +1,5 @@
 export const AppConst = Object.freeze({
-   BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
+   BackendURL: "http://localhost:4000/", //"https://ecommerce-backend-repo-og97.onrender.com/",
    productsPerPage:10
 });
 

@@ -1,10 +1,19 @@
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import { Button, Chip, Divider, FormControl, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import EmailIcon from '@mui/icons-material/Email';
+import MessageIcon from '@mui/icons-material/Message';
+import { Button, Chip, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import * as Yup from "yup";
 import { getProductById } from "../../services/productServices";
 import CarouselProvider from '../carousel/CarouselProvider';
+
+interface IContactForm{
+  email: string;
+  message: string
+}
 
 function ProductDetail() {
   const { id } = useParams();
@@ -29,6 +38,20 @@ function ProductDetail() {
       console.error(err);
     }
   };
+
+  const contactForm = useFormik<IContactForm>({
+    initialValues: {
+      email: "",
+      message: ""
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Must be valid email").required("Please fill Email field"),
+      message: Yup.string().max(250, "Message must be less than 250 characters").min(25, "Message must be more than 25 characters long").required("Please fill Message field"),
+    }),
+    onSubmit: async (values: IContactForm) => {
+      console.log(values);
+    }
+  });
 
   const handleClose = () =>{
     setShowModel(false);
@@ -85,6 +108,80 @@ function ProductDetail() {
         <MenuItem value={5}>5</MenuItem>
       </Select>
     </FormControl>
+  }
+
+  const renderContactForm = ()=>{
+    return <Box className="mixBackground" sx={{marginY:"32px",padding:"32px"}}>
+
+    <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={contactForm.handleSubmit}>
+      <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
+
+        <Stack className='p-2' spacing={2}>
+
+          <Typography className="section-head" fontSize="large">
+            Interested in Product
+          </Typography>
+
+          <TextField
+            color="secondary"
+            error={(contactForm.touched.email && contactForm.errors.email && true) || false}
+            label="Email"
+            helperText={contactForm.errors.email}
+            onBlur={contactForm.handleBlur}
+            onChange={contactForm.handleChange}
+            name="email"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            color="secondary"
+            error={(contactForm.touched.email && contactForm.errors.email && true) || false}
+            label="Product Id"
+            fullWidth
+            defaultValue={id}
+            disabled
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <TextField
+            color="secondary"
+            error={(contactForm.touched.message && contactForm.errors.message && true) || false}
+            label="Message"
+            helperText={contactForm.errors.message}
+            onBlur={contactForm.handleBlur}
+            onChange={contactForm.handleChange}
+            name="message"
+            multiline
+            minRows={3}
+            maxRows={3}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MessageIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Button disabled={!(contactForm.dirty && contactForm.isValid)} type="submit" fullWidth variant="contained">Contact Me</Button>
+
+         </Stack>
+      </Paper>
+    </form>
+  </Box>
   }
 
   const renderSizes = () => {
@@ -144,6 +241,7 @@ function ProductDetail() {
       </Box>
       {/* {showImageModel()} */}
     </Box>}
+      {Object.keys(productDetail).length > 1 && renderContactForm()}
   </>;
 }
 

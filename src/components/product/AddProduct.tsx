@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, IconButton, ImageList, ImageListItem, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { ErrorMessage, FieldArray, FieldArrayRenderProps, FormikProvider, useFormik } from "formik";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import shortid from 'shortid';
 import * as Yup from "yup";
 import { IProduct } from '../../models/productModel';
@@ -25,6 +25,12 @@ const initialProductDetails: IProduct = {
 
 
 function AddProduct() {
+
+  useEffect(()=>{
+     return ()=>{
+      console.log("dfghjklkjhgfghjk");
+     }
+  },[]);
 
   const [files, setFiles] = useState<any>([]);
 

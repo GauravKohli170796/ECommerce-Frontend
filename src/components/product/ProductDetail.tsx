@@ -104,7 +104,7 @@ function ProductDetail() {
         <Stack direction="column" sx={{marginX:"4px",display:"flex",justifyContent:"center",maxWidth:"99vw"}}>
           {renderProductImages()}
             <Stack direction="row" spacing={2}>
-              <Button variant="contained" fullWidth>Wishlist</Button>
+              <Button color="secondary" variant="contained" fullWidth>Wishlist</Button>
               <Button variant="contained" fullWidth>Add to Cart</Button>
             </Stack>
 

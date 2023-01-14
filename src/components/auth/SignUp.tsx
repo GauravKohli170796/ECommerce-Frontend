@@ -3,7 +3,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import KeyIcon from '@mui/icons-material/Key';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
-import { Button, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Button, InputAdornment, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useGoogleLogin } from '@react-oauth/google';
 import { AxiosResponse } from 'axios';
@@ -88,8 +88,9 @@ function SignUp() {
   return (
     <Box>
       <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={signUpForm.handleSubmit}>
+        <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%" ,lg:"40%" } }}>
 
-        <Stack className='border' spacing={2} sx={{ width: { xs: "90%", md: "50%" } }}>
+        <Stack className='p-2' spacing={2}>
 
           <Typography className="section-head" variant="overline" fontSize="large">
             SignUp
@@ -190,18 +191,30 @@ function SignUp() {
 
           <Button disabled={!(signUpForm.dirty && signUpForm.isValid)} type="submit" fullWidth variant="contained">SignUp</Button>
 
-          <Button fullWidth onClick={() => signup()} startIcon={<GoogleIcon />} variant="contained">
+          <Button color="secondary" fullWidth onClick={() => signup()} startIcon={<GoogleIcon />} variant="contained">
             Sign up with Google
           </Button>
 
+
+          <Stack spacing={2}>
+
           <Stack className='fCenter' direction="row" spacing={2} >
             <Typography component="span" variant="subtitle2">Already have a account?</Typography>
-            <Link to="/auth/login">
+            <Link className='link' to="/auth/login">
               LogIn
             </Link>
           </Stack>
 
+          <Stack className='fCenter' direction="row" spacing={2} >
+            <Typography component="span" variant="subtitle2">Continue shopping</Typography>
+            <Link className='link' to="/product/showProducts">
+              Shopping
+            </Link>
+          </Stack>
+          </Stack>
+
         </Stack>
+        </Paper>
       </form>
     </Box>
   )

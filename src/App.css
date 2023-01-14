@@ -4,11 +4,11 @@
 }
 
 :root {
-  --color-1: #186cb8;
-  --color-2: #2a9a9f;
-  --color-3: #f98d00;
-  --color-4: #e83611;
-  --color-5: #f1b211;
+  --color-1: #1A237E;
+  --color-2: #B71C1C;
+  --color-3: #33691E;
+  --color-4: #1A237E;
+  --color-5: #1A237E;
 }
 
 .mixBackground {
@@ -45,8 +45,6 @@ body{
 
 .section-head{
   color:#9c27b0;
-  font-size: 50px;
-  text-decoration: underline;
   text-underline-offset: 10px;
   font-weight:400;
   text-align: center;
@@ -66,6 +64,14 @@ body{
   );
   -webkit-background-clip: text;
   color: transparent;
+}
+.section-head::after{
+  content: "-->";
+  margin: 0px 5px 0px 5px;
+}
+.section-head::before{
+  content: "<--";
+  margin: 0px 5px 0px 5px;
 }
 
 @keyframes App-logo-spin {
@@ -125,6 +131,18 @@ body{
   border:.1px solid lightgray;
   padding: 32px;
 }
+.p-1{
+  padding: 8px;
+}
+.p-2{
+  padding: 16px;
+}
+.p-3{
+  padding: 24px;
+}
+.p-4{
+  padding: 32px;
+}
 .fCol{
   display: flex;
   flex-direction: column;
@@ -163,5 +181,29 @@ input:-webkit-autofill {
    background-color: "9c27b0";
    color: white;
    margin-right: 8px;
+}
+
+.link{
+  text-decoration: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #FAFAFA; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #EF6C00; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #EF6C00; 
 }
 

@@ -1,7 +1,7 @@
 import EmailIcon from '@mui/icons-material/Email';
 import GoogleIcon from '@mui/icons-material/Google';
 import KeyIcon from '@mui/icons-material/Key';
-import { Button, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Button, InputAdornment, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useGoogleLogin } from '@react-oauth/google';
 import { AxiosResponse } from 'axios';
@@ -39,9 +39,9 @@ function Login() {
       });
       if (response.data.token) {
         localStorage.setItem("auth", response.data.token);
-        setTimeout(()=>{
+        setTimeout(() => {
           navigate("/product/showProducts");
-        },10);
+        }, 10);
       }
     }
   });
@@ -62,9 +62,9 @@ function Login() {
       });
       if (data.token) {
         localStorage.setItem("auth", data.token);
-        setTimeout(()=>{
+        setTimeout(() => {
           navigate("/product/showProducts");
-        },10)
+        }, 10)
       }
     }
   });
@@ -73,64 +73,76 @@ function Login() {
     <Box>
 
       <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={loginForm.handleSubmit}>
+        <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
 
-        <Stack className='border' spacing={2} sx={{ width: { xs: "90%", md: "50%" } }}>
+          <Stack className='p-2' spacing={2}>
 
-          <Typography className="section-head" variant="overline" fontSize="large">
-            LogIn
-          </Typography>
+            <Typography className="section-head" variant="overline" fontSize="large">
+              LogIn
+            </Typography>
 
-          <TextField
-            color="secondary"
-            error={(loginForm.touched.email && loginForm.errors.email && true) || false}
-            label="Email"
-            helperText={loginForm.errors.email}
-            onBlur={loginForm.handleBlur}
-            onChange={loginForm.handleChange}
-            name="email"
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+            <TextField
+              color="secondary"
+              error={(loginForm.touched.email && loginForm.errors.email && true) || false}
+              label="Email"
+              helperText={loginForm.errors.email}
+              onBlur={loginForm.handleBlur}
+              onChange={loginForm.handleChange}
+              name="email"
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-          <TextField
-            color="secondary"
-            error={(loginForm.touched.password && loginForm.errors.password && true) || false}
-            label="Password"
-            helperText={loginForm.errors.password}
-            onBlur={loginForm.handleBlur}
-            onChange={loginForm.handleChange}
-            name="password"
-            type="password"
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <KeyIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          
-          <Button disabled={!(loginForm.dirty && loginForm.isValid)} type="submit" fullWidth variant="contained">Login</Button>
+            <TextField
+              color="secondary"
+              error={(loginForm.touched.password && loginForm.errors.password && true) || false}
+              label="Password"
+              helperText={loginForm.errors.password}
+              onBlur={loginForm.handleBlur}
+              onChange={loginForm.handleChange}
+              name="password"
+              type="password"
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <KeyIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-          <Button fullWidth onClick={() => login()} startIcon={<GoogleIcon />} variant="contained">
-            Log in with Google
-          </Button>
+            <Button disabled={!(loginForm.dirty && loginForm.isValid)} type="submit" fullWidth variant="contained">Login</Button>
 
-          <Stack className='fCenter' direction="row" spacing={2} >
-            <Typography component="span" variant="subtitle2">Not having a account?</Typography>
-            <Link to="/auth/signup">
-              SignUp
-            </Link>
+            <Button color="secondary" fullWidth onClick={() => login()} startIcon={<GoogleIcon />} variant="contained">
+              Log in with Google
+            </Button>
+
+            <Stack spacing={2}>
+
+              <Stack className='fCenter' direction="row" spacing={2} >
+                <Typography component="span" variant="subtitle2">Already have a account?</Typography>
+                <Link className='link' to="/auth/signup">
+                  Signup
+                </Link>
+              </Stack>
+
+              <Stack className='fCenter' direction="row" spacing={2} >
+                <Typography component="span" variant="subtitle2">Continue shopping</Typography>
+                <Link className='link' to="/product/showProducts">
+                  Shopping
+                </Link>
+              </Stack>
+            </Stack>
+
           </Stack>
-
-        </Stack>
+        </Paper>
       </form>
     </Box>
   )

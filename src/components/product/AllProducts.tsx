@@ -77,13 +77,13 @@ function AllProducts() {
         }}
       >
         <Box>
-          <Typography className="section-head" variant="overline" fontSize="large">
+          <Typography className="section-head"  sx={{fontSize:"25px",fontWeight:"bold",textDecoration:"underline"}}>
             Latest Products
           </Typography>
         </Box>
 
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <IconButton onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "lightgray", alignSelf: "flex-end", marginX: "16px" }}>
+        <IconButton onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "#BA68C8",color:"white", alignSelf: "flex-end", marginX: "16px" }}>
           <NavigateNextIcon />
         </IconButton>
         <Box ref={ref}
@@ -100,7 +100,7 @@ function AllProducts() {
           {renderLatestProducts()}
         </Box>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <Typography ref={featureProductRef} className="section-head" variant="overline" fontSize="large">
+        <Typography ref={featureProductRef} className="section-head"  sx={{fontSize:"25px",fontWeight:"bold"}}>
           Featured Products
         </Typography>
         <Box

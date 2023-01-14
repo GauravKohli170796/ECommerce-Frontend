@@ -49,22 +49,8 @@ function App() {
       MuiInputLabel: {
         styleOverrides: {
           shrink: {
-            color: "purple",
+            color: "#880E4F",
             marginX:"16px"
-          }
-        }
-      },
-      MuiOutlinedInput: {
-        styleOverrides: {
-          root: {
-            borderRadius: "50px"
-          }
-        }
-      },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: "50px"
           }
         }
       }

@@ -1,7 +1,7 @@
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import EmailIcon from '@mui/icons-material/Email';
 import MessageIcon from '@mui/icons-material/Message';
-import { Button, Chip, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Chip, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
@@ -9,8 +9,10 @@ import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { getProductById } from "../../services/productServices";
 import CarouselProvider from '../carousel/CarouselProvider';
+import Footer from '../footer/Footer';
+import Header from '../header/Header';
 
-interface IContactForm{
+interface IContactForm {
   email: string;
   message: string
 }
@@ -19,7 +21,6 @@ function ProductDetail() {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<any | {}>({});
   const priceWithoutDiscount: number = (productDetail?.price / (1 - (productDetail?.discount / 100))) || productDetail?.price;
-  const [showModel,setShowModel] = useState<boolean>(true);
 
   useEffect(() => {
     fetchProductDetail();
@@ -53,23 +54,9 @@ function ProductDetail() {
     }
   });
 
-  const handleClose = () =>{
-    setShowModel(false);
-  }
 
 
-  const showImageModel = () =>{
-    return <Modal
-              open={showModel}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-  >
-    <Box sx={{display:"flex",position:"fixed",top:"10%",left:"10%",width:"80%",height:"80%",overflow:"scroll",backgroundColor:"black",justifyContent:"center",alignItems:"center"}}>
-       <img src={productDetail && productDetail.images[0]} alt='product 1'></img>
-    </Box>
-  </Modal>
-  }
+
 
   const renderProductImages = () => {
     if (productDetail.images) {
@@ -110,78 +97,78 @@ function ProductDetail() {
     </FormControl>
   }
 
-  const renderContactForm = ()=>{
-    return <Box className="mixBackground" sx={{marginY:"32px",padding:"32px"}}>
+  const renderContactForm = () => {
+    return <Box className="mixBackground" sx={{ marginY: "32px", padding: "32px" }}>
 
-    <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={contactForm.handleSubmit}>
-      <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
+      <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={contactForm.handleSubmit}>
+        <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
 
-        <Stack className='p-2' spacing={2}>
+          <Stack className='p-2' spacing={2}>
 
-          <Typography className="section-head" fontSize="large">
-            Interested in Product
-          </Typography>
+            <Typography className="section-head" fontSize="large">
+              Interested in Product
+            </Typography>
 
-          <TextField
-            color="secondary"
-            error={(contactForm.touched.email && contactForm.errors.email && true) || false}
-            label="Email"
-            helperText={contactForm.errors.email}
-            onBlur={contactForm.handleBlur}
-            onChange={contactForm.handleChange}
-            name="email"
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            color="secondary"
-            error={(contactForm.touched.email && contactForm.errors.email && true) || false}
-            label="Product Id"
-            fullWidth
-            defaultValue={id}
-            disabled
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+            <TextField
+              color="secondary"
+              error={(contactForm.touched.email && contactForm.errors.email && true) || false}
+              label="Email"
+              helperText={contactForm.errors.email}
+              onBlur={contactForm.handleBlur}
+              onChange={contactForm.handleChange}
+              name="email"
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              color="secondary"
+              error={(contactForm.touched.email && contactForm.errors.email && true) || false}
+              label="Product Id"
+              fullWidth
+              defaultValue={id}
+              disabled
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-          <TextField
-            color="secondary"
-            error={(contactForm.touched.message && contactForm.errors.message && true) || false}
-            label="Message"
-            helperText={contactForm.errors.message}
-            onBlur={contactForm.handleBlur}
-            onChange={contactForm.handleChange}
-            name="message"
-            multiline
-            minRows={3}
-            maxRows={3}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <MessageIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+            <TextField
+              color="secondary"
+              error={(contactForm.touched.message && contactForm.errors.message && true) || false}
+              label="Message"
+              helperText={contactForm.errors.message}
+              onBlur={contactForm.handleBlur}
+              onChange={contactForm.handleChange}
+              name="message"
+              multiline
+              minRows={3}
+              maxRows={3}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <MessageIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-          <Button disabled={!(contactForm.dirty && contactForm.isValid)} type="submit" fullWidth variant="contained">Contact Me</Button>
+            <Button disabled={!(contactForm.dirty && contactForm.isValid)} type="submit" fullWidth variant="contained">Contact Me</Button>
 
-         </Stack>
-      </Paper>
-    </form>
-  </Box>
+          </Stack>
+        </Paper>
+      </form>
+    </Box>
   }
 
   const renderSizes = () => {
@@ -196,53 +183,57 @@ function ProductDetail() {
   }
 
   return <>
-    {Object.keys(productDetail).length > 1 && <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
-      <Box sx={{ width: { sm: "95vw", md: "45vw" }, marginY: "16px",alignSelf: "flex-start", justifyContent: "flex-start",  }}>
-        <Stack direction="column" sx={{marginX:"4px",display:"flex",justifyContent:"center",maxWidth:"99vw"}}>
-          {renderProductImages()}
+    {Object.keys(productDetail).length > 1 && <>
+      <Header />
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+        <Box sx={{ width: { sm: "95vw", md: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
+          <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>
+            {renderProductImages()}
             <Stack direction="row" spacing={2}>
               <Button color="secondary" variant="contained" fullWidth>Wishlist</Button>
               <Button variant="contained" fullWidth>Add to Cart</Button>
             </Stack>
 
 
-        </Stack>
-      </Box>
-      <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
-      <Box sx={{ width: { xs: "95vw", md: "45vw" },marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px" }}>
-        <Stack spacing={2}>
-          <Typography fontSize={24} className="leftText" variant="h5">{productDetail.name}</Typography>
-          <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
-          <Box sx={{ fontSize: "20px", textAlign: "left" }}>
-            <CurrencyRupeeIcon fontSize="small" />  {productDetail.price}
-            <Typography component="span" sx={{ textDecoration: "line-through", marginX: "5px", color: "rgb(38, 165, 65)" }} variant="body2">
-              {parseInt(priceWithoutDiscount.toString())}
-            </Typography>
-            <Typography component="span" sx={{ color: "rgb(38, 165, 65)" }} variant="body2">
-              {`discount ${productDetail.discount}%`}
-            </Typography>
-          </Box>
-          <Divider />
-          <Typography fontSize={20} className="leftText" variant="caption">Product Details</Typography>
-          <TableContainer component={Paper}>
-            <Table aria-label="customized table">
-              {renderProductDetails()}
-            </Table>
-          </TableContainer>
-          <Divider />
-          <Typography fontSize={20} className="leftText" variant="caption">Sizes</Typography>
-          <Stack direction="row" spacing={2}>
-            {renderSizes()}
           </Stack>
-          <Divider />
-          <Typography fontSize={20} className="leftText" variant="caption">Select Quantity</Typography>
-          {renderQuantitySelector()}
-        </Stack>
+        </Box>
+        <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
+        <Box sx={{ width: { xs: "95vw", md: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px" }}>
+          <Stack spacing={2}>
+            <Typography fontSize={24} className="leftText" variant="h3">{productDetail.name}</Typography>
+            <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
+            <Box sx={{ fontSize: "20px", textAlign: "left" }}>
+              <CurrencyRupeeIcon fontSize="small" />  {productDetail.price}
+              <Typography component="span" sx={{ textDecoration: "line-through", marginX: "5px", color: "rgb(38, 165, 65)" }} variant="body2">
+                {parseInt(priceWithoutDiscount.toString())}
+              </Typography>
+              <Typography component="span" sx={{ color: "rgb(38, 165, 65)" }} variant="body2">
+                {`discount ${productDetail.discount}%`}
+              </Typography>
+            </Box>
+            <Divider />
+            <Typography fontSize={20} className="leftText" variant="caption">Product Details</Typography>
+            <TableContainer component={Paper}>
+              <Table aria-label="customized table">
+                {renderProductDetails()}
+              </Table>
+            </TableContainer>
+            <Divider />
+            <Typography fontSize={20} className="leftText" variant="caption">Sizes</Typography>
+            <Stack direction="row" spacing={2}>
+              {renderSizes()}
+            </Stack>
+            <Divider />
+            <Typography fontSize={20} className="leftText" variant="caption">Select Quantity</Typography>
+            {renderQuantitySelector()}
+          </Stack>
+        </Box>
       </Box>
-      {/* {showImageModel()} */}
-    </Box>}
-      {Object.keys(productDetail).length > 1 && renderContactForm()}
-  </>;
+      {renderContactForm()}
+      <Footer />
+
+    </>}
+  </>
 }
 
 export default ProductDetail;

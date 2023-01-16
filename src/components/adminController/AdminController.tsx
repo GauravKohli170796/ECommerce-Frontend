@@ -2,12 +2,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
+import Footer from '../footer/Footer';
+import Header from '../header/Header';
 import AddProduct from '../product/AddProduct';
 import DeleteProduct from '../product/DeleteProduct';
 import UpdateProduct from '../product/UpdateProduct';
 
 function AdminController() {
     return (
+        <>
+        <Header/>
         <Box className="fCenter fCol my-2 mx-2">
             <Typography className="section-head my-2" sx={{fontSize:"20px"}}>
                 Product
@@ -69,6 +73,8 @@ function AdminController() {
                 </AccordionDetails>
             </Accordion>
         </Box>
+        <Footer/>
+        </>
     )
 }
 

@@ -14,6 +14,14 @@
 .mixBackground {
   background-image: linear-gradient(45deg,#F3E5F5, #212121,#CE93D8)
 }
+.menuBackground {
+  background-image: linear-gradient(90deg,#F3E5F5, #212121,#CE93D8);
+  color: white;
+  width: fit-content;
+  height: fit-content;
+  margin: 0px;
+  padding: 0px;
+}
 
 body{
   min-width: 350px;
@@ -64,14 +72,6 @@ body{
   );
   -webkit-background-clip: text;
   color: transparent;
-}
-.section-head::after{
-  content: "-->";
-  margin: 0px 5px 0px 5px;
-}
-.section-head::before{
-  content: "<--";
-  margin: 0px 5px 0px 5px;
 }
 
 @keyframes App-logo-spin {

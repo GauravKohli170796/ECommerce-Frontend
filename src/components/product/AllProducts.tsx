@@ -6,6 +6,8 @@ import { AppConst } from "../../constants/AppConst";
 import { IAllProductApiResponse, IProduct } from "../../models/productModel";
 import { getAllProducts } from "../../services/productServices";
 import CarouselProvider from "../carousel/CarouselProvider";
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
 import ProductCard from "./ProductCard";
 
 function AllProducts() {
@@ -41,7 +43,7 @@ function AllProducts() {
      
     setTimeout(() => {
       featureProductRef.current?.scrollIntoView({ behavior: "smooth", inline: "start" });
-    }, 1000)
+    }, 10)
   };
 
   const renderAllProducts = () => {
@@ -65,6 +67,7 @@ function AllProducts() {
 
   return (
     <>
+    <Header/>
       <CarouselProvider imagesArr={tmpImages} />
       <Box
         sx={{
@@ -99,8 +102,9 @@ function AllProducts() {
         >
           {renderLatestProducts()}
         </Box>
+        <Typography ref={featureProductRef} ></Typography>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <Typography ref={featureProductRef} className="section-head" sx={{fontSize:"25px"}}>
+        <Typography className="section-head" sx={{fontSize:"25px"}}>
           Featured Products
         </Typography>
         <Box
@@ -126,6 +130,7 @@ function AllProducts() {
           />
         )}
       </Box>
+      <Footer/>
     </>
   );
 }

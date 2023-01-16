@@ -1,4 +1,5 @@
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
@@ -9,6 +10,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { AppBar, Button, Divider, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
+import { Store } from "react-notifications-component";
 import { useNavigate } from "react-router-dom";
 import { GetAppState } from "../../AppContext";
 import logo from "../../assets/images/logo.png";
@@ -27,7 +29,7 @@ function Header() {
       }
     }
     checkLogInStatus();
-  }, [AppState.authDetails]);
+  }, [navigate]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -36,8 +38,24 @@ function Header() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleLogOut = () => {
+  const handleLogOut = async() => {
+    await  localStorage.removeItem("auth");
     AppState.setAuthDetails(null);
+    Store.addNotification({
+      message: "Successfully logged out.",
+      type: "info",
+      insert: "top",
+      container: "top-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: 2000,
+        onScreen: true
+      }
+    });
+
+    setIsLoggedIn(false);
+
   }
 
   const openDrawer = (showOption: drawerShowOptions) => {
@@ -92,11 +110,21 @@ function Header() {
                 <SearchIcon />
               </IconButton>
             </Tooltip>
+
             <Tooltip title="My Cart" arrow>
               <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
                 <ShoppingCartIcon />
               </IconButton>
             </Tooltip>
+
+            {isLoggedIn && <Tooltip title="Admin Controller" arrow>
+              <IconButton onClick={()=>{
+                navigate('/admin/adminController');
+              }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
+                <AdminPanelSettingsIcon />
+              </IconButton>
+            </Tooltip>}
+
             {isLoggedIn && <Tooltip title="Logut" arrow>
               <IconButton onClick={handleLogOut} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
                 <LogoutIcon />
@@ -121,7 +149,7 @@ function Header() {
               onClick={handleClick}
             >
               {" "}
-              <MenuIcon sx={{color:"white"}} />
+              <MenuIcon sx={{ color: "white" }} />
             </Button>
             <Menu
               id="demo-positioned-menu"
@@ -138,66 +166,90 @@ function Header() {
                 horizontal: "left"
               }}
             >
-              <MenuItem
-                onClick={() => {
-                  navigate("/product/showProducts");
-                }}
-              >
-                <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
-                  <HomeIcon />
-                </IconButton>
-                <Typography variant="body1" color="secondary">Home</Typography>
-              </MenuItem>
-              <Divider color="secondary" />
-              <MenuItem
-                onClick={() => {
+              <Box className="menuBackground">
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    navigate("/product/showProducts");
+                  }}
+                >
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <HomeIcon />
+                  </IconButton>
+                  <Typography variant="body1">Home</Typography>
+                </MenuItem>
+                <Divider color="secondary" />
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    openDrawer(drawerShowOptions.filter);
+                  }}
+                >
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <FilterAltIcon />
+                  </IconButton>
+                  <Typography variant="body1">Filters</Typography>
+                </MenuItem>
+                <Divider color="secondary" />
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    openDrawer(drawerShowOptions.search);
+                  }}
+                >
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <SearchIcon />
+                  </IconButton>
+                  <Typography variant="body1">Search Products</Typography>
+                </MenuItem>
+                <Divider color="secondary" />
+                <MenuItem onClick={handleClose}>
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <ShoppingCartIcon />
+                  </IconButton>
+                  <Typography variant="body1">My Cart</Typography>
+
+                </MenuItem>
+                
+                <Divider color="secondary" />
+
+                {isLoggedIn && <MenuItem onClick={()=>{
                   handleClose();
-                  openDrawer(drawerShowOptions.filter);
-                }}
-              >
-                <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
-                  <FilterAltIcon />
-                </IconButton>
-                <Typography variant="body1" color="secondary">Filters</Typography>
-              </MenuItem>
-              <Divider color="secondary" />
-              <MenuItem
-                onClick={() => {
+                  navigate("/admin/admincontroller");
+                }}>
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <AdminPanelSettingsIcon />
+                  </IconButton>
+                  <Typography variant="body1"> Admin Panel</Typography>
+
+                </MenuItem>}
+
+                <Divider color="secondary" />
+                
+                {isLoggedIn && <MenuItem onClick={()=>{
                   handleClose();
-                  openDrawer(drawerShowOptions.search);
-                }}
-              >
-                <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
-                  <SearchIcon />
-                </IconButton>
-                <Typography variant="body1" color="secondary">Search Products</Typography>
-              </MenuItem>
-              <Divider color="secondary" />
-              <MenuItem onClick={handleClose}>
-                <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
-                  <ShoppingCartIcon />
-                </IconButton>
-                <Typography variant="body1" color="secondary">My Cart</Typography>
+                  handleLogOut();
+                }}>
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <LogoutIcon />
+                  </IconButton>
+                  <Typography variant="body1"> Log Out</Typography>
 
-              </MenuItem>
-              <Divider color="secondary" />
-              {isLoggedIn && <MenuItem onClick={handleClose}>
-                <IconButton onClick={handleLogOut} sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
-                  <LogoutIcon />
-                </IconButton>
-                <Typography variant="body1" color="secondary"> Log Out</Typography>
+                </MenuItem>}
 
-              </MenuItem>}
+                <Divider color="secondary" />
 
-              {!isLoggedIn && <MenuItem onClick={handleClose}>
-                <IconButton onClick={() => {
+                {!isLoggedIn && <MenuItem onClick={()=>{
+                  handleClose();
                   navigate("/auth/login");
-                }} sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
-                  <AccountBoxIcon />
-                </IconButton>
-                <Typography variant="body1" color="secondary">Login/SignUp</Typography>
-              </MenuItem>
+                  }}>
+                  <IconButton sx={{ marginRight: "8px", backgroundColor: "#9c27b0", color: "white" }} size="small">
+                    <AccountBoxIcon />
+                  </IconButton>
+                  <Typography variant="body1">Login/SignUp</Typography>
+                </MenuItem>
               }
+              </Box>
             </Menu>
           </Box>
         </Toolbar>

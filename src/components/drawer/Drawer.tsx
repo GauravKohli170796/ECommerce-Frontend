@@ -5,8 +5,7 @@ import {
   Divider,
   FormControlLabel,
   FormGroup,
-  InputAdornment,
-  Slider,
+  InputAdornment, Slider,
   Stack,
   SwipeableDrawer,
   TextField,
@@ -25,6 +24,10 @@ function Drawer() {
   const { category, price, priceSort, ratingSort } = useSelector((state: any) => state.filter);
   const dispatch = useDispatch();
 
+  const openDrawer = (showOption: drawerShowOptions) => {
+    AppState.setOpenDrawer(true);
+    AppState.setDrawerOption(showOption);
+  };
 
   const handleRatingSort = (event: any) => {
     if (event.target.checked) {

@@ -52,7 +52,15 @@ function App() {
             marginX:"16px"
           }
         }
+      },
+      MuiSpeedDialAction: {
+        styleOverrides: {
+        staticTooltipLabel: {
+          backgroundColor : '#9c27b0',
+          color: "white"
+        },
       }
+      },
     },
     typography: {
       fontFamily: [

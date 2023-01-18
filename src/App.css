@@ -131,6 +131,14 @@ body{
   border:.1px solid lightgray;
   padding: 32px;
 }
+.py-0 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.px-0 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
 .p-1{
   padding: 8px;
 }
@@ -185,6 +193,8 @@ input:-webkit-autofill {
 
 .link{
   text-decoration: none;
+  font-size: small;
+  margin-top: -3px;
 }
 
 ::-webkit-scrollbar {
@@ -224,4 +234,5 @@ input:-webkit-autofill {
   margin: 0px 0px;
 
 }
+
 

@@ -13,7 +13,7 @@ function CarouselProvider(prop:IProp) {
     <Carousel showStatus={false} showIndicators={prop.showIndicators || false} showThumbs={prop.showIndicators || false}  autoPlay={true} interval={2000} infiniteLoop={true}>
       {prop.imagesArr.map((image:string,index:number) => {
         return <div key={index} className="caurousel-img">
-        <img className="img-cover" src={image} alt={`Carousel Home ${index+1}`} />
+        <img className="img-cover" height={500} src={image} alt={`Carousel Home ${index+1}`} />
       </div>
       })}
       </Carousel>

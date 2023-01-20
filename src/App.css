@@ -235,4 +235,18 @@ input:-webkit-autofill {
 
 }
 
+.prodImage {
+  height:650px
+}
+
+@media screen and (max-width: 800px) {
+    .prodImage{
+        height: 400px;
+      }
+  }
+@media screen and (max-width: 1300px ) and (min-width: 801px) {
+    .prodImage{
+        height: 400px;
+      }
+  }
 

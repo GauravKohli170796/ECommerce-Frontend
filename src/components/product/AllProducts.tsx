@@ -2,6 +2,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Divider, IconButton, Pagination, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useRef, useState } from "react";
+import { GetAppState } from "../../AppContext";
 import { AppConst } from "../../constants/AppConst";
 import { IAllProductApiResponse, IProduct } from "../../models/productModel";
 import { getAllProducts } from "../../services/productServices";
@@ -12,6 +13,7 @@ import ProductCard from "./ProductCard";
 
 function AllProducts() {
   const [products, setProducts] = useState<IAllProductApiResponse | null>(null);
+  const AppState = GetAppState();
 
   const tmpImages = [
     "https://res.cloudinary.com/dnqwvvtqf/image/upload/v1673163899/ProductTest/wswzzowfjubzqyyijgc0.webp",
@@ -26,21 +28,27 @@ function AllProducts() {
   useEffect(() => {
     async function fetchAllProducts() {
       const { data } = await getAllProducts("1");
+      AppState.setInitialProducts(data);
       setProducts(data);
     }
+    const initialProducts = AppState.initialProducts;
+    if (initialProducts) {
+      setProducts(initialProducts);
+      return;
+    }
     fetchAllProducts();
-  }, []);
+  }, [AppState]);
 
 
 
 
-  const callProductsPage = async(page: string) => {
+  const callProductsPage = async (page: string) => {
     const { data } = await getAllProducts(page);
-    const tmpProducts =  Object.assign({},products);
+    const tmpProducts = Object.assign({}, products);
     tmpProducts.allProducts = data.allProducts;
     tmpProducts.totalProducts = data.totalProducts;
     setProducts(tmpProducts);
-     
+
     setTimeout(() => {
       featureProductRef.current?.scrollIntoView({ behavior: "smooth", inline: "start" });
     }, 10)
@@ -67,7 +75,7 @@ function AllProducts() {
 
   return (
     <>
-    <Header/>
+      <Header />
       <CarouselProvider imagesArr={tmpImages} />
       <Box
         sx={{
@@ -80,13 +88,13 @@ function AllProducts() {
         }}
       >
         <Box>
-          <Typography className="section-head"  sx={{fontSize:"25px"}}>
+          <Typography className="section-head" sx={{ fontSize: "25px" }}>
             Latest Products
           </Typography>
         </Box>
 
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <IconButton onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "#BA68C8",color:"white", alignSelf: "flex-end", marginX: "16px" }}>
+        <IconButton onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "#BA68C8", color: "white", alignSelf: "flex-end", marginX: "16px" }}>
           <NavigateNextIcon />
         </IconButton>
         <Box ref={ref}
@@ -104,7 +112,7 @@ function AllProducts() {
         </Box>
         <Typography ref={featureProductRef} ></Typography>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <Typography className="section-head" sx={{fontSize:"25px"}}>
+        <Typography className="section-head" sx={{ fontSize: "25px" }}>
           Featured Products
         </Typography>
         <Box
@@ -130,7 +138,7 @@ function AllProducts() {
           />
         )}
       </Box>
-      <Footer/>
+      <Footer />
     </>
   );
 }

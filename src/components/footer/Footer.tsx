@@ -5,7 +5,7 @@ import React from 'react';
 
 function Footer() {
     return (
-        <Box className="fCenter fCol mixBackground p-2 my-2" sx={{ color: "white" }}>
+        <Box className="fCenter fCol mixBackground p-2 my-2" sx={{ color: "white",marginBottom:"45px" }}>
             <Avatar
                 alt="Gaurav Kohli"
                 src="https://res.cloudinary.com/dnqwvvtqf/image/upload/v1673704357/ProductTest/pf51bw72wjas9nfh46vx.webp"

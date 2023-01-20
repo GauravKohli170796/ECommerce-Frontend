@@ -1,14 +1,13 @@
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import EmailIcon from '@mui/icons-material/Email';
 import MessageIcon from '@mui/icons-material/Message';
-import { Button, Chip, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Chip, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { getProductById } from "../../services/productServices";
-import CarouselProvider from '../carousel/CarouselProvider';
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 
@@ -20,6 +19,10 @@ interface IContactForm {
 function ProductDetail() {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<any | {}>({});
+  const [open, setOpen] = React.useState(false);
+  const [image, setImage] = React.useState(0);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const priceWithoutDiscount: number = (productDetail?.price / (1 - (productDetail?.discount / 100))) || productDetail?.price;
 
   useEffect(() => {
@@ -55,12 +58,36 @@ function ProductDetail() {
   });
 
 
+  const handleImageClick = (index: number)=>{
+         handleOpen();
+         setImage(index);
+  };
 
+  const handleImageScroll = (index: number) => {
+    let scrollWidth = 0;
+    while (index) {
+      scrollWidth += ((document.getElementById(`image${index}`) as HTMLImageElement).width || 0) + 20;
+      index--;
+    }
+    (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = scrollWidth;
+  }
 
 
   const renderProductImages = () => {
     if (productDetail.images) {
-      return <CarouselProvider imagesArr={productDetail && productDetail.images} showIndicators={true} />
+      //return <CarouselProvider imagesArr={productDetail && productDetail.images} showIndicators={true} />
+      return <>
+        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px" }}>
+          {productDetail.images.map((imgx: string, index: number) => {
+            return <img className='prodImage' onClick={()=>{handleImageClick(index)}} id={`image${index}`} src={imgx}  alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
+          })}
+        </Box>
+        <Box sx={{ overflowX: "scroll", display: "flex", margin: "16px" }}>
+          {productDetail.images.map((imgx: string, index: number) => {
+            return <img  src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover" }}></img>
+          })}
+        </Box>
+      </>
     }
   }
 
@@ -230,6 +257,17 @@ function ProductDetail() {
         </Box>
       </Box>
       {renderContactForm()}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{display:"flex",justifyContent:"center",alignItems:"center"}}
+      >
+        <Box sx={{display:"flex",maxHeight:"90vh",maxWidth:"90vw",overflow:"scroll"}}>
+          <img src={productDetail.images[image]} alt="xxx" style={{maxHeight:"80vh"}}></img>
+        </Box>
+      </Modal>
       <Footer />
 
     </>}

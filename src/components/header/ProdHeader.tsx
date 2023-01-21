@@ -7,16 +7,16 @@ import React from 'react';
 
 
 const prodHeaderList = [
-    {icon:<CurrencyRupeeIcon sx={{fontSize:"100px",backgroundColor: "#9c27b0", color: "white",marginY:"16px"}}/>,title:"Affordable Price" },
-    {icon:<FactCheckIcon sx={{fontSize:"100px",backgroundColor: "#9c27b0", color: "white",marginY:"16px"}}/>,title:"Best Quality" },
-    {icon:<VolunteerActivismIcon sx={{fontSize:"100px",backgroundColor: "#9c27b0", color: "white",marginY:"16px"}}/>,title:"Handpicked" },
+    {icon:<CurrencyRupeeIcon sx={{fontSize:"60px",backgroundColor: "#9c27b0", color: "white",marginY:"16px"}}/>,title:"Affordable Price" },
+    {icon:<FactCheckIcon sx={{fontSize:"60px",backgroundColor: "#9c27b0", color: "white",marginY:"16px"}}/>,title:"Best Quality" },
+    {icon:<VolunteerActivismIcon sx={{fontSize:"60px",backgroundColor: "#9c27b0", color: "white",marginY:"16px"}}/>,title:"Handpicked" },
 ]
 
 function ProdHeader() {
   return (
     <Box className="mixBackground my-4 py-2" sx={{display:"flex",color:"white",width:"100vw",justifyContent:"space-around"}}>
            {prodHeaderList.map((item)=>{
-           return <Stack key={item.title}>
+           return <Stack key={item.title} sx={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                {item.icon}
                <Typography sx={{textAlign:"center"}}>{item.title}</Typography>
            </Stack>

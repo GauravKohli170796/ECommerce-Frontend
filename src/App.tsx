@@ -8,6 +8,8 @@ import { GetAppState } from "./AppContext";
 import AdminController from "./components/adminController/AdminController";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
+import CartList from "./components/cart/CartList";
+import WishList from "./components/cart/WishList";
 import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
 import AllProducts from "./components/product/AllProducts";
@@ -90,6 +92,12 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/product/productDetail/:id" element={<ProductDetail />} />
+        </Routes>
+        <Routes>
+          <Route path="/user/wishlist" element={<WishList />} />
+        </Routes>
+        <Routes>
+          <Route path="/user/shoppingCart" element={<CartList />} />
         </Routes>
         <Routes>
           <Route path="/auth/login" element={<Login />} />

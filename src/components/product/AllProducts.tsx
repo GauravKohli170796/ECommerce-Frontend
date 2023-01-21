@@ -1,5 +1,4 @@
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Divider, IconButton, Pagination, Typography } from "@mui/material";
+import { Divider, Pagination, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useRef, useState } from "react";
 import { GetAppState } from "../../AppContext";
@@ -9,7 +8,9 @@ import { getAllProducts } from "../../services/productServices";
 import CarouselProvider from "../carousel/CarouselProvider";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import ProdHeader from "../header/ProdHeader";
 import ProductCard from "./ProductCard";
+import ProductScroll from "./ProductScroll";
 
 function AllProducts() {
   const [products, setProducts] = useState<IAllProductApiResponse | null>(null);
@@ -20,7 +21,6 @@ function AllProducts() {
     "https://res.cloudinary.com/dnqwvvtqf/image/upload/v1673163904/ProductTest/gvlsfbia6a5r5myjmqsl.webp",
     "https://res.cloudinary.com/dnqwvvtqf/image/upload/v1673163917/ProductTest/y5cdawyggg0gjjfaddhv.webp"
   ];
-  const ref = useRef<HTMLDivElement>(null);
   const featureProductRef = useRef<HTMLDivElement>(null);
   const paginationCount = Math.ceil((products?.totalProducts[0]?.totalProducts || 0) / AppConst.productsPerPage);
 
@@ -61,18 +61,6 @@ function AllProducts() {
     });
   };
 
-  const renderLatestProducts = () => {
-    return products?.latestProduct.map((product: IProduct) => {
-      return <ProductCard key={product._id} product={product} />;
-    });
-  };
-
-  const handleScrollForLatestProducts = () => {
-    if (ref.current) {
-      ref.current.scrollLeft += 320;
-    }
-  }
-
   return (
     <>
       <Header />
@@ -87,30 +75,11 @@ function AllProducts() {
           justifyContent: "center"
         }}
       >
-        <Box>
-          <Typography className="section-head" sx={{ fontSize: "25px" }}>
-            Latest Products
-          </Typography>
-        </Box>
 
-        <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <IconButton onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "#BA68C8", color: "white", alignSelf: "flex-end", marginX: "16px" }}>
-          <NavigateNextIcon />
-        </IconButton>
-        <Box ref={ref}
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
-            width: "96vw",
-            margin: "10px 10px",
-            overflowX: "scroll"
-          }}
-        >
-          {renderLatestProducts()}
-        </Box>
         <Typography ref={featureProductRef} ></Typography>
+        <Divider sx={{ marginY: "16px", width: "96vw" }} />
+        <ProductScroll name="Latest"/>
+        <ProdHeader/>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
         <Typography className="section-head" sx={{ fontSize: "25px" }}>
           Featured Products

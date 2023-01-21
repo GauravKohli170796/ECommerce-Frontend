@@ -1,6 +1,7 @@
 import EmailIcon from '@mui/icons-material/Email';
 import GoogleIcon from '@mui/icons-material/Google';
 import KeyIcon from '@mui/icons-material/Key';
+import LoginIcon from '@mui/icons-material/Login';
 import { Button, InputAdornment, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -118,7 +119,7 @@ function Login() {
               }}
             />
 
-            <Button disabled={!(loginForm.dirty && loginForm.isValid)} type="submit" fullWidth variant="contained">Login</Button>
+            <Button disabled={!(loginForm.dirty && loginForm.isValid)} type="submit" fullWidth variant="contained" endIcon={<LoginIcon/>}>Login</Button>
 
             <Button color="secondary" fullWidth onClick={() => login()} startIcon={<GoogleIcon />} variant="contained">
               Log in with Google

@@ -18,6 +18,7 @@ import logo from "../../assets/images/logo.png";
 import { drawerShowOptions } from "../../constants/AppConst";
 import BottomNav from "../bottomNavigation/BottomNav";
 
+
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -103,8 +104,18 @@ function Header() {
             </Tooltip>
 
             <Tooltip title="My Cart" arrow>
-              <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
+              <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => {
+                  navigate("/user/shoppingCart");
+                }}>
                 <ShoppingCartIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="My WishList" arrow>
+              <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => {
+                  navigate("/user/wishList");
+                }}>
+                <FavoriteIcon />
               </IconButton>
             </Tooltip>
 
@@ -168,6 +179,9 @@ function Header() {
                 key=" My Wishlist"
                 icon={<FavoriteIcon/>}
                 tooltipTitle="Wishlist"
+                onClick={() => {
+                  navigate("/user/wishList");
+                }}
                 FabProps={{
                   sx: {
                     bgcolor: 'secondary.main',

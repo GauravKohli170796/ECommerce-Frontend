@@ -1,6 +1,7 @@
 import EmailIcon from '@mui/icons-material/Email';
 import GoogleIcon from '@mui/icons-material/Google';
 import KeyIcon from '@mui/icons-material/Key';
+import LoginIcon from '@mui/icons-material/Login';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import { Button, InputAdornment, Paper, Stack, TextField, Typography } from '@mui/material';
@@ -189,7 +190,7 @@ function SignUp() {
             }}
           />
 
-          <Button disabled={!(signUpForm.dirty && signUpForm.isValid)} type="submit" fullWidth variant="contained">SignUp</Button>
+          <Button disabled={!(signUpForm.dirty && signUpForm.isValid)} type="submit" fullWidth variant="contained" endIcon={<LoginIcon/>}>SignUp</Button>
 
           <Button color="secondary" fullWidth onClick={() => signup()} startIcon={<GoogleIcon />} variant="contained">
             Sign up with Google

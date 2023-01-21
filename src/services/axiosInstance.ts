@@ -5,6 +5,12 @@ import { AppConst } from "../constants/AppConst";
 
 export const axiosInstance = axios.create({
     baseURL: AppConst.BackendURL,
-    timeout: 5000,
+});
+
+export const axiosProtectedInstance = axios.create({
+    baseURL: AppConst.BackendURL,
+    headers :{
+        authorization: `Bearer ${localStorage.getItem("auth")}`
+    }
 });
 axiosInstance.defaults.timeout = 50*1000;

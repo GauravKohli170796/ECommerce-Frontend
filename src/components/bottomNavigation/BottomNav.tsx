@@ -64,6 +64,9 @@ function BottomNav() {
         <BottomNavigationAction
           label="My Cart"
           value="Cart"
+          onClick={() => {
+            navigate("/user/shoppingCart");
+          }}
           icon={<ShoppingCartIcon />}
         />
 

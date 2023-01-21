@@ -1,7 +1,10 @@
+import CloseIcon from '@mui/icons-material/Close';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import EmailIcon from '@mui/icons-material/Email';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import MessageIcon from '@mui/icons-material/Message';
-import { Button, Chip, Divider, FormControl, InputAdornment, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Button, Chip, Divider, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
@@ -10,6 +13,8 @@ import * as Yup from "yup";
 import { getProductById } from "../../services/productServices";
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
+import ProdHeader from '../header/ProdHeader';
+import ProductScroll from './ProductScroll';
 
 interface IContactForm {
   email: string;
@@ -75,7 +80,6 @@ function ProductDetail() {
 
   const renderProductImages = () => {
     if (productDetail.images) {
-      //return <CarouselProvider imagesArr={productDetail && productDetail.images} showIndicators={true} />
       return <>
         <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {
@@ -217,11 +221,9 @@ function ProductDetail() {
           <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>
             {renderProductImages()}
             <Stack direction="row" spacing={2}>
-              <Button color="secondary" variant="contained" fullWidth>Wishlist</Button>
-              <Button variant="contained" fullWidth>Add to Cart</Button>
+              <Button color="secondary" variant="contained" endIcon={<FavoriteIcon/>} fullWidth>Wishlist</Button>
+              <Button variant="contained" fullWidth endIcon={<ShoppingCartIcon/>}>Add to Cart</Button>
             </Stack>
-
-
           </Stack>
         </Box>
         <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
@@ -256,6 +258,10 @@ function ProductDetail() {
           </Stack>
         </Box>
       </Box>
+      <Divider/>
+        <ProdHeader/>
+      <Divider/>
+      <ProductScroll name="Recommended"/>
       {renderContactForm()}
       <Modal
         open={open}
@@ -264,7 +270,8 @@ function ProductDetail() {
         aria-describedby="modal-modal-description"
         sx={{display:"flex",justifyContent:"center",alignItems:"center"}}
       >
-        <Box sx={{display:"flex",maxHeight:"90vh",maxWidth:"90vw",overflow:"scroll"}}>
+        <Box sx={{display:"flex",maxHeight:"90vh",maxWidth:"90vw",overflow:"scroll",flexDirection:"column",backgroundColor:"white"}}>
+          <IconButton onClick={handleClose} sx={{alignSelf:"flex-end", backgroundColor: "#9c27b0", color: "white",marginY:"8px"}}><CloseIcon/></IconButton>
           <img src={productDetail.images[image]} alt="xxx" style={{maxHeight:"80vh"}}></img>
         </Box>
       </Modal>

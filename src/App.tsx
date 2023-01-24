@@ -1,8 +1,8 @@
 import { createTheme, ThemeProvider } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { ReactNotifications, Store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import { GetAppState } from "./AppContext";
 import AdminController from "./components/adminController/AdminController";
@@ -18,12 +18,17 @@ import { axiosInstance } from "./services/axiosInstance";
 
 function App() {
   const AppState = GetAppState();
+  const navigate = useNavigate();
   axiosInstance.interceptors.request.use((config) => {
     AppState.setLoading(true);
     return config;
   }, (error) => {
     return Promise.reject(error);
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [navigate])
 
   axiosInstance.interceptors.response.use(
     response => {

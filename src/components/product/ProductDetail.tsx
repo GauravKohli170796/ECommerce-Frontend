@@ -41,7 +41,6 @@ function ProductDetail() {
         return;
       }
       let { data } = await getProductById(id);
-      console.log(data);
       setProductDetail(data);
     } catch (err) {
       console.error(err);

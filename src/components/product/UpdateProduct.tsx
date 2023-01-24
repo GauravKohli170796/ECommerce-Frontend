@@ -46,8 +46,6 @@ function UpdateProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const updateProductBody = convertFormToUpdateRequest(values);
-      console.log(updateProductBody);
-
       await axiosInstance.put(`/api/v1/product/updateProduct/${searchProductForm.values.productId}`,{
            ...updateProductBody
       });
@@ -60,7 +58,6 @@ function UpdateProduct() {
     if (!e.target.files) {
       return;
     }
-    console.log(e.target.files);
     setFiles(e.target.files);
   };
 

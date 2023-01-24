@@ -56,7 +56,6 @@ function AllProducts() {
 
   const renderAllProducts = () => {
     return products?.allProducts.map((product: IProduct) => {
-      console.log(product);
       return <ProductCard key={product._id} product={product} />;
     });
   };
@@ -76,9 +75,9 @@ function AllProducts() {
         }}
       >
 
-        <Typography ref={featureProductRef} ></Typography>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
         <ProductScroll name="Latest"/>
+        <Typography ref={featureProductRef} ></Typography>
         <ProdHeader/>
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
         <Typography className="section-head" sx={{ fontSize: "25px" }}>

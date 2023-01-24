@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, IconButton, ImageList, ImageListItem, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { ErrorMessage, FieldArray, FieldArrayRenderProps, FormikProvider, useFormik } from "formik";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import shortid from 'shortid';
 import * as Yup from "yup";
 import { IProduct } from '../../models/productModel';
@@ -25,12 +25,6 @@ const initialProductDetails: IProduct = {
 
 
 function AddProduct() {
-
-  useEffect(()=>{
-     return ()=>{
-      console.log("dfghjklkjhgfghjk");
-     }
-  },[]);
 
   const [files, setFiles] = useState<any>([]);
 
@@ -52,8 +46,6 @@ function AddProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const addProductBody = convertFormToAddRequest(values);
-      console.log(addProductBody);
-
       await axiosInstance.post(`/api/v1/product/addProduct`,{
            ...addProductBody
       });
@@ -68,7 +60,6 @@ function AddProduct() {
     if (!e.target.files) {
       return;
     }
-    console.log(e.target.files);
     setFiles(e.target.files);
   };
 

@@ -8,6 +8,7 @@ import { Button, Chip, Divider, FormControl, IconButton, InputAdornment, InputLa
 import { Box } from "@mui/system";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
+import MetaTags from 'react-meta-tags';
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { getProductById } from "../../services/productServices";
@@ -270,7 +271,11 @@ function ProductDetail() {
         aria-describedby="modal-modal-description"
         sx={{display:"flex",justifyContent:"center",alignItems:"center"}}
       >
-        <Box sx={{display:"flex",maxHeight:"90vh",maxWidth:"90vw",overflow:"scroll",flexDirection:"column",backgroundColor:"white"}}>
+        <Box sx={{display:"flex",maxHeight:"90%",maxWidth:"90%",overflow:"scroll",flexDirection:"column",backgroundColor:"white"}}>
+        <MetaTags>
+        <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.5"/>
+          </MetaTags>
           <IconButton onClick={handleClose} sx={{alignSelf:"flex-end", backgroundColor: "#9c27b0", color: "white",marginY:"8px"}}><CloseIcon/></IconButton>
           <img src={productDetail.images[image]} alt="xxx" style={{maxHeight:"80vh"}}></img>
         </Box>

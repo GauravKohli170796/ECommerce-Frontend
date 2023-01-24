@@ -12,9 +12,9 @@ export const getProductById = async (id: string) : Promise<AxiosResponse<IProduc
 };
 
 export const getWishListItems = async () : Promise<AxiosResponse<IProduct[]>>=> {
-   return await axiosProtectedInstance.get(`api/v1/product/getWishListItems`); 
+   return await axiosProtectedInstance.get(`api/v1/user/getWishListItems`); 
 };
 
 export const getCartItems = async () : Promise<AxiosResponse<IProduct[]>>=> {
-   return await axiosProtectedInstance.get(`api/v1/product/getWishCartItems`); 
+   return await axiosProtectedInstance.get(`api/v1/user/getCartItems`); 
 };

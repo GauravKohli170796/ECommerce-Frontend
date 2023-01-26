@@ -41,7 +41,7 @@ function ProductCard(prop: IProp) {
             image={(prop.product?.images && prop.product.images[0]) || "https://source.unsplash.com/720x600/?girl,clothes"}
           />
           <CardContent>
-            <Typography gutterBottom variant="body1" component="div" sx={{ textOverflow: "ellipsis", width: "99%", overflow: "hidden", whiteSpace: "nowrap", textAlign: "left",fontWeight:"600" }}>
+            <Typography gutterBottom variant="body1" component="div" sx={{ textOverflow: "ellipsis", width: "99%", overflow: "hidden", whiteSpace: "nowrap", textAlign: "left"}}>
               {prop.product.name}
             </Typography>
             <Typography

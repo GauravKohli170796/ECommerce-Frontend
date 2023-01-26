@@ -131,7 +131,7 @@ function ProductDetail() {
             return <img className='prodImage' onClick={() => { handleImageClick(index) }} id={`image${index}`} src={imgx} alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
           })}
         </Box>
-        <Typography color="secondary" sx={{ fontSize: "15px", marginLeft: "10px", marginX: "4px" }}>{`Swipe right to see all Images ----->`}</Typography>
+        <Typography color="secondary" sx={{ fontSize: "15px", marginLeft: "10px", marginX: "4px" }}>{`Swipe left of yours to see all Images ----->`}</Typography>
         <Typography color="primary" sx={{ fontSize: "15px", marginLeft: "10px", marginX: "4px" }}>{`Click on Image to zoom it.`}</Typography>
         <Box sx={{ overflowX: "scroll", display: "flex", margin: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {

@@ -71,7 +71,7 @@ function Login() {
   });
 
   return (
-    <Box>
+    <Box sx={{display:"flex",alignContent:"center",width:"100vw",height:"100vh"}} className="mixBackground">
 
       <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={loginForm.handleSubmit}>
         <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>

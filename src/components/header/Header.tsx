@@ -57,10 +57,10 @@ function Header() {
   const openDrawer = (showOption: drawerShowOptions) => {
     AppState?.setOpenDrawer(true);
     AppState?.setDrawerOption(showOption);
-  };
+  }
 
   return (
-    <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "sticky", top: 0, left: 0, zIndex: 1000 }}>
+    <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "sticky", top: 0, left: 0,right:0, zIndex: 1000}}>
       <AppBar position="static" className="mixBackground">
         <Toolbar>
           <img style={{padding:"8px"}} src={logo} height="70px" alt="Main logo"></img> 

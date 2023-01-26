@@ -37,6 +37,7 @@ function ProductDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setIsAlreadyWishListed(false);
     fetchProductDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);

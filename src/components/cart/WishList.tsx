@@ -78,7 +78,7 @@ function WishList() {
 
               <CardContent sx={{ width: "50vw" }}>
 
-                <Typography gutterBottom variant="body1" component="div" sx={{ textOverflow: "ellipsis", width: "99%", overflow: "hidden", whiteSpace: "nowrap", textAlign: "left" }}>
+                <Typography gutterBottom variant="body1" component="div" sx={{ textOverflow: "ellipsis", width: "99%", overflow: "hidden", whiteSpace: "nowrap", textAlign: "left" ,fontWeight:"600"}}>
                   {item.productId.name}
                 </Typography>
 

@@ -29,6 +29,7 @@ function ProductDetail() {
   const [productDetail, setProductDetail] = useState<any | {}>({});
   const [open, setOpen] = React.useState(false);
   const [image, setImage] = React.useState(0);
+  const [borderIndex, setBorderIndex] = React.useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const AppState = GetAppState();
@@ -48,7 +49,7 @@ function ProductDetail() {
       showNotificationMsg("Please login to use Wishlist.");
       return;
     };
-    if(!id){
+    if (!id) {
       return;
     }
     const wishListProduct = {
@@ -78,7 +79,13 @@ function ProductDetail() {
           setIsAlreadyWishListed(true);
         }
       }
-
+      const ele = document.getElementById("imageContainer");
+      setTimeout(() => {
+        (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = ele?.scrollWidth || 0;
+      }, 1000);
+      setTimeout(() => {
+        (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = 0;
+      }, 3000);
 
     } catch (err) {
       console.error(err);
@@ -107,6 +114,7 @@ function ProductDetail() {
 
   const handleImageScroll = (index: number) => {
     let scrollWidth = 0;
+    setBorderIndex(index);
     while (index) {
       scrollWidth += ((document.getElementById(`image${index}`) as HTMLImageElement).width || 0) + 20;
       index--;
@@ -118,14 +126,16 @@ function ProductDetail() {
   const renderProductImages = () => {
     if (productDetail.images) {
       return <>
-        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px" }}>
+        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px", scrollBehavior: "smooth" }}>
           {productDetail.images.map((imgx: string, index: number) => {
             return <img className='prodImage' onClick={() => { handleImageClick(index) }} id={`image${index}`} src={imgx} alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
           })}
         </Box>
+        <Typography color="secondary" sx={{ fontSize: "15px", marginLeft: "10px", marginX: "4px" }}>{`Swipe right to see all Images ----->`}</Typography>
+        <Typography color="primary" sx={{ fontSize: "15px", marginLeft: "10px", marginX: "4px" }}>{`Click on Image to zoom it.`}</Typography>
         <Box sx={{ overflowX: "scroll", display: "flex", margin: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {
-            return <img src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover" }}></img>
+            return <img src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover",border:borderIndex===index? "2px solid purple":"none" }}></img>
           })}
         </Box>
       </>

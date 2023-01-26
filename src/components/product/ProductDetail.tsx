@@ -8,9 +8,12 @@ import { Button, Chip, Divider, FormControl, IconButton, InputAdornment, InputLa
 import { Box } from "@mui/system";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import { getProductById } from "../../services/productServices";
+import { GetAppState } from '../../AppContext';
+import { IProduct } from '../../models/productModel';
+import { showNotificationMsg } from '../../services/createNotification';
+import { addWishListItem, getProductById, getWishListItems } from "../../services/productServices";
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -28,20 +31,54 @@ function ProductDetail() {
   const [image, setImage] = React.useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const AppState = GetAppState();
   const priceWithoutDiscount: number = (productDetail?.price / (1 - (productDetail?.discount / 100))) || productDetail?.price;
+  const [isAlreadyWishlisted, setIsAlreadyWishListed] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProductDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const handleAddtoWishlist = async () => {
+    const authDetails = localStorage.getItem("auth");
+    if (!authDetails) {
+      showNotificationMsg("Please login to use Wishlist.");
+      return;
+    };
+    if(!id){
+      return;
+    }
+    const wishListProduct = {
+      productId: id
+    };
+    const { data } = await addWishListItem(wishListProduct);
+    AppState?.setWishListItems([...AppState.wishListItems, data]);
+    showNotificationMsg("Product added to Wish List");
+    setIsAlreadyWishListed(true);
+  }
+
   const fetchProductDetail = async () => {
     try {
       if (!id) {
         return;
       }
-      let { data } = await getProductById(id);
+      setProductDetail({});
+      const { data } = await getProductById(id);
       setProductDetail(data);
+      const authDetails = localStorage.getItem("auth");
+      if (!authDetails) {
+        return;
+      }
+      const response = await getWishListItems();
+      for (const item of response.data) {
+        if (((item.productId) as Partial<IProduct>)?._id === id) {
+          setIsAlreadyWishListed(true);
+        }
+      }
+
+
     } catch (err) {
       console.error(err);
     }
@@ -62,9 +99,9 @@ function ProductDetail() {
   });
 
 
-  const handleImageClick = (index: number)=>{
-         handleOpen();
-         setImage(index);
+  const handleImageClick = (index: number) => {
+    handleOpen();
+    setImage(index);
   };
 
   const handleImageScroll = (index: number) => {
@@ -82,12 +119,12 @@ function ProductDetail() {
       return <>
         <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {
-            return <img className='prodImage' onClick={()=>{handleImageClick(index)}} id={`image${index}`} src={imgx}  alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
+            return <img className='prodImage' onClick={() => { handleImageClick(index) }} id={`image${index}`} src={imgx} alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
           })}
         </Box>
         <Box sx={{ overflowX: "scroll", display: "flex", margin: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {
-            return <img  src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover" }}></img>
+            return <img src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover" }}></img>
           })}
         </Box>
       </>
@@ -220,8 +257,9 @@ function ProductDetail() {
           <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>
             {renderProductImages()}
             <Stack direction="row" spacing={2}>
-              <Button color="secondary" variant="contained" endIcon={<FavoriteIcon/>} fullWidth>Wishlist</Button>
-              <Button variant="contained" fullWidth endIcon={<ShoppingCartIcon/>}>Add to Cart</Button>
+              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Wishlist</Button>}
+              {isAlreadyWishlisted && <Button color="secondary" onClick={() => { navigate("/user/wishlist") }} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Go to Wishlist</Button>}
+              <Button variant="contained" fullWidth endIcon={<ShoppingCartIcon />}>Add to Cart</Button>
             </Stack>
           </Stack>
         </Box>
@@ -257,21 +295,21 @@ function ProductDetail() {
           </Stack>
         </Box>
       </Box>
-      <Divider/>
-        <ProdHeader/>
-      <Divider/>
-      <ProductScroll name="Recommended"/>
+      <Divider />
+      <ProdHeader />
+      <Divider />
+      <ProductScroll name="Recommended" />
       {renderContactForm()}
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{display:"flex",justifyContent:"center",alignItems:"center"}}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
-        <Box sx={{display:"flex",maxHeight:"90%",maxWidth:"90%",overflow:"scroll",flexDirection:"column",backgroundColor:"white"}}>
-          <IconButton onClick={handleClose} sx={{alignSelf:"flex-end", backgroundColor: "#9c27b0", color: "white",marginY:"8px"}}><CloseIcon/></IconButton>
-          <img src={productDetail.images[image]} alt="xxx" style={{maxHeight:"80vh"}}></img>
+        <Box sx={{ display: "flex", maxHeight: "90%", maxWidth: "90%", overflow: "scroll", flexDirection: "column", backgroundColor: "white" }}>
+          <IconButton onClick={handleClose} sx={{ alignSelf: "flex-end", backgroundColor: "#9c27b0", color: "white", marginY: "8px" }}><CloseIcon /></IconButton>
+          <img src={productDetail.images[image]} alt="xxx" style={{ maxHeight: "80vh" }}></img>
         </Box>
       </Modal>
       <Footer />

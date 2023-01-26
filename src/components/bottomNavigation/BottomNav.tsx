@@ -18,8 +18,8 @@ function BottomNav() {
 
 
   const openDrawer = (showOption: drawerShowOptions) => {
-    AppState.setOpenDrawer(true);
-    AppState.setDrawerOption(showOption);
+    AppState?.setOpenDrawer(true);
+    AppState?.setDrawerOption(showOption);
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {

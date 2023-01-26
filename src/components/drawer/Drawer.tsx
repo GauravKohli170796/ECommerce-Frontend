@@ -25,8 +25,8 @@ function Drawer() {
   const dispatch = useDispatch();
 
   const openDrawer = (showOption: drawerShowOptions) => {
-    AppState.setOpenDrawer(true);
-    AppState.setDrawerOption(showOption);
+    AppState?.setOpenDrawer(true);
+    AppState?.setDrawerOption(showOption);
   };
 
   const handleRatingSort = (event: any) => {
@@ -215,19 +215,19 @@ function Drawer() {
   return (
     <SwipeableDrawer
       anchor="left"
-      open={AppState.openDrawer}
+      open={AppState?.openDrawer}
       onClose={() => {
-        AppState.setOpenDrawer(false);
+        AppState?.setOpenDrawer(false);
       }}
       onOpen={() => {
-        AppState.setOpenDrawer(true);
+        AppState?.setOpenDrawer(true);
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", width: { xs: "75vw", md: "25vw" } }}>
         <img src={logo} height="80px" style={{ margin: "30px 0px 5px 0px" }} alt="Website Logo" />
         <Divider />
-        {AppState.drawerOption === drawerShowOptions.filter && renderFliterComponent()}
-        {AppState.drawerOption === drawerShowOptions.search && renderSearchComponent()}
+        {AppState?.drawerOption === drawerShowOptions.filter && renderFliterComponent()}
+        {AppState?.drawerOption === drawerShowOptions.search && renderSearchComponent()}
       </Box>
     </SwipeableDrawer>
   );

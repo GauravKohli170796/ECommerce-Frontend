@@ -1,3 +1,5 @@
+import { SIZES } from "../constants/AppConst";
+
 export interface IProduct {
     _id?: string;
     name: string;
@@ -23,4 +25,28 @@ export interface IAllProductApiResponse{
     latestProduct: IProduct [],
     allProducts: IProduct [],
     totalProducts: IProductCount [],
+}
+
+export interface IWishListProductReq{
+    productId: string;
+}
+
+export interface IWishListProduct{
+    _id: string
+    productId: {
+        _id: string;
+        name: string;
+        description : string;
+        images: string[]
+    }
+    email: string;
+}
+
+export interface ICartProduct{
+    _id: string;
+    productId: Partial<IProduct> | string;
+    email: string;
+    quantity: number;
+    size: SIZES,
+    color: string;
 }

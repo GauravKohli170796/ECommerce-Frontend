@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { drawerShowOptions } from './constants/AppConst';
-import { IAllProductApiResponse } from './models/productModel';
+import { IAllProductApiResponse, IWishListProduct } from './models/productModel';
 const AppContext = React.createContext<any>(null);
 
 const AppContextWrapper = ({ children }: any) => {
@@ -9,6 +9,7 @@ const AppContextWrapper = ({ children }: any) => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [drawerOption, setDrawerOption] = useState<drawerShowOptions>(drawerShowOptions.default);
   const [initialProducts, setInitialProducts] = useState<IAllProductApiResponse | null>(null);
+  const [wishListItems,setWishListItems] = useState<IWishListProduct[]>([]);
 
   const contextProvider = useMemo(() => ({
     authDetails,
@@ -20,8 +21,10 @@ const AppContextWrapper = ({ children }: any) => {
     drawerOption,
     setDrawerOption,
     initialProducts,
-    setInitialProducts
-  }), [authDetails,loading,openDrawer,drawerOption,initialProducts]);
+    setInitialProducts,
+    wishListItems,
+    setWishListItems,
+  }), [authDetails,loading,openDrawer,drawerOption,initialProducts,wishListItems]);
 
   return <AppContext.Provider value={contextProvider}>
     {children}

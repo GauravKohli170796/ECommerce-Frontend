@@ -1,11 +1,9 @@
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import { Button, Divider, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import wishlistImage from "../../assets/images/wishList.png";
-import ProdHeader from '../header/ProdHeader';
-import ProductScroll from '../product/ProductScroll';
 
 
 interface IProp {
@@ -23,9 +21,6 @@ function EmptyList(prop: IProp) {
             <Button variant="contained" color="secondary" size='large' onClick={() => navigate("/product/showProducts")} startIcon={<ShoppingBagIcon />}>Continue Shopping</Button>
 
         </Box>
-        <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <ProdHeader/>
-        <ProductScroll name="Shop"/>
         </>
     )
 }

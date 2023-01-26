@@ -248,7 +248,7 @@ input:-webkit-autofill {
 }
 
 .prodImage {
-  height:650px
+  height:510px
 }
 
 @media screen and (max-width: 800px) {
@@ -258,7 +258,7 @@ input:-webkit-autofill {
   }
 @media screen and (max-width: 1300px ) and (min-width: 801px) {
     .prodImage{
-        height: 400px;
+        height: 510px;
       }
   }
 

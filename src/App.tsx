@@ -1,6 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material";
 import React, { useEffect } from "react";
-import { ReactNotifications, Store } from 'react-notifications-component';
+import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
@@ -14,41 +14,47 @@ import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
 import AllProducts from "./components/product/AllProducts";
 import ProductDetail from "./components/product/ProductDetail";
-import { axiosInstance } from "./services/axiosInstance";
+import { axiosInstance, axiosProtectedInstance } from "./services/axiosInstance";
+import { showNotificationMsg } from "./services/createNotification";
 
 function App() {
   const AppState = GetAppState();
   const navigate = useNavigate();
   axiosInstance.interceptors.request.use((config) => {
-    AppState.setLoading(true);
+    AppState?.setLoading(true);
     return config;
   }, (error) => {
     return Promise.reject(error);
   });
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    window.scrollTo(0, 0);
   }, [navigate])
 
   axiosInstance.interceptors.response.use(
     response => {
-      AppState.setLoading(false);
+      AppState?.setLoading(false);
       return response
     },
     error => {
-      AppState.setLoading(false);
-      Store.addNotification({
-        message: error.response?.data?.message || "Something went wrong.",
-        type: "danger",
-        insert: "top",
-        container: "top-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
-        dismiss: {
-          duration: 2000,
-          onScreen: true
-        }
-      });
+      AppState?.setLoading(false);
+      showNotificationMsg(error.response?.data?.message || "Something went wrong.");
+    });
+
+    axiosProtectedInstance.interceptors.request.use((config) => {
+      AppState?.setLoading(true);
+      return config;
+    }, (error) => {
+      return Promise.reject(error);
+    });  
+  axiosProtectedInstance.interceptors.response.use(
+    response => {
+      AppState?.setLoading(false);
+      return response
+    },
+    error => {
+      AppState?.setLoading(false);
+      showNotificationMsg(error.response?.data?.message || "Something went wrong.");
     });
   const theme = createTheme({
     components: {
@@ -56,17 +62,17 @@ function App() {
         styleOverrides: {
           shrink: {
             color: "#880E4F",
-            marginX:"16px"
+            marginX: "16px"
           }
         }
       },
       MuiSpeedDialAction: {
         styleOverrides: {
-        staticTooltipLabel: {
-          backgroundColor : '#9c27b0',
-          color: "white"
-        },
-      }
+          staticTooltipLabel: {
+            backgroundColor: '#9c27b0',
+            color: "white"
+          },
+        }
       },
     },
     typography: {
@@ -91,7 +97,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Drawer></Drawer>
         <ReactNotifications />
-        <Loader isVisible={AppState.loading} />
+        <Loader isVisible={AppState?.loading} />
         <Routes>
           <Route path="/product/showProducts" element={<AllProducts />} />
         </Routes>

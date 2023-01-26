@@ -119,7 +119,7 @@ function Login() {
               }}
             />
 
-            <Button disabled={!(loginForm.dirty && loginForm.isValid)} type="submit" fullWidth variant="contained" endIcon={<LoginIcon/>}>Login</Button>
+            <Button disabled={!(loginForm.dirty && loginForm.isValid)} type="submit" fullWidth variant="contained" endIcon={<LoginIcon />}>Login</Button>
 
             <Button color="secondary" fullWidth onClick={() => login()} startIcon={<GoogleIcon />} variant="contained">
               Log in with Google

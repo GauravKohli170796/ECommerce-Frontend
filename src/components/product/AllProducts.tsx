@@ -28,7 +28,7 @@ function AllProducts() {
   useEffect(() => {
     async function fetchAllProducts() {
       const { data } = await getAllProducts("1");
-      AppState.setInitialProducts(data);
+      AppState?.setInitialProducts(data);
       setProducts(data);
     }
     const initialProducts = AppState.initialProducts;

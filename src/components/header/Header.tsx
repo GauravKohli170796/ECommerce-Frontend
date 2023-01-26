@@ -36,7 +36,7 @@ function Header() {
 
   const handleLogOut = async () => {
     await localStorage.removeItem("auth");
-    AppState.setAuthDetails(null);
+    AppState?.setAuthDetails(null);
     Store.addNotification({
       message: "Successfully logged out.",
       type: "info",
@@ -55,8 +55,8 @@ function Header() {
   }
 
   const openDrawer = (showOption: drawerShowOptions) => {
-    AppState.setOpenDrawer(true);
-    AppState.setDrawerOption(showOption);
+    AppState?.setOpenDrawer(true);
+    AppState?.setDrawerOption(showOption);
   };
 
   return (

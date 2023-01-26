@@ -63,13 +63,15 @@ function SignUp() {
       name: "",
       phoneNumber: ""
     },
+
     validationSchema: Yup.object({
       email: Yup.string().email("Email must be valid email").required("Please fill Email field"),
       password: Yup.string().max(15, "Password must be less than 15 characters").min(8, "Password must be more than 8 characters long").required("Please fill Password field"),
       name: Yup.string().max(15, "Name must be less than 15 characters").required("Please fill Name field"),
-      confirmPassword: Yup.string().oneOf([Yup.ref('password')], "Passwords don't match!").required(),
+      confirmPassword: Yup.string().oneOf([Yup.ref('password')], "Passwords don't match!").required("Please fill Confirm Password"),
       phoneNumber: Yup.string().min(10, "Phone Number must be 10 digits").max(10, "Phone Number must be 10 digits").required("Please fill Phone Number field")
     }),
+
     onSubmit: async (values: ISignUpForm) => {
       const { data } = await axiosInstance.post(`api/v1/auth/Signup`, {
         email: values.email,

@@ -63,7 +63,6 @@ function AllProducts() {
   return (
     <>
       <Header />
-      <Box className="headerMargin"></Box>
       <CarouselProvider imagesArr={tmpImages} />
       <Box
         sx={{

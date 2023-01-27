@@ -115,7 +115,6 @@ function WishList() {
   return (
     <>
       <Header />
-      <Box className="headerMargin"></Box>
       {wishListProducts.length > 0 && renderWishListProducts()}
       {wishListProducts.length === 0  && renderEmptyWishList()}
       <Divider sx={{ marginY: "16px", width: "96vw" }} />

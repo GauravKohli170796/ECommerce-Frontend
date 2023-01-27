@@ -263,7 +263,6 @@ function ProductDetail() {
   return <>
     {Object.keys(productDetail).length > 1 && <>
       <Header />
-      <Box className="headerMargin"></Box>
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
         <Box sx={{ width: { sm: "95vw", md: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
           <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>

@@ -60,6 +60,7 @@ function Header() {
   }
 
   return (
+    <>
     <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "fixed", top: 0, left: 0,right:0, zIndex: 1000}}>
       <AppBar position="static" className="mixBackground">
         <Toolbar>
@@ -225,6 +226,8 @@ function Header() {
         </Toolbar>
       </AppBar>
     </Box>
+    <Box className="headerMargin"></Box>
+    </>
   );
 }
 export default Header;

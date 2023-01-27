@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IProduct } from '../../models/productModel';
@@ -38,6 +39,7 @@ function CartList() {
   return (
     <>
       <Header />
+      <Box className="headerMargin"></Box>
       {wishListProducts && renderWishListProducts()}
       {!wishListProducts && renderEmptyWishList()}
       <Footer />

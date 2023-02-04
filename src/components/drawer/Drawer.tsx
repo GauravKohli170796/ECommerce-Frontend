@@ -13,51 +13,41 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { GetAppState } from "../../AppContext";
 import logo from "../../assets/images/logo.png";
-import { drawerShowOptions } from "../../constants/AppConst";
-import { eFilterOptionsAction } from "../../redux/actions/actionConst";
+import { drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
 
 function Drawer() {
   const AppState = GetAppState();
-  const { category, price, priceSort, ratingSort } = useSelector((state: any) => state.filter);
-  const dispatch = useDispatch();
-
-  const openDrawer = (showOption: drawerShowOptions) => {
-    AppState?.setOpenDrawer(true);
-    AppState?.setDrawerOption(showOption);
-  };
 
   const handleRatingSort = (event: any) => {
     if (event.target.checked) {
-      dispatch({ type: eFilterOptionsAction.ratingSort, payload: { ratingSort: event.target.value } });
+      AppState.setFilters({ ...AppState.filters, ratingSort: event.target.value });
       return;
     }
-    dispatch({ type: eFilterOptionsAction.ratingSort, payload: { ratingSort: "" } });
+    AppState.setFilters({ ...AppState.filters, ratingSort: "" });
   };
 
   const handlePrice = (event: any): void => {
-    dispatch({ type: eFilterOptionsAction.price, payload: { price: event.target.value } });
+    AppState.setFilters({ ...AppState.filters, price: event.target.value });
   };
 
   const handlePriceSort = (event: any): void => {
     if (event.target.checked) {
-      dispatch({ type: eFilterOptionsAction.priceSort, payload: { priceSort: event.target.value } });
+      AppState.setFilters({ ...AppState.filters, priceSort: event.target.value });
       return;
     }
-    dispatch({ type: eFilterOptionsAction.priceSort, payload: { priceSort: "" } });
+    AppState.setFilters({ ...AppState.filters, priceSort: "" });
   };
 
   const handleCategory = (event: any): void => {
-    const val = event.target.value.toString();
-    const categoryValue = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+    const categoryValue = event.target.value.toString().toUpperCase();
     if (event.target.checked) {
-      dispatch({ type: eFilterOptionsAction.category, payload: { category: [...category, categoryValue] } });
+      AppState.setFilters({ ...AppState.filters, categories: [...AppState.filters.categories, categoryValue] });
       return;
     }
-    const categoryFilterVal = category.filter((categoryVal: string) => categoryVal !== categoryValue);
-    dispatch({ type: eFilterOptionsAction.category, payload: { category: categoryFilterVal } });
+    const categoryFilterVal = AppState.filters.categories((categoryVal: string) => categoryVal !== categoryValue);
+    AppState.setFilters({ ...AppState.filters, categories: categoryFilterVal });
   };
 
   const renderSearchComponent = () => {
@@ -84,20 +74,56 @@ function Drawer() {
       </Box>
     );
   };
+
+
+  const handleSliderInputs = (rangeValue:string,isLow=false) =>{
+    const value = parseInt(rangeValue);
+    if(isLow){
+       if(value > AppState.filters.price[1]){
+        return;
+       }
+      AppState.setFilters({...AppState.filters,price:[value,AppState.filters.price[1]]});
+      return;
+    };
+    if(value < AppState.filters.price[0]){
+      return;
+     }
+    AppState.setFilters({...AppState.filters,price:[AppState.filters.price[0],value]});
+  };
+
+  const renderCategoriesOptions = () => {
+    return AppState.categories.map((category: string) => {
+      return <FormControlLabel
+        onChange={(e) => {
+          handleCategory(e);
+        }}
+        control={<Checkbox />}
+        label={category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()}
+        value={category.toUpperCase()}
+        checked={AppState.filters.categories?.includes(category.toUpperCase())}
+        key={category}
+      />
+    })
+  }
   const renderFliterComponent = () => {
     return (
       <Box sx={{ width: "86%", margin: "5px 5px", display: "flex", flexDirection: "column" }}>
-          <Typography className="section-head"  sx={{fontSize:"20px"}}>
-            Filters
-          </Typography>
-        <Button variant="outlined" color="secondary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={() => { dispatch({ type: eFilterOptionsAction.reset }) }}>
-          Clear Filters
-        </Button>
+        <Typography className="section-head" sx={{ fontSize: "20px" }}>
+          Filters
+        </Typography>
+        <Stack direction="row" className="fCenter fRow">
+          <Button variant="outlined" color="secondary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={() => { AppState.setFilters(filterInitailValue) }}>
+            Clear Filters
+          </Button>
+          <Button variant="outlined" color="primary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={() => { AppState.setFilters(filterInitailValue) }}>
+            Apply Filters
+          </Button>
+        </Stack>
         <Divider sx={{ marginY: "20px" }} />
         <Typography variant="h6">Price</Typography>
         <Slider
           getAriaLabel={() => "Minimum distance shift"}
-          value={price}
+          value={AppState.filters.price}
           valueLabelDisplay="auto"
           onChange={handlePrice}
           max={8000}
@@ -105,62 +131,37 @@ function Drawer() {
         />
         <Stack direction="row" spacing={4}>
 
-           <TextField
-              color="secondary"
-              label="From"
-              variant="outlined"
-              size="small"
-            />
-           <TextField
-              color="secondary"
-              label="To"
-              variant="outlined"
-              size="small"
-            />
+          <TextField
+            color="secondary"
+            label="From"
+            variant="outlined"
+            size="small"
+            type="number"
+            value={AppState.filters.price[0]}
+            onChange={(e)=>{handleSliderInputs(e.target.value,true)}}
+            fullWidth
+            InputProps={{
+              inputProps: { 
+                  max: 100, min: 10 
+              }
+          }}
+          />
+          <TextField
+            color="secondary"
+            label="To"
+            variant="outlined"
+            size="small"
+            type="number"
+            value={AppState.filters.price[1]}
+            fullWidth
+            InputProps={{ inputProps: { min: 0, max: 8000 } }}
+            onChange={(e)=>{handleSliderInputs(e.target.value)}}
+          />
         </Stack>
         <Divider sx={{ marginY: "12px" }} />
         <Typography variant="h6">Categories</Typography>
         <FormGroup>
-          <FormControlLabel
-            onChange={(e) => {
-              handleCategory(e);
-            }}
-            control={<Checkbox />}
-            label="Shirts"
-            value="shirts"
-          />
-          <FormControlLabel
-            onChange={(e) => {
-              handleCategory(e);
-            }}
-            control={<Checkbox />}
-            label="skirts"
-            value="skirts"
-          />
-          <FormControlLabel
-            onChange={(e) => {
-              handleCategory(e);
-            }}
-            control={<Checkbox />}
-            label="Kurti"
-            value="kurti"
-          />
-          <FormControlLabel
-            onChange={(e) => {
-              handleCategory(e);
-            }}
-            control={<Checkbox />}
-            label="Plazo"
-            value="plazo"
-          />
-          <FormControlLabel
-            onChange={(e) => {
-              handleCategory(e);
-            }}
-            control={<Checkbox />}
-            label="Combo"
-            value="combo"
-          />
+          {renderCategoriesOptions()}
         </FormGroup>
         <Divider sx={{ marginY: "20px" }} />
         <Typography variant="h6">Sort Price</Typography>
@@ -171,7 +172,7 @@ function Drawer() {
             }}
             control={<Checkbox />}
             value="PriceLowToHigh"
-            checked={priceSort === "PriceLowToHigh"}
+            checked={AppState.filters.priceSort === "PriceLowToHigh"}
             label="Price low to high"
           />
           <FormControlLabel
@@ -180,7 +181,7 @@ function Drawer() {
             }}
             control={<Checkbox />}
             value="PriceHighToLow"
-            checked={priceSort === "PriceHighToLow"}
+            checked={AppState.filters.priceSort === "PriceHighToLow"}
             label="Price high to low"
           />
         </FormGroup>
@@ -193,7 +194,7 @@ function Drawer() {
             }}
             name="sortRating"
             control={<Checkbox />}
-            checked={ratingSort === "RatingLowToHigh"}
+            checked={AppState.filters.ratingSort === "RatingLowToHigh"}
             value="RatingLowToHigh"
             label="Rating low to high"
           />
@@ -203,7 +204,7 @@ function Drawer() {
             }}
             name="sortRating"
             control={<Checkbox />}
-            checked={ratingSort === "RatingHighToLow"}
+            checked={AppState.filters.ratingSort === "RatingHighToLow"}
             value="RatingHighToLow"
             label="Rating high to low"
           />

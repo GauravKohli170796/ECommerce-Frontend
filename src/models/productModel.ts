@@ -10,6 +10,9 @@ export interface IProduct {
     productDetails: any;
     quantity: number;
     category: string;
+    sizes: string[];
+    colors: string []
+
 
 }
 
@@ -44,9 +47,22 @@ export interface IWishListProduct{
 
 export interface ICartProduct{
     _id: string;
-    productId: Partial<IProduct> | string;
+    productId: {
+        _id: string;
+        name: string;
+        description : string;
+        images: string[];
+        discount: number;
+        price: number
+    }
     email: string;
     quantity: number;
     size: SIZES,
+    color: string;
+}
+export interface ICartProductReq{
+    productId: string;
+    quantity: string;
+    size: string,
     color: string;
 }

@@ -2,14 +2,18 @@ import AddIcon from '@mui/icons-material/Add';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, IconButton, ImageList, ImageListItem, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Autocomplete, Button, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormHelperText, IconButton, ImageList, ImageListItem, InputAdornment, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { ErrorMessage, FieldArray, FieldArrayRenderProps, FormikProvider, useFormik } from "formik";
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import shortid from 'shortid';
 import * as Yup from "yup";
+import { GetAppState } from '../../AppContext';
+import { colorsWithCodes } from '../../constants/AppConst';
 import { IProduct } from '../../models/productModel';
 import { axiosInstance } from '../../services/axiosInstance';
+import { showNotificationMsg } from '../../services/createNotification';
 
 const initialProductDetails: IProduct = {
   name: "",
@@ -18,8 +22,10 @@ const initialProductDetails: IProduct = {
   price: 0,
   quantity: 0,
   discount: 0,
-  productDetails: [{propKey:"",propValue:"",eleKey: shortid.generate()},{propKey:"",propValue:"",eleKey: shortid.generate()}],
-  images: []
+  productDetails: [{ propKey: "", propValue: "", eleKey: shortid.generate() }, { propKey: "", propValue: "", eleKey: shortid.generate() }],
+  images: [],
+  colors: [],
+  sizes: []
 }
 
 
@@ -27,6 +33,8 @@ const initialProductDetails: IProduct = {
 function AddProduct() {
 
   const [files, setFiles] = useState<any>([]);
+  const AppState = GetAppState();
+  const navigation = useNavigate();
 
   const addProductForm = useFormik<Partial<IProduct>>({
     enableReinitialize: true,
@@ -38,7 +46,9 @@ function AddProduct() {
       price: Yup.number().required("Please fill Price field"),
       quantity: Yup.number().required("Please fill Quantity field"),
       discount: Yup.number().required("Please fill Discount field"),
-      images: Yup.array().of(Yup.string()).min(1,"Please provide at least one image"),
+      images: Yup.array().of(Yup.string()).min(1, "Please provide at least one image"),
+      sizes: Yup.array().of(Yup.string()).min(1, "Please provide at least one size"),
+      colors: Yup.array().of(Yup.string()).min(1, "Please provide at least one color"),
       productDetails: Yup.array().of(Yup.object().shape({
         propKey: Yup.string().required("Please fill this field"),
         propValue: Yup.string().required("Please fill this field")
@@ -46,12 +56,12 @@ function AddProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const addProductBody = convertFormToAddRequest(values);
-      await axiosInstance.post(`/api/v1/product/addProduct`,{
-           ...addProductBody
+      await axiosInstance.post(`/api/v1/product/addProduct`, {
+        ...addProductBody
       });
-
+      showNotificationMsg("Product successfully added!!");
       addProductForm.resetForm();
-
+      navigation("/admin/adminController");
       
     }
   });
@@ -63,7 +73,7 @@ function AddProduct() {
     setFiles(e.target.files);
   };
 
-  const handleImageUpload = async (arrayHelpers:FieldArrayRenderProps) => {
+  const handleImageUpload = async (arrayHelpers: FieldArrayRenderProps) => {
     const formData = new FormData();
     for (const file of files)
       formData.append("images", file);
@@ -72,8 +82,8 @@ function AddProduct() {
         'content-type': 'multipart/form-data'
       }
     });
-    
-    for(const url of data){
+
+    for (const url of data) {
       arrayHelpers.push(url);
     }
   }
@@ -109,26 +119,56 @@ function AddProduct() {
             accept: "image/png, image/jpeg"
           }}
         />
-        <Button onClick={()=>handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
+        <Button onClick={() => handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
       </>
     )} />
   }
 
-  const convertFormToAddRequest = (formData:Partial<IProduct>):Partial<IProduct> =>{
-        const addRequestData = Object.assign({},formData);
-        addRequestData.productDetails={};
-        for( const ele of formData.productDetails){
-          addRequestData.productDetails[ele.propKey] = ele.propValue;
-        }
-        return addRequestData;
+  const convertFormToAddRequest = (formData: Partial<IProduct>): Partial<IProduct> => {
+    const addRequestData = Object.assign({}, formData);
+    addRequestData.productDetails = {};
+    for (const ele of formData.productDetails) {
+      addRequestData.productDetails[ele.propKey] = ele.propValue;
+    }
+    return addRequestData;
   }
+
+  const renderSizesOptions = () => {
+    const sizeArr = ["xs", "s", "m", "l", "xl", "xxl", "free Size"];
+    return <Box className="fRow fLeft fWrap fullWidth mx-2">
+      <FieldArray name="sizes" render={arrayHelpers => (
+        <>
+          {sizeArr.map((size: string) => {
+            return <FormControlLabel
+              onChange={(e: any) => {
+                if (e.target.checked) {
+                  arrayHelpers.push(e.target.value);
+                  return;
+                }
+                const index = addProductForm.values.sizes?.indexOf(e.target.value) || -1;
+                arrayHelpers.remove(index);
+              }}
+              onBlur={addProductForm.handleBlur}
+              control={<Checkbox color='secondary'/>}
+              label={size.toLowerCase()}
+              value={size.toLowerCase()}
+              
+              key={size}
+            />
+          })}
+          {addProductForm.errors.sizes && <Typography component="div" className='errorMsg' sx={{width:"100%",fontSize:"14px"}}>{addProductForm.errors.sizes}</Typography>}
+        </>
+      )}
+      />
+    </Box>
+  };
 
   const renderProductProperties = () => {
 
     return <FieldArray name="productDetails" render={arrayHelpers => (<>
       {Array.isArray(addProductForm.values.productDetails) && addProductForm.values.productDetails.map((item, index) => (
         <TableRow key={item.eleKey}>
-          <TableCell sx={{minWidth:"120px"}}>
+          <TableCell sx={{ minWidth: "120px" }}>
             <TextField
               color="secondary"
               hiddenLabel
@@ -142,7 +182,7 @@ function AddProduct() {
             />
             <ErrorMessage name={`productDetails.${index}.propKey`} component="div" className="errorMsg" />
           </TableCell>
-          <TableCell sx={{minWidth:"120px"}}>
+          <TableCell sx={{ minWidth: "120px" }}>
             <TextField
               color="secondary"
               hiddenLabel
@@ -173,6 +213,20 @@ function AddProduct() {
     />
   };
 
+  const renderCategoryOptions = () => {
+    return AppState.categories.map((category: string) => {
+      return <MenuItem key={category} value={category.toUpperCase()}>{category.toUpperCase()}</MenuItem>
+    });
+  }
+
+  const handleColorValues = (arrayHelper: FieldArrayRenderProps, values: string[]) => {
+    if (values.length > 0) {
+      arrayHelper.push(values[values.length - 1]);
+      return;
+    }
+    addProductForm.values.colors = [];
+  }
+
   const renderAddProduct = () => {
     return <form style={{ width: "100%" }} onSubmit={addProductForm.handleSubmit}>
       <Box className="fRight fCol">
@@ -200,18 +254,26 @@ function AddProduct() {
           error={(addProductForm.touched.description && addProductForm.errors.description && true) || false}
           value={addProductForm.values.description}
         />
-        <TextField
-          color="secondary"
-          label="Category"
-          fullWidth
-          size="small"
-          name="category"
-          onChange={addProductForm.handleChange}
-          onBlur={addProductForm.handleBlur}
-          helperText={addProductForm.errors.category}
-          error={(addProductForm.touched.category && addProductForm.errors.category && true) || false}
-          value={addProductForm.values.category}
-        />
+
+        <FormControl fullWidth>
+          <InputLabel size='small' color="secondary">Category</InputLabel>
+          <Select
+            size="small"
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={addProductForm.values.category}
+            label="Category"
+            color="secondary"
+            name="category"
+            onChange={addProductForm.handleChange}
+            onBlur={addProductForm.handleBlur}
+            error={(addProductForm.touched.category && addProductForm.errors.category && true) || false}
+          >
+            {renderCategoryOptions()}
+          </Select>
+          <FormHelperText sx={{ color: "#d32f2f" }}>{addProductForm.errors.category}</FormHelperText>
+        </FormControl>
+
         <TextField
           color="secondary"
           label="Price"
@@ -232,6 +294,7 @@ function AddProduct() {
             ),
           }}
         />
+
         <TextField
           color="secondary"
           label="Quantity"
@@ -261,6 +324,45 @@ function AddProduct() {
         />
 
         <FormikProvider value={addProductForm}>
+          <FieldArray name="colors" render={arrayHelpers => (
+            <Autocomplete
+              multiple
+              fullWidth
+              id="tags-outlined"
+              options={Object.keys(colorsWithCodes)}
+              onChange={(_e, value: string[]) => { handleColorValues(arrayHelpers, value) }}
+              onBlur={addProductForm.handleBlur}
+              getOptionLabel={(option) => option}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  color="secondary"
+                  label="Select Colors"
+                  placeholder="Select Colors"
+                  error={(addProductForm.touched.colors && addProductForm.errors.colors && true) || false}
+                  helperText={addProductForm.errors.colors}
+                  name="colors"
+                  onChange={(e) => { console.log("FGHJHGFGHJK") }}
+                />
+              )}
+              renderTags={(tagValue) => {
+                return tagValue.map((option, index) => (
+                  <Chip
+                    label={option}
+                    key={option}
+                    sx={{ backgroundColor: colorsWithCodes[option], color: option === "Black" ? "white" : "black" }}
+                  />
+                ))
+              }}
+            />)}
+          />
+
+
+          <Box sx={{ border: ".2px solid lightgrey", width: "99.5%" }}>
+            <Typography sx={{ fontSize: "15px", alignSelf: "flex-start", margin: "8px", color: "#9c27b0" }} variant="body1">Select Available Sizes</Typography>
+            {renderSizesOptions()}
+          </Box>
           <Accordion sx={{ width: "90%", alignSelf: "center" }} className='my-1 mx-4'>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}

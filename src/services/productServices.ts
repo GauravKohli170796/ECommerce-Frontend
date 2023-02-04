@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { AppConst } from "../constants/AppConst";
 import { IDeleteApiResponse } from "../models/commanModel";
-import { IAllProductApiResponse, IProduct, IWishListProduct, IWishListProductReq } from "../models/productModel";
+import { IAllProductApiResponse, ICartProduct, ICartProductReq, IProduct, IWishListProduct, IWishListProductReq } from "../models/productModel";
 import { axiosInstance, axiosProtectedInstance } from "./axiosInstance";
 
 export const getAllProducts = async(page:string) : Promise<AxiosResponse<IAllProductApiResponse>> => {
@@ -12,8 +12,22 @@ export const getProductById = async (id: string) : Promise<AxiosResponse<IProduc
    return await axiosInstance.get(`api/v1/product/${id}`); 
 };
 
-export const getCartItems = async () : Promise<AxiosResponse<IProduct[]>>=> {
+export const getAllCategories = async () : Promise<AxiosResponse<string []>>=> {
+   return await axiosInstance.get(`api/v1/product/getAllCategories`); 
+};
+
+export const addCategory = async (category: string) : Promise<AxiosResponse<unknown>>=> {
+   return await axiosInstance.put(`api/v1/product/addNewCategories`,{category : category}); 
+};
+
+export const getCartItems = async () : Promise<AxiosResponse<ICartProduct[]>>=> {
    return await axiosProtectedInstance.get(`api/v1/user/getCartItems`); 
+};
+export const addCartItems = async (cartItem: ICartProductReq) : Promise<AxiosResponse<ICartProduct>>=> {
+   return await axiosProtectedInstance.post(`api/v1/user/addCartItem`,cartItem); 
+};
+export const deleteCartItem = async (productId: string) : Promise<AxiosResponse<IDeleteApiResponse>>=> {
+   return await axiosProtectedInstance.delete(`api/v1/user/deleteCartItem/${productId}`); 
 };
 
 export const addWishListItem = async(wishListProduct:IWishListProductReq): Promise<AxiosResponse<IWishListProduct>>=>{

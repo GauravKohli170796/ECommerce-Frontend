@@ -1,6 +1,8 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { drawerShowOptions } from './constants/AppConst';
-import { IAllProductApiResponse, IWishListProduct } from './models/productModel';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { drawerShowOptions, filterInitailValue } from './constants/AppConst';
+import { IFilters } from './models/commanModel';
+import { IAllProductApiResponse } from './models/productModel';
+import { getAllCategories } from './services/productServices';
 const AppContext = React.createContext<any>(null);
 
 const AppContextWrapper = ({ children }: any) => {
@@ -9,7 +11,17 @@ const AppContextWrapper = ({ children }: any) => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [drawerOption, setDrawerOption] = useState<drawerShowOptions>(drawerShowOptions.default);
   const [initialProducts, setInitialProducts] = useState<IAllProductApiResponse | null>(null);
-  const [wishListItems,setWishListItems] = useState<IWishListProduct[]>([]);
+  const [categories,setCategories] = useState<string[]>([]);
+  const [filters,setFilters] = useState<IFilters>(filterInitailValue);
+
+  useEffect(()=>{
+     fetchCategories();
+
+     async function fetchCategories(){
+      const {data} = await getAllCategories();
+      setCategories(data);
+     }
+  },[])
 
   const contextProvider = useMemo(() => ({
     authDetails,
@@ -22,9 +34,11 @@ const AppContextWrapper = ({ children }: any) => {
     setDrawerOption,
     initialProducts,
     setInitialProducts,
-    wishListItems,
-    setWishListItems,
-  }), [authDetails,loading,openDrawer,drawerOption,initialProducts,wishListItems]);
+    categories,
+    setCategories,
+    filters,
+    setFilters
+  }), [authDetails,loading,openDrawer,drawerOption,initialProducts,categories,filters]);
 
   return <AppContext.Provider value={contextProvider}>
     {children}

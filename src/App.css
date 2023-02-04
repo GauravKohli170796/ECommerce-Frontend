@@ -25,10 +25,11 @@
 .App{
   max-width: 100vw;
   overflow-x: clip;
+  min-width: 390px;
 }
 
 body{
-  min-width: 350px;
+  min-width: 390px;
   max-width: 100vw;
   overflow-y: scroll;
 }
@@ -186,6 +187,12 @@ body{
 .fLeft{
   justify-content: flex-start;
   align-items: flex-start;
+}
+.fWrap{
+  flex-wrap: wrap;
+}
+.fullWidth{
+  width: 100%;
 }
 .fRight{
   justify-content:flex-end;

@@ -10,10 +10,10 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
-import { GetAppState } from '../../AppContext';
-import { IProduct } from '../../models/productModel';
+import { colorsWithCodes, notificationType } from '../../constants/AppConst';
+import { ICartProductReq } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
-import { addWishListItem, getProductById, getWishListItems } from "../../services/productServices";
+import { addCartItems, addWishListItem, getCartItems, getProductById, getWishListItems } from "../../services/productServices";
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -24,6 +24,14 @@ interface IContactForm {
   message: string
 }
 
+const initialCartDetails: ICartProductReq = {
+  productId: "",
+  size: "",
+  color: "",
+  quantity: "1"
+}
+
+
 function ProductDetail() {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState<any | {}>({});
@@ -32,21 +40,24 @@ function ProductDetail() {
   const [borderIndex, setBorderIndex] = React.useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const AppState = GetAppState();
   const priceWithoutDiscount: number = (productDetail?.price / (1 - (productDetail?.discount / 100))) || productDetail?.price;
   const [isAlreadyWishlisted, setIsAlreadyWishListed] = useState<boolean>(false);
+  const [isAlreadyCartItem, setIsAlreadyCartItem] = useState<boolean>(false);
+  const [cartItemDetails, setCartItemDetails] = useState<ICartProductReq>(initialCartDetails);
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsAlreadyWishListed(false);
     fetchProductDetail();
+    fetchWishListProducts();
+    fetchCartProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleAddtoWishlist = async () => {
     const authDetails = localStorage.getItem("auth");
     if (!authDetails) {
-      showNotificationMsg("Please login to use Wishlist.");
+      showNotificationMsg("Please login to use Wishlist.", notificationType.WARNING);
       return;
     };
     if (!id) {
@@ -55,41 +66,80 @@ function ProductDetail() {
     const wishListProduct = {
       productId: id
     };
-    const { data } = await addWishListItem(wishListProduct);
-    AppState?.setWishListItems([...AppState.wishListItems, data]);
-    showNotificationMsg("Product added to Wish List");
-    setIsAlreadyWishListed(true);
+    const res = await addWishListItem(wishListProduct);
+    if (res) {
+      showNotificationMsg("Product added to Wish List");
+      setIsAlreadyWishListed(true);
+    }
+  };
+
+  const handleAddtoCart = async () => {
+    if (!(cartItemDetails.color && cartItemDetails.size)) {
+      showNotificationMsg("Please select size and color first", notificationType.DANGER);
+      return;
+    }
+    const authDetails = localStorage.getItem("auth");
+    if (!authDetails) {
+      showNotificationMsg("Please login to use Cart.", notificationType.WARNING);
+      return;
+    };
+    if (!id) {
+      return;
+    }
+    const cartProduct: ICartProductReq = {
+      productId: id,
+      quantity: cartItemDetails.quantity,
+      color: cartItemDetails.color,
+      size: cartItemDetails.size
+    };
+    const res = await addCartItems(cartProduct);
+    if (res) {
+      showNotificationMsg("Product added to Cart!!");
+      setIsAlreadyCartItem(true);
+    }
+  }
+
+  const fetchWishListProducts = async () => {
+    const authDetails = localStorage.getItem("auth");
+    if (!authDetails) {
+      return;
+    }
+    const response = await getWishListItems();
+    for (const item of response.data) {
+      if (item.productId._id === id) {
+        setIsAlreadyWishListed(true);
+      }
+    }
+  }
+
+  const fetchCartProducts = async () => {
+    const authDetails = localStorage.getItem("auth");
+    if (!authDetails) {
+      return;
+    }
+    const response = await getCartItems();
+    for (const item of response.data) {
+      if (item.productId._id === id) {
+        setIsAlreadyCartItem(true);
+      }
+    }
   }
 
   const fetchProductDetail = async () => {
-    try {
-      if (!id) {
-        return;
-      }
-      setProductDetail({});
-      const { data } = await getProductById(id);
-      setProductDetail(data);
-      const authDetails = localStorage.getItem("auth");
-      if (!authDetails) {
-        return;
-      }
-      const response = await getWishListItems();
-      for (const item of response.data) {
-        if (((item.productId) as Partial<IProduct>)?._id === id) {
-          setIsAlreadyWishListed(true);
-        }
-      }
-      const ele = document.getElementById("imageContainer");
-      setTimeout(() => {
-        (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = ele?.scrollWidth || 0;
-      }, 1000);
-      setTimeout(() => {
-        (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = 0;
-      }, 3000);
-
-    } catch (err) {
-      console.error(err);
+    if (!id) {
+      return;
     }
+    setProductDetail({});
+    const { data } = await getProductById(id);
+    data.productDetails = { productId: id, ...data.productDetails };
+    setProductDetail(data);
+    const ele = document.getElementById("imageContainer");
+    setTimeout(() => {
+      (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = ele?.scrollWidth || 0;
+    }, 1000);
+    setTimeout(() => {
+      (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = 0;
+    }, 3000);
   };
 
   const contactForm = useFormik<IContactForm>({
@@ -135,7 +185,7 @@ function ProductDetail() {
         <Typography color="primary" sx={{ fontSize: "15px", marginLeft: "10px", marginX: "4px" }}>{`Click on Image to zoom it.`}</Typography>
         <Box sx={{ overflowX: "scroll", display: "flex", margin: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {
-            return <img src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover",border:borderIndex===index? "2px solid purple":"none" }}></img>
+            return <img src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover", border: borderIndex === index ? "2px solid purple" : "none" }}></img>
           })}
         </Box>
       </>
@@ -151,10 +201,6 @@ function ProductDetail() {
     })
   }
 
-  const handleSizeClick = () => {
-    console.log("size clicked");
-  }
-
   const renderQuantitySelector = () => {
     return <FormControl sx={{ width: "50%" }}>
       <InputLabel id="demo-simple-select-label">Quantity</InputLabel>
@@ -162,15 +208,16 @@ function ProductDetail() {
         className='leftText'
         labelId="demo-simple-select-label"
         id="demo-simple-select"
-        // value={age}
+        value={cartItemDetails.quantity}
         label="Quantity"
-      // onChange={handleChange}
+        onChange={(e) => { setCartItemDetails({ ...cartItemDetails, quantity: e.target.value }) }}
       >
-        <MenuItem value={1}>1</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={4}>4</MenuItem>
-        <MenuItem value={5}>5</MenuItem>
+        {[1, 2, 3, 4, 5].map((quantity: number) => {
+          return <MenuItem
+            value={quantity.toString()}
+            key={quantity}
+          >{quantity}</MenuItem>
+        })}
       </Select>
     </FormControl>
   }
@@ -251,12 +298,36 @@ function ProductDetail() {
 
   const renderSizes = () => {
     return <>
-      <Chip label="XS" variant="outlined" onClick={handleSizeClick} />
-      <Chip label="S" variant="outlined" onClick={handleSizeClick} />
-      <Chip label="M" variant="outlined" onClick={handleSizeClick} />
-      <Chip label="L" variant="outlined" onClick={handleSizeClick} />
-      <Chip label="XL" variant="outlined" onClick={handleSizeClick} />
-      <Chip label="XXL" variant="outlined" onClick={handleSizeClick} />
+      {["xs", "s", "m", "l", "xl", "xxl", "free Size"].map((size: string) => {
+        if (productDetail.sizes.includes(size)) {
+          return <Chip label={size}
+            key={size}
+            variant="outlined"
+            sx={{
+              backgroundColor: cartItemDetails.size === size ? "#ba68c8" : "",
+              color: cartItemDetails.size === size ? "white" : ""
+            }}
+            onClick={() => { setCartItemDetails({ ...cartItemDetails, size: size }) }} />
+        }
+        return null;
+
+      })}
+    </>
+  }
+
+  const renderColors = () => {
+    return <>
+      {productDetail.colors.map((color: string) => {
+        return <Chip key={color} variant="outlined"
+          sx={{
+            backgroundColor: colorsWithCodes[color],
+            border: cartItemDetails.color === color ? "2px solid #ba68c8" : "",
+            padding: cartItemDetails.color === color ? "5px" : ""
+          }}
+          onClick={() => { setCartItemDetails({ ...cartItemDetails, color: color }) }}
+        />
+      })
+      }
     </>
   }
 
@@ -264,18 +335,12 @@ function ProductDetail() {
     {Object.keys(productDetail).length > 1 && <>
       <Header />
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
-        <Box sx={{ width: { sm: "95vw", md: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
-          <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>
-            {renderProductImages()}
-            <Stack direction="row" spacing={2}>
-              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Wishlist</Button>}
-              {isAlreadyWishlisted && <Button color="secondary" onClick={() => { navigate("/user/wishlist") }} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Go to Wishlist</Button>}
-              <Button variant="contained" fullWidth endIcon={<ShoppingCartIcon />}>Add to Cart</Button>
-            </Stack>
-          </Stack>
+        <Box sx={{ width: { sm: "95vw", lg: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
+          {renderProductImages()}
+          <Divider />
         </Box>
         <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
-        <Box sx={{ width: { xs: "95vw", md: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px" }}>
+        <Box sx={{ width: { xs: "95vw", lg: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px", borderLeft: ".1px solid lightgrey", paddingLeft: "8px" }}>
           <Stack spacing={2}>
             <Typography fontSize={24} className="leftText" variant="h3">{productDetail.name}</Typography>
             <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
@@ -296,13 +361,27 @@ function ProductDetail() {
               </Table>
             </TableContainer>
             <Divider />
-            <Typography fontSize={20} className="leftText" variant="caption">Sizes</Typography>
-            <Stack direction="row" spacing={2}>
-              {renderSizes()}
+            <Typography fontSize={20} className="leftText" variant="caption">Select Colors</Typography>
+            {<Typography fontSize={12}>{`Selected Color : ${cartItemDetails.color || "none"}`}</Typography>}
+            <Stack direction="row" spacing={4}>
+              {renderColors()}
             </Stack>
             <Divider />
             <Typography fontSize={20} className="leftText" variant="caption">Select Quantity</Typography>
             {renderQuantitySelector()}
+            <Divider />
+            <Typography fontSize={20} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Select Size</Typography>
+            <Stack direction="row" className='my-2' spacing={2}>
+              {renderSizes()}
+            </Stack>
+            <Divider />
+            <Stack direction="row" spacing={2}>
+              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Wishlist</Button>}
+              {isAlreadyWishlisted && <Button color="secondary" onClick={() => { navigate("/user/wishlist") }} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Go to Wishlist</Button>}
+
+              {!isAlreadyCartItem && <Button color="secondary" onClick={handleAddtoCart} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Add to Cart</Button>}
+              {isAlreadyCartItem && <Button color="secondary" onClick={() => { navigate("/user/shoppingCart") }} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Go to Cart</Button>}
+            </Stack>
           </Stack>
         </Box>
       </Box>

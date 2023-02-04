@@ -4,6 +4,7 @@ import { Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton,
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { notificationType } from '../../constants/AppConst';
 import { IWishListProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
 import { deleteWishListItems, getWishListItems } from '../../services/productServices';
@@ -21,7 +22,7 @@ function WishList() {
     const { data } = await deleteWishListItems(productId);
     if (data.deletedCount === 1) {
       showNotificationMsg('Product removed from Wish list');
-      const tmpWishListProducts:IWishListProduct[] = wishListProducts?.filter(item=> item.productId._id !==productId);
+      const tmpWishListProducts:IWishListProduct[] = wishListProducts?.filter(item=> item._id !==productId);
       setWishListProducts(tmpWishListProducts);
     }
 
@@ -34,6 +35,7 @@ function WishList() {
   useEffect(() => {
     const tokenDetails = localStorage.getItem("auth");
     if (!tokenDetails) {
+      showNotificationMsg("You need to login first",notificationType.WARNING);
       navigate("/auth/login");
       return;
     };
@@ -93,12 +95,12 @@ function WishList() {
               </CardContent>
 
               <CardActions sx={{ float: "right", display: { xs: "none", sm: "block" } }}>
-                <Button variant='contained' color="secondary" onClick={() => { removeItemFromWishList(item.productId._id) }} endIcon={<DeleteIcon />}>Remove</Button>
+                <Button variant='contained' color="secondary" onClick={() => { removeItemFromWishList(item._id) }} endIcon={<DeleteIcon />}>Remove</Button>
                 <Button variant='contained' color="secondary" onClick={() => { openWishListProd(item.productId._id) }} endIcon={<VisibilityIcon />}>Open</Button>
               </CardActions>
 
               <CardActions sx={{ float: "right", display: { xs: "block", sm: "none" } }}>
-                <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { removeItemFromWishList(item.productId._id) }}>
+                <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { removeItemFromWishList(item._id) }}>
                   <DeleteIcon />
                 </IconButton>
                 <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { openWishListProd(item.productId._id) }}>

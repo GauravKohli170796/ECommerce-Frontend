@@ -2,14 +2,16 @@ import AddIcon from '@mui/icons-material/Add';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, IconButton, ImageList, ImageListItem, InputAdornment, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, Divider, FormControl, FormControlLabel, IconButton, ImageList, ImageListItem, InputAdornment, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { ErrorMessage, FieldArray, FieldArrayRenderProps, FormikProvider, useFormik } from "formik";
 import React, { useState } from 'react';
 import shortid from 'shortid';
 import * as Yup from "yup";
+import { GetAppState } from '../../AppContext';
 import { IProduct, ISearchProduct } from '../../models/productModel';
 import { axiosInstance } from '../../services/axiosInstance';
+import { showNotificationMsg } from '../../services/createNotification';
 import { getProductById } from '../../services/productServices';
 
 const initialProductDetails: IProduct = {
@@ -20,12 +22,15 @@ const initialProductDetails: IProduct = {
   quantity: 0,
   discount: 0,
   productDetails: [],
-  images: []
+  images: [],
+  colors:[],
+  sizes:[]
 }
 
 
 
 function UpdateProduct() {
+  const AppState = GetAppState();
   const [productDetails, setProductDetails] = useState<Partial<IProduct>>(initialProductDetails);
   const [files, setFiles] = useState<any>([]);
   const updateProductForm = useFormik<Partial<IProduct>>({
@@ -37,6 +42,7 @@ function UpdateProduct() {
       category: Yup.string().required("Please fill Category field"),
       price: Yup.number().required("Please fill Price field"),
       quantity: Yup.number().required("Please fill Quantity field"),
+      sizes: Yup.array().of(Yup.string()).min(1, "Please provide at least one size"),
       discount: Yup.number().required("Please fill Discount field"),
       images: Yup.array().of(Yup.string()),
       productDetails: Yup.array().of(Yup.object().shape({
@@ -46,10 +52,10 @@ function UpdateProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const updateProductBody = convertFormToUpdateRequest(values);
-      await axiosInstance.put(`/api/v1/product/updateProduct/${searchProductForm.values.productId}`,{
-           ...updateProductBody
+      await axiosInstance.put(`/api/v1/product/updateProduct/${searchProductForm.values.productId}`, {
+        ...updateProductBody
       });
-
+      showNotificationMsg("Product successfully updated!!");
       setProductDetails(initialProductDetails);
     }
   });
@@ -61,7 +67,7 @@ function UpdateProduct() {
     setFiles(e.target.files);
   };
 
-  const handleImageUpload = async (arrayHelpers:FieldArrayRenderProps) => {
+  const handleImageUpload = async (arrayHelpers: FieldArrayRenderProps) => {
     const formData = new FormData();
     for (const file of files)
       formData.append("images", file);
@@ -70,8 +76,8 @@ function UpdateProduct() {
         'content-type': 'multipart/form-data'
       }
     });
-    
-    for(const url of data){
+
+    for (const url of data) {
       arrayHelpers.push(url);
     }
   }
@@ -107,7 +113,7 @@ function UpdateProduct() {
             accept: "image/png, image/jpeg"
           }}
         />
-        <Button onClick={()=>handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
+        <Button onClick={() => handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
       </>
     )} />
   }
@@ -137,13 +143,48 @@ function UpdateProduct() {
     return renderFormData;
   };
 
-  const convertFormToUpdateRequest = (formData:Partial<IProduct>):Partial<IProduct> =>{
-        const updateRequestData = Object.assign({},formData);
-        updateRequestData.productDetails={};
-        for( const ele of formData.productDetails){
-          updateRequestData.productDetails[ele.propKey] = ele.propValue;
-        }
-        return updateRequestData;
+  const convertFormToUpdateRequest = (formData: Partial<IProduct>): Partial<IProduct> => {
+    const updateRequestData = Object.assign({}, formData);
+    updateRequestData.productDetails = {};
+    for (const ele of formData.productDetails) {
+      updateRequestData.productDetails[ele.propKey] = ele.propValue;
+    }
+    return updateRequestData;
+  }
+
+  const renderSizesOptions = () => {
+    const sizeArr = ["xs", "s", "m", "l", "xl", "xxl", "free size"];
+    return <Box className="fRow fLeft fWrap fullWidth mx-2">
+      <FieldArray name="sizes" render={arrayHelpers => (
+        <>
+          {sizeArr.map((size: string) => {
+            return <FormControlLabel
+              onChange={(e: any) => {
+                console.log(e.target.checked);
+                if (e.target.checked) {
+                  arrayHelpers.push(e.target.value);
+                  return;
+                }
+                const index = updateProductForm.values.sizes?.indexOf(e.target.value) || -1;
+                arrayHelpers.remove(index);
+              }}
+              control={<Checkbox color='secondary' defaultChecked={productDetails.sizes?.includes(size)} />}
+              label={size.toLowerCase()}
+              value={size.toLowerCase()}
+              key={size}
+            />
+          })}
+        </>
+      )}
+      />
+    </Box>
+  };
+
+
+  const renderCategoryOptions = () => {
+    return AppState.categories.map((category: string) => {
+      return <MenuItem selected={productDetails.category?.toUpperCase()===category.toUpperCase()} key={category} value={category.toUpperCase()}>{category.toUpperCase()}</MenuItem>
+    });
   }
 
   const renderSearchProduct = () => {
@@ -171,7 +212,7 @@ function UpdateProduct() {
     return <FieldArray name="productDetails" render={arrayHelpers => (<>
       {Array.isArray(updateProductForm.values.productDetails) && updateProductForm.values.productDetails.map((item, index) => (
         <TableRow key={item.eleKey}>
-          <TableCell sx={{minWidth:"120px"}}>
+          <TableCell sx={{ minWidth: "120px" }}>
             <TextField
               color="secondary"
               hiddenLabel
@@ -184,7 +225,7 @@ function UpdateProduct() {
             />
             <ErrorMessage name={`productDetails.${index}.propKey`} component="div" className="errorMsg" />
           </TableCell>
-          <TableCell sx={{minWidth:"120px"}}>
+          <TableCell sx={{ minWidth: "120px" }}>
             <TextField
               color="secondary"
               hiddenLabel
@@ -241,18 +282,24 @@ function UpdateProduct() {
           error={(updateProductForm.touched.description && updateProductForm.errors.description && true) || false}
           value={updateProductForm.values.description}
         />
-        <TextField
-          color="secondary"
-          label="Category"
-          fullWidth
-          size="small"
-          name="category"
-          onChange={updateProductForm.handleChange}
-          onBlur={updateProductForm.handleBlur}
-          helperText={updateProductForm.errors.category}
-          error={(updateProductForm.touched.category && updateProductForm.errors.category && true) || false}
-          value={updateProductForm.values.category}
-        />
+
+        <FormControl fullWidth>
+          <InputLabel size='small'>Category</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            size='small'
+            value={updateProductForm.values.category}
+            name="category"
+            onBlur={updateProductForm.handleBlur}
+            error={(updateProductForm.touched.category && updateProductForm.errors.category && true) || false}
+            label="Category"
+            onChange={updateProductForm.handleChange}
+          >
+            {renderCategoryOptions()}
+          </Select>
+        </FormControl>
+        
         <TextField
           color="secondary"
           label="Price"
@@ -302,6 +349,10 @@ function UpdateProduct() {
         />
 
         <FormikProvider value={updateProductForm}>
+        <Box sx={{ border: ".2px solid lightgrey", width: "99.5%" }}>
+            <Typography sx={{fontSize:"15px", alignSelf: "flex-start", margin: "8px", color: "#9c27b0" }} variant="body1">Update Available Sizes</Typography>
+            {renderSizesOptions()}
+          </Box>
           <Accordion sx={{ width: "90%", alignSelf: "center" }} className='my-1 mx-4'>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}

@@ -181,8 +181,8 @@ function ProductDetail() {
             return <img className='prodImage' onClick={() => { handleImageClick(index) }} id={`image${index}`} src={imgx} alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
           })}
         </Box>
-        <Typography color="secondary" sx={{ fontSize: "15px", marginLeft: "20px"}}>{`Swipe left of yours to see all Images ----->`}</Typography>
-        <Typography color="primary" sx={{ fontSize: "15px", marginLeft: "20px"}}>{`Click on Image to zoom it.`}</Typography>
+        <Typography color="secondary" sx={{ fontSize: "15px", marginLeft: "10px" }}>{`Swipe left of yours to see all Images ----->`}</Typography>
+        <Typography color="primary" sx={{ fontSize: "15px", marginLeft: "10px" }}>{`Click on Image to zoom it.`}</Typography>
         <Box sx={{ overflowX: "scroll", display: "flex", margin: "16px" }}>
           {productDetail.images.map((imgx: string, index: number) => {
             return <img src={imgx} height="50" width="100" onClick={() => handleImageScroll(index)} alt="xxx" key={imgx} style={{ marginRight: "20px", objectFit: "cover", border: borderIndex === index ? "2px solid purple" : "none" }}></img>
@@ -336,7 +336,9 @@ function ProductDetail() {
       <Header />
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
         <Box sx={{ width: { sm: "95vw", lg: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
-          {renderProductImages()}
+          <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>
+            {renderProductImages()}
+          </Stack>
           <Divider />
         </Box>
         <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>

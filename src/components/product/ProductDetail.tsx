@@ -320,6 +320,7 @@ function ProductDetail() {
             key={size}
             variant="outlined"
             sx={{
+             "&:hover":{backgroundColor: cartItemDetails.size === size ? "#ba68c8" : ""},
               backgroundColor: cartItemDetails.size === size ? "#ba68c8" : "",
               color: cartItemDetails.size === size ? "white" : "",
               padding: "4px",
@@ -338,15 +339,15 @@ function ProductDetail() {
   const renderColors = () => {
     return <>
       {productDetail.colors.map((color: string) => {
-        return <Button disableRipple size="small" key={color} variant="outlined"
+        return <Button disableRipple  key={color} variant="outlined"
           sx={{
             backgroundColor: colorsWithCodes[color],
+            "&:hover":{backgroundColor: colorsWithCodes[color]},
             height: "30px",
             width: "30px",
-            minHeight: "30px",
-            minWidth: "30px",
+            minHeight: cartItemDetails.color === color ? "33px" : "30px",
+            minWidth: cartItemDetails.color === color ? "32px" : "30px",
             border: cartItemDetails.color === color ? "2px solid #ba68c8" : "",
-            padding: cartItemDetails.color === color ? "5px" : ""
           }}
           onClick={() => { setCartItemDetails({ ...cartItemDetails, color: color }) }}
         />

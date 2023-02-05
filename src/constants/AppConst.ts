@@ -1,5 +1,5 @@
 export const AppConst = Object.freeze({
-   BackendURL: "https://kirans-sehgal-online-shop.onrender.com/",
+   BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
    productsPerPage:10
 });
 

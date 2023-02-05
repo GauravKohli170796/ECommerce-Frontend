@@ -1,5 +1,4 @@
 import { GetAppState } from '../AppContext';
-import { showNotificationMsg } from '../services/createNotification';
 import { getCartItems, getWishListItems } from '../services/productServices';
 
 function useCartWishListFetch() {
@@ -11,7 +10,6 @@ function useCartWishListFetch() {
 
          const token = localStorage.getItem("auth");
          if(!token){
-            showNotificationMsg("*********************************");
             return;
          }
         if (!AppState.wishList) {

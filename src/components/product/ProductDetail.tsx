@@ -4,7 +4,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MessageIcon from '@mui/icons-material/Message';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Button, Chip, Divider, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Paper, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Divider, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Paper, Rating, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
@@ -201,6 +201,21 @@ function ProductDetail() {
     })
   }
 
+  const renderRatingComponent = () => {
+    return <>
+      {[1, 2, 3, 4, 5].map((rating: number) => (
+        <Stack key={rating} direction="row" spacing={4}>
+          <Rating
+            name="text-feedback"
+            value={rating}
+            readOnly
+            precision={0.5}
+          />
+          <Box sx={{ ml: 2 }}>(0)</Box>
+        </Stack>))}
+    </>
+  };
+
   const renderQuantitySelector = () => {
     return <FormControl sx={{ width: "50%" }}>
       <InputLabel id="demo-simple-select-label">Quantity</InputLabel>
@@ -300,14 +315,19 @@ function ProductDetail() {
     return <>
       {["xs", "s", "m", "l", "xl", "xxl", "free Size"].map((size: string) => {
         if (productDetail.sizes.includes(size)) {
-          return <Chip label={size}
+          return <Button disableFocusRipple disableRipple size="small"
+
             key={size}
             variant="outlined"
             sx={{
               backgroundColor: cartItemDetails.size === size ? "#ba68c8" : "",
-              color: cartItemDetails.size === size ? "white" : ""
+              color: cartItemDetails.size === size ? "white" : "",
+              padding: "4px",
+              height: "30px",
+              width: "30px",
+              minWidth: "fit-content",
             }}
-            onClick={() => { setCartItemDetails({ ...cartItemDetails, size: size }) }} />
+            onClick={() => { setCartItemDetails({ ...cartItemDetails, size: size }) }} >{size}</Button>
         }
         return null;
 
@@ -318,9 +338,13 @@ function ProductDetail() {
   const renderColors = () => {
     return <>
       {productDetail.colors.map((color: string) => {
-        return <Chip key={color} variant="outlined"
+        return <Button disableRipple size="small" key={color} variant="outlined"
           sx={{
             backgroundColor: colorsWithCodes[color],
+            height: "30px",
+            width: "30px",
+            minHeight: "30px",
+            minWidth: "30px",
             border: cartItemDetails.color === color ? "2px solid #ba68c8" : "",
             padding: cartItemDetails.color === color ? "5px" : ""
           }}
@@ -335,7 +359,7 @@ function ProductDetail() {
     {Object.keys(productDetail).length > 1 && <>
       <Header />
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
-        <Box sx={{ width: { sm: "95vw", lg: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
+        <Box sx={{ width: { sm: "95vw", lg: "45vw" }, position: { lg: "sticky" }, left: 0, top: 110, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", }}>
           <Stack direction="column" sx={{ marginX: "4px", display: "flex", justifyContent: "center", maxWidth: "99vw" }}>
             {renderProductImages()}
           </Stack>
@@ -384,6 +408,10 @@ function ProductDetail() {
               {!isAlreadyCartItem && <Button color="secondary" onClick={handleAddtoCart} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Add to Cart</Button>}
               {isAlreadyCartItem && <Button color="secondary" onClick={() => { navigate("/user/shoppingCart") }} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Go to Cart</Button>}
             </Stack>
+            <Divider />
+            <Typography fontSize={20} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Customer Ratings</Typography>
+            <Typography fontSize={12} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Total 0 rating and 0 reviews</Typography>
+            {renderRatingComponent()}
           </Stack>
         </Box>
       </Box>
@@ -391,7 +419,7 @@ function ProductDetail() {
       <ProdHeader />
       <Divider />
       <ProductScroll name="Recommended" />
-      {renderContactForm()}
+      {/* {renderContactForm()} */}
       <Modal
         open={open}
         onClose={handleClose}

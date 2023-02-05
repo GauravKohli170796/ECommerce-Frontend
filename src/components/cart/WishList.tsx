@@ -100,10 +100,10 @@ function WishList() {
               </CardActions>
 
               <CardActions sx={{ float: "right", display: { xs: "block", sm: "none" } }}>
-                <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { removeItemFromWishList(item._id) }}>
+                <IconButton disableRipple disableFocusRipple aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { removeItemFromWishList(item._id) }}>
                   <DeleteIcon />
                 </IconButton>
-                <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { openWishListProd(item.productId._id) }}>
+                <IconButton disableFocusRipple disableRipple aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { openWishListProd(item.productId._id) }}>
                   <VisibilityIcon />
                 </IconButton>
               </CardActions>

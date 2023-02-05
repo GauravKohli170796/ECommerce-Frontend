@@ -1,14 +1,14 @@
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { Stack } from "@mui/system";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { notificationType } from '../../constants/AppConst';
 import { ICartProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
-import { deleteCartItem, getCartItems } from '../../services/productServices';
+import { deleteCartItem, getCartItems, updateCartItems } from '../../services/productServices';
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -67,7 +67,7 @@ function CartList() {
         id="demo-simple-select"
         value={cartItemDetails.quantity}
         label="Qty"
-        onChange={(e) => { console.log("dwjcdcdscsd") }}
+        onChange={(e) => { handleCartItemQuantityChange(e,cartItemDetails._id);}}
       >
         {[1, 2, 3, 4, 5].map((quantity: number) => {
           return <MenuItem
@@ -77,6 +77,23 @@ function CartList() {
         })}
       </Select>
     </FormControl>
+  }
+
+  const handleCartItemQuantityChange = async(event:SelectChangeEvent<string | number>,cartItemId: string)=>{
+        const {data} = await updateCartItems(cartItemId, event.target.value);
+        if(data.modifiedCount > 0){
+           const tmpCartProducts = cartProducts.map((cartItem)=>{
+            if(cartItem._id === cartItemId){
+              cartItem.quantity = event.target.value;
+            }
+            return cartItem;
+           })
+
+           setCartProducts(tmpCartProducts);
+           showNotificationMsg("Cart successfully updated !!");
+           return;
+        };
+        showNotificationMsg("Something went wrong.",notificationType.DANGER);
   }
 
   const renderWishListProducts = () => {

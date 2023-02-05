@@ -34,7 +34,7 @@ function ProductScroll(prop: IProp) {
                 </Typography>
             </Box>
             
-            <IconButton onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "#BA68C8", color: "white", alignSelf: "flex-end", marginX: "16px" }}>
+            <IconButton disableFocusRipple disableRipple onClick={handleScrollForLatestProducts} sx={{ backgroundColor: "#BA68C8", color: "white", alignSelf: "flex-end", marginX: "16px" }}>
                 <NavigateNextIcon />
             </IconButton>
             <Box ref={ref}

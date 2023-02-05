@@ -3,6 +3,13 @@ export interface IDeleteApiResponse {
     deletedCount: number
 }
 
+export interface IUpdateApiResponse {
+    acknowledged:boolean,
+    modifiedCount:number,
+    upsertedCount:number,
+    matchedCount:number
+}
+
 export interface IFilters{
     price: number []
     categories: string [],

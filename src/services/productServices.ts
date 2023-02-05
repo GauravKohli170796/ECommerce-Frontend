@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { AppConst } from "../constants/AppConst";
-import { IDeleteApiResponse } from "../models/commanModel";
+import { IDeleteApiResponse, IUpdateApiResponse } from "../models/commanModel";
 import { IAllProductApiResponse, ICartProduct, ICartProductReq, IProduct, IWishListProduct, IWishListProductReq } from "../models/productModel";
 import { axiosInstance, axiosProtectedInstance } from "./axiosInstance";
 
@@ -23,9 +23,15 @@ export const addCategory = async (category: string) : Promise<AxiosResponse<unkn
 export const getCartItems = async () : Promise<AxiosResponse<ICartProduct[]>>=> {
    return await axiosProtectedInstance.get(`api/v1/user/getCartItems`); 
 };
+
 export const addCartItems = async (cartItem: ICartProductReq) : Promise<AxiosResponse<ICartProduct>>=> {
    return await axiosProtectedInstance.post(`api/v1/user/addCartItem`,cartItem); 
 };
+
+export const updateCartItems = async (cartItemId: string, quantity: string | number) : Promise<AxiosResponse<IUpdateApiResponse>>=> {
+   return await axiosProtectedInstance.put(`api/v1/user/updateCartItem/${cartItemId}`,{quantity: quantity}); 
+};
+
 export const deleteCartItem = async (productId: string) : Promise<AxiosResponse<IDeleteApiResponse>>=> {
    return await axiosProtectedInstance.delete(`api/v1/user/deleteCartItem/${productId}`); 
 };

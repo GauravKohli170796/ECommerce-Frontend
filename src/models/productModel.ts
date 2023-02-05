@@ -56,7 +56,7 @@ export interface ICartProduct{
         price: number
     }
     email: string;
-    quantity: number;
+    quantity: number | string;
     size: SIZES,
     color: string;
 }

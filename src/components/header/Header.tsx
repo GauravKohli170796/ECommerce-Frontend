@@ -64,7 +64,7 @@ function Header() {
     <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "fixed", top: 0, left: 0,right:0, zIndex: 1000}}>
       <AppBar position="static" className="mixBackground">
         <Toolbar>
-          <img style={{padding:"8px"}} src={logo} height="70px" alt="Main logo"></img> 
+          <img style={{padding:"16px"}} src={logo} onClick={()=> navigate("/product/showProducts")} height="55px" alt="Main logo"></img> 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Tooltip title="Shop" arrow>

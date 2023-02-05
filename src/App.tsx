@@ -12,7 +12,6 @@ import CartList from "./components/cart/CartList";
 import WishList from "./components/cart/WishList";
 import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
-import SkeletonUI from "./components/loader/SkeletonUI";
 import AllProducts from "./components/product/AllProducts";
 import ProductDetail from "./components/product/ProductDetail";
 import { axiosInstance, AxiosProtectedInstance } from "./services/axiosInstance";
@@ -125,9 +124,6 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/admin/adminController" element={<AdminController />} />
-        </Routes>
-        <Routes>
-          <Route path="/admin/x" element={<SkeletonUI numberoFSkeleton={5} />} />
         </Routes>
       </ThemeProvider>
     </div>

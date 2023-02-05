@@ -225,7 +225,7 @@ function Drawer() {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", width: { xs: "75vw", md: "25vw" } }}>
-        <img src={logo} height="80px" style={{ margin: "30px 0px 5px 0px" }} alt="Website Logo" />
+        <img src={logo} height="60px" style={{ margin: "30px 0px 30px 0px" }} alt="Website Logo" />
         <Divider />
         {AppState?.drawerOption === drawerShowOptions.filter && renderFliterComponent()}
         {AppState?.drawerOption === drawerShowOptions.search && renderSearchComponent()}

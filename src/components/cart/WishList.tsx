@@ -4,10 +4,12 @@ import { Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton,
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GetAppState } from '../../AppContext';
 import { notificationType } from '../../constants/AppConst';
+import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { IWishListProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
-import { deleteWishListItems, getWishListItems } from '../../services/productServices';
+import { deleteWishListItems } from '../../services/productServices';
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -16,7 +18,9 @@ import EmptyList from './EmptyList';
 
 function WishList() {
   const navigate = useNavigate();
+  const fetchWishProducts = useCartWishListFetch();
   const [wishListProducts, setWishListProducts] = useState<IWishListProduct[]>([]);
+  const AppState = GetAppState();
 
   const removeItemFromWishList = async (productId: string) => {
     const { data } = await deleteWishListItems(productId);
@@ -24,6 +28,7 @@ function WishList() {
       showNotificationMsg('Product removed from Wish list');
       const tmpWishListProducts:IWishListProduct[] = wishListProducts?.filter(item=> item._id !==productId);
       setWishListProducts(tmpWishListProducts);
+      AppState.setWishList(tmpWishListProducts);
     }
 
   };
@@ -41,9 +46,9 @@ function WishList() {
     };
 
     async function getWishListProducts() {
-      const { data } = await getWishListItems();
-      if (data.length) {
-        setWishListProducts(data);
+      const data  = await fetchWishProducts();
+      if (data?.wishList.length) {
+        setWishListProducts(data.wishList);
       }
     };
 

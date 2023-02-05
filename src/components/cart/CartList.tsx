@@ -1,14 +1,16 @@
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Stack } from "@mui/system";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GetAppState } from "../../AppContext";
 import { notificationType } from '../../constants/AppConst';
+import useCartWishListFetch from "../../hooks/useCartWishListFetch";
 import { ICartProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
-import { deleteCartItem, getCartItems, updateCartItems } from '../../services/productServices';
+import { deleteCartItem, updateCartItems } from '../../services/productServices';
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -17,7 +19,10 @@ import EmptyList from './EmptyList';
 
 function CartList() {
   const navigate = useNavigate();
-  const [cartProducts, setCartProducts] = useState<ICartProduct[]>([]);;
+  const [cartProducts, setCartProducts] = useState<ICartProduct[]>([]);
+  const fetchCartProducts = useCartWishListFetch();
+  const AppState = GetAppState();
+  let totalPrice = 0;
 
   useEffect(() => {
     const tokenDetails = localStorage.getItem("auth");
@@ -27,11 +32,11 @@ function CartList() {
       return;
     }
     async function getcartProducts() {
-      const { data } = await getCartItems();
-      if (data.length) {
-        setCartProducts(data);
+      const  data  = await fetchCartProducts();
+        if (data?.cartList.length) {
+          setCartProducts(data.cartList);
+        }
       }
-    }
     getcartProducts();
 
   }, [navigate]);
@@ -47,6 +52,7 @@ function CartList() {
       showNotificationMsg('Product removed from Cart');
       const tmpCartProducts: ICartProduct[] = cartProducts?.filter(item => item._id !== productId);
       setCartProducts(tmpCartProducts);
+      AppState.setCartList(tmpCartProducts);
     }
 
   };
@@ -56,18 +62,18 @@ function CartList() {
   };
 
   const renderQuantitySelector = (cartItemDetails: ICartProduct) => {
-    return <FormControl sx={{marginX:"16px"}}>
+    return <FormControl sx={{ marginX: "16px" }}>
       <InputLabel id="demo-simple-select-label" size="small" color="secondary">Qty</InputLabel>
       <Select
         size="small"
         color="secondary"
-        sx={{ width: "fit-content"}}
+        sx={{ width: "fit-content" }}
         className='leftText'
         labelId="demo-simple-select-label"
         id="demo-simple-select"
         value={cartItemDetails.quantity}
         label="Qty"
-        onChange={(e) => { handleCartItemQuantityChange(e,cartItemDetails._id);}}
+        onChange={(e) => { handleCartItemQuantityChange(e, cartItemDetails._id); }}
       >
         {[1, 2, 3, 4, 5].map((quantity: number) => {
           return <MenuItem
@@ -79,21 +85,21 @@ function CartList() {
     </FormControl>
   }
 
-  const handleCartItemQuantityChange = async(event:SelectChangeEvent<string | number>,cartItemId: string)=>{
-        const {data} = await updateCartItems(cartItemId, event.target.value);
-        if(data.modifiedCount > 0){
-           const tmpCartProducts = cartProducts.map((cartItem)=>{
-            if(cartItem._id === cartItemId){
-              cartItem.quantity = event.target.value;
-            }
-            return cartItem;
-           })
+  const handleCartItemQuantityChange = async (event: SelectChangeEvent<string | number>, cartItemId: string) => {
+    const { data } = await updateCartItems(cartItemId, event.target.value);
+    if (data.modifiedCount > 0) {
+      const tmpCartProducts = cartProducts.map((cartItem) => {
+        if (cartItem._id === cartItemId) {
+          cartItem.quantity = event.target.value;
+        }
+        return cartItem;
+      })
 
-           setCartProducts(tmpCartProducts);
-           showNotificationMsg("Cart successfully updated !!");
-           return;
-        };
-        showNotificationMsg("Something went wrong.",notificationType.DANGER);
+      setCartProducts(tmpCartProducts);
+      showNotificationMsg("Cart successfully updated !!");
+      return;
+    };
+    showNotificationMsg("Something went wrong.", notificationType.DANGER);
   }
 
   const renderWishListProducts = () => {
@@ -105,25 +111,17 @@ function CartList() {
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         {cartProducts && cartProducts.map((item) => {
           return <Card key={item._id} sx={{ display: 'flex', marginY: "32px", marginX: "8px", padding: "16px" }}>
-
-
-
             <CardMedia
               component="img"
               sx={{ width: 180 }}
               image={item.productId.images[0]}
               alt="Live from space album cover"
             />
-
-
             <Box>
-
               <CardContent sx={{ width: "45vw" }}>
-
                 <Typography gutterBottom variant="body1" component="div" sx={{ textOverflow: "ellipsis", width: "99%", overflow: "hidden", whiteSpace: "nowrap", textAlign: "left" }}>
                   {item.productId.name}
                 </Typography>
-
                 <Typography
                   sx={{ textOverflow: "ellipsis", width: "99%", overflow: "hidden", whiteSpace: "nowrap", textAlign: "left" }}
                   variant="body2"
@@ -137,18 +135,13 @@ function CartList() {
                     {`discount ${item.productId.discount}%`}
                   </Typography>
                 </Stack>
-
-
                 <Typography variant="caption">{`Size: ${item.size} , Color: ${item.color}`} </Typography>
               </CardContent>
-
               {renderQuantitySelector(item)}
               <CardActions sx={{ float: "right", display: { xs: "none", sm: "block" } }}>
-
                 <Button variant='contained' color="secondary" onClick={() => { removeItemFromCart(item._id) }} endIcon={<DeleteIcon />}>Remove</Button>
                 <Button variant='contained' color="secondary" onClick={() => { openCartProd(item.productId._id) }} endIcon={<VisibilityIcon />}>Open</Button>
               </CardActions>
-
               <CardActions sx={{ float: "right", display: { xs: "block", sm: "none" } }}>
                 <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => { removeItemFromCart(item._id) }}>
                   <DeleteIcon />
@@ -160,9 +153,48 @@ function CartList() {
             </Box>
           </Card>
         })}
+        {renderCartCheckout()}
       </Box>
     </>
   };
+
+  const renderCartCheckout = () => {
+    return <Box sx={{ width: { xs: "98%", md: "60%" } }}>
+      <Typography variant="h6" sx={{marginY:"16px"}}>Checkout Details</Typography>
+      <TableContainer component={Paper}>
+        <Table aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              {["S.No", "Price", "Quantity", "Total Price"].map((heading: string) => (
+                <TableCell key={heading} sx={{ backgroundColor: "#ba68c8", color: "white" ,fontWeight:"bold"}} align="center">{heading}</TableCell>
+              )
+
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {cartProducts.map((cartItem,index)=>{
+            totalPrice+=parseInt(cartItem.quantity.toString()) * cartItem.productId.price
+            return <TableRow key={cartItem._id}>
+              <TableCell align="center">{index+1}</TableCell>
+              <TableCell align="center">{cartItem.productId.price}</TableCell>
+              <TableCell align="center">{cartItem.quantity}</TableCell>
+              <TableCell align="center">{parseInt(cartItem.quantity.toString()) * cartItem.productId.price}</TableCell>
+            </TableRow>
+
+           })}
+            <TableRow>
+              <TableCell align="center"></TableCell>
+              <TableCell align="center"></TableCell>
+              <TableCell align="center" sx={{fontWeight:"bold"}}>To Pay</TableCell>
+              <TableCell align="center" sx={{fontWeight:"bold"}}>{totalPrice}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Button sx={{float:"right",marginY:"16px"}} variant="contained" color="secondary">Checkout</Button>
+    </Box>
+  }
 
   return (
     <>

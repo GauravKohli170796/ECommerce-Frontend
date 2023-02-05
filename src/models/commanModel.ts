@@ -16,3 +16,7 @@ export interface IFilters{
     ratingSort: string,
     priceSort: string
 }
+
+export interface ILoginDetails{ 
+    token: string
+}

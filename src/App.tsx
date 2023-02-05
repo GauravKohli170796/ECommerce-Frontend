@@ -15,7 +15,7 @@ import Loader from "./components/loader/Loader";
 import SkeletonUI from "./components/loader/SkeletonUI";
 import AllProducts from "./components/product/AllProducts";
 import ProductDetail from "./components/product/ProductDetail";
-import { axiosInstance, axiosProtectedInstance } from "./services/axiosInstance";
+import { axiosInstance, AxiosProtectedInstance } from "./services/axiosInstance";
 import { showNotificationMsg } from "./services/createNotification";
 
 function App() {
@@ -42,13 +42,13 @@ function App() {
       showNotificationMsg(error.response?.data?.message || "Something went wrong.");
     });
 
-    axiosProtectedInstance.interceptors.request.use((config) => {
+    new AxiosProtectedInstance().getInstance().interceptors.request.use((config) => {
       AppState?.setLoading(true);
       return config;
     }, (error) => {
       return Promise.reject(error);
     });  
-  axiosProtectedInstance.interceptors.response.use(
+    new AxiosProtectedInstance().getInstance().interceptors.response.use(
     response => {
       AppState?.setLoading(false);
       return response

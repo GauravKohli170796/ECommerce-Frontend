@@ -10,10 +10,12 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
+import { GetAppState } from '../../AppContext';
 import { colorsWithCodes, notificationType } from '../../constants/AppConst';
+import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { ICartProductReq } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
-import { addCartItems, addWishListItem, getCartItems, getProductById, getWishListItems } from "../../services/productServices";
+import { addCartItems, addWishListItem, getProductById } from "../../services/productServices";
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -45,12 +47,13 @@ function ProductDetail() {
   const [isAlreadyCartItem, setIsAlreadyCartItem] = useState<boolean>(false);
   const [cartItemDetails, setCartItemDetails] = useState<ICartProductReq>(initialCartDetails);
   const navigate = useNavigate();
+  const fetchCartWishProducts = useCartWishListFetch();
+  const AppState = GetAppState();
 
   useEffect(() => {
     setIsAlreadyWishListed(false);
     fetchProductDetail();
-    fetchWishListProducts();
-    fetchCartProducts();
+    fetchWishCartListProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -66,8 +69,9 @@ function ProductDetail() {
     const wishListProduct = {
       productId: id
     };
-    const res = await addWishListItem(wishListProduct);
-    if (res) {
+    const {data} = await addWishListItem(wishListProduct);
+    if (data?.productId._id) {
+      AppState.setWishList([...AppState.wishList,data]);
       showNotificationMsg("Product added to Wish List");
       setIsAlreadyWishListed(true);
     }
@@ -92,33 +96,26 @@ function ProductDetail() {
       color: cartItemDetails.color,
       size: cartItemDetails.size
     };
-    const res = await addCartItems(cartProduct);
-    if (res) {
+    const {data} = await addCartItems(cartProduct);
+    if (data?.productId?._id) {
+      AppState.setCartList([...AppState.cartList,data]);
       showNotificationMsg("Product added to Cart!!");
       setIsAlreadyCartItem(true);
     }
   }
 
-  const fetchWishListProducts = async () => {
+  const fetchWishCartListProducts = async () => {
     const authDetails = localStorage.getItem("auth");
     if (!authDetails) {
       return;
     }
-    const response = await getWishListItems();
-    for (const item of response.data) {
+    const response = await fetchCartWishProducts();
+    for (const item of response?.wishList) {
       if (item.productId._id === id) {
         setIsAlreadyWishListed(true);
       }
     }
-  }
-
-  const fetchCartProducts = async () => {
-    const authDetails = localStorage.getItem("auth");
-    if (!authDetails) {
-      return;
-    }
-    const response = await getCartItems();
-    for (const item of response.data) {
+    for (const item of response?.cartList) {
       if (item.productId._id === id) {
         setIsAlreadyCartItem(true);
       }

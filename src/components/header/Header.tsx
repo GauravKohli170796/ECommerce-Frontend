@@ -1,14 +1,12 @@
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchIcon from '@mui/icons-material/Search';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { AppBar, IconButton, SpeedDial, SpeedDialAction, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { Store } from "react-notifications-component";
@@ -61,172 +59,172 @@ function Header() {
 
   return (
     <>
-    <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "fixed", top: 0, left: 0,right:0, zIndex: 1000}}>
-      <AppBar position="static" className="mixBackground">
-        <Toolbar>
-          <img style={{padding:"16px"}} src={logo} onClick={()=> navigate("/product/showProducts")} height="55px" alt="Main logo"></img> 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            <Tooltip title="Shop" arrow>
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={() => {
-                  navigate("/product/showProducts");
-                }}
-                sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}
-              >
-                <ShoppingBagIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Filters" arrow>
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={() => {
-                  openDrawer(drawerShowOptions.filter);
-                }}
-                sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}
-              >
-                <FilterAltIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Search Products" arrow>
+      <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000 }}>
+        <AppBar position="static" className="mixBackground">
+          <Toolbar>
+            <img style={{ padding: "16px" }} src={logo} onClick={() => navigate("/product/showProducts")} height="55px" alt="Main logo"></img>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
+            <Box sx={{display:"flex",flexDirection:"row",columnGap:"16px"}}>
+              <Tooltip title="Shop" arrow>
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  onClick={() => {
+                    navigate("/product/showProducts");
+                  }}
+                  sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white",display: { xs: "none", sm: "Inherit"}}}
+                >
+                  <ShoppingBagIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Filters" arrow>
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  onClick={() => {
+                    openDrawer(drawerShowOptions.filter);
+                  }}
+                  sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white",display: { xs: "none", sm: "Inherit"}}}
+                >
+                  <FilterAltIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Search Products" arrow>
               <IconButton
                 aria-label="delete"
                 size="small"
                 onClick={() => {
                   openDrawer(drawerShowOptions.search);
                 }}
-                sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}
+                sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white",display: { xs: "none", sm: "Inherit"}}}
               >
                 <SearchIcon />
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="My Cart" arrow>
-              <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => {
+              <Tooltip title="My Cart" arrow>
+                <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white",display: { xs: "none", sm: "Inherit"} }} onClick={() => {
                   navigate("/user/shoppingCart");
                 }}>
-                <ShoppingCartIcon />
-              </IconButton>
-            </Tooltip>
+                  <ShoppingCartIcon />
+                </IconButton>
+              </Tooltip>
 
-            <Tooltip title="My WishList" arrow>
-              <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }} onClick={() => {
+              <Tooltip title="My WishList" arrow>
+                <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white",display: { xs: "none", sm: "Inherit"} }} onClick={() => {
                   navigate("/user/wishList");
                 }}>
-                <FavoriteIcon />
-              </IconButton>
-            </Tooltip>
+                  <FavoriteIcon />
+                </IconButton>
+              </Tooltip>
 
-            {isLoggedIn && <Tooltip title="Admin Controller" arrow>
-              <IconButton onClick={() => {
-                navigate('/admin/adminController');
-              }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
-                <AdminPanelSettingsIcon />
-              </IconButton>
-            </Tooltip>}
+              {isLoggedIn && <Tooltip title="Admin Controller" arrow>
+                <IconButton onClick={() => {
+                  navigate('/admin/adminController');
+                }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white",}}>
+                  <AdminPanelSettingsIcon />
+                </IconButton>
+              </Tooltip>}
 
-            {isLoggedIn && <Tooltip title="Logut" arrow>
-              <IconButton onClick={handleLogOut} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
-                <LogoutIcon />
-              </IconButton>
-            </Tooltip>}
+              {isLoggedIn && <Tooltip title="Logut" arrow>
+                <IconButton onClick={handleLogOut} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white"}}>
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>}
 
-            {!isLoggedIn && <Tooltip title="Login/Signup" arrow>
-              <IconButton onClick={() => {
-                navigate("/auth/login");
-              }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", color: "white", marginRight: "16px" }}>
-                <LoginIcon />
-              </IconButton>
-            </Tooltip>}
-          </Box>
-
-          <Box sx={{ display: { xs: "block", sm: "none" } }}>
-            <BottomNav />
-            <SpeedDial
-              direction="down"
-              ariaLabel="SpeedDial basic example"
-              sx={{ position: 'fixed', top: 12, right: 16}}
-              icon={<MenuIcon/>}
-              FabProps={{
-                sx: {
-                  bgcolor: 'secondary.main',
-                  '&:hover': {
-                    bgcolor: 'secondary.main',
-                  }
-                }
-              }}
-            >
-               <SpeedDialAction
-                tooltipOpen
-                key="Admin Panel"
-                icon={<AdminPanelSettingsIcon />}
-                tooltipTitle="Admin"
-                onClick={() => {
-                  navigate("/admin/admincontroller");
-                }}
-                FabProps={{
-                  sx: {
-                    bgcolor: 'secondary.main',
-                    color: "white"
-                  }
-                }}
-              />
-
-               <SpeedDialAction
-                tooltipOpen
-                key=" My Wishlist"
-                icon={<FavoriteIcon/>}
-                tooltipTitle="Wishlist"
-                onClick={() => {
-                  navigate("/user/wishList");
-                }}
-                FabProps={{
-                  sx: {
-                    bgcolor: 'secondary.main',
-                    color: "white"
-                  }
-                }}
-              />
-
-              {!isLoggedIn && <SpeedDialAction
-                tooltipOpen
-                key="Login/SignUp"
-                icon={<AccountBoxIcon/>}
-                tooltipTitle="Login"
-                onClick={() => {
+              {!isLoggedIn && <Tooltip title="Login/Signup" arrow>
+                <IconButton onClick={() => {
                   navigate("/auth/login");
-                }}
+                }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0",padding:"8px", color: "white"}}>
+                  <LoginIcon />
+                </IconButton>
+              </Tooltip>}
+            </Box>
+
+            <Box sx={{ display: { xs: "block", sm: "none" } }}>
+              <BottomNav />
+              {/* <SpeedDial
+                direction="down"
+                ariaLabel="SpeedDial basic example"
+                sx={{ position: 'fixed', top: 12, right: 16 }}
+                icon={<MenuIcon />}
                 FabProps={{
                   sx: {
                     bgcolor: 'secondary.main',
-                    color: "white"
+                    '&:hover': {
+                      bgcolor: 'secondary.main',
+                    }
                   }
                 }}
-              />}
-              {isLoggedIn && <SpeedDialAction
-                tooltipOpen
-                key="Logout"
-                icon={<LogoutIcon/>}
-                onClick={() => {
-                  handleLogOut();
-                }}
-                tooltipTitle="Logout"
-                FabProps={{
-                  sx: {
-                    bgcolor: 'secondary.main',
-                    color: "white"
-                  }
-                }}
-              />}
-            </SpeedDial>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Box>
-    <Box className="headerMargin"></Box>
+              >
+                <SpeedDialAction
+                  tooltipOpen
+                  key="Admin Panel"
+                  icon={<AdminPanelSettingsIcon />}
+                  tooltipTitle="Admin"
+                  onClick={() => {
+                    navigate("/admin/admincontroller");
+                  }}
+                  FabProps={{
+                    sx: {
+                      bgcolor: 'secondary.main',
+                      color: "white"
+                    }
+                  }}
+                />
+
+                <SpeedDialAction
+                  tooltipOpen
+                  key=" My Wishlist"
+                  icon={<FavoriteIcon />}
+                  tooltipTitle="Wishlist"
+                  onClick={() => {
+                    navigate("/user/wishList");
+                  }}
+                  FabProps={{
+                    sx: {
+                      bgcolor: 'secondary.main',
+                      color: "white"
+                    }
+                  }}
+                />
+
+                {!isLoggedIn && <SpeedDialAction
+                  tooltipOpen
+                  key="Login/SignUp"
+                  icon={<AccountBoxIcon />}
+                  tooltipTitle="Login"
+                  onClick={() => {
+                    navigate("/auth/login");
+                  }}
+                  FabProps={{
+                    sx: {
+                      bgcolor: 'secondary.main',
+                      color: "white"
+                    }
+                  }}
+                />}
+                {isLoggedIn && <SpeedDialAction
+                  tooltipOpen
+                  key="Logout"
+                  icon={<LogoutIcon />}
+                  onClick={() => {
+                    handleLogOut();
+                  }}
+                  tooltipTitle="Logout"
+                  FabProps={{
+                    sx: {
+                      bgcolor: 'secondary.main',
+                      color: "white"
+                    }
+                  }}
+                />}
+              </SpeedDial> */}
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <Box className="headerMargin"></Box>
     </>
   );
 }

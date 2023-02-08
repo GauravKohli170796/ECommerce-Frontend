@@ -130,8 +130,8 @@ function ProductDetail() {
     const { data } = await getProductById(id);
     data.productDetails = { productId: id, ...data.productDetails };
     setProductDetail(data);
-    const ele = document.getElementById("imageContainer");
     setTimeout(() => {
+      const ele = document.getElementById("imageContainer");
       (document.getElementById("imageContainer") as HTMLDivElement).scrollLeft = ele?.scrollWidth || 0;
     }, 1000);
     setTimeout(() => {
@@ -173,7 +173,7 @@ function ProductDetail() {
   const renderProductImages = () => {
     if (productDetail.images) {
       return <>
-        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px", scrollBehavior: "smooth" }}>
+        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px", scrollBehavior: "smooth"}}>
           {productDetail.images.map((imgx: string, index: number) => {
             return <img className='prodImage' onClick={() => { handleImageClick(index) }} id={`image${index}`} src={imgx} alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
           })}
@@ -342,8 +342,8 @@ function ProductDetail() {
             "&:hover":{backgroundColor: colorsWithCodes[color]},
             height: "30px",
             width: "30px",
-            minHeight: cartItemDetails.color === color ? "33px" : "30px",
-            minWidth: cartItemDetails.color === color ? "32px" : "30px",
+            minHeight: cartItemDetails.color === color ? "35px" : "30px",
+            minWidth: cartItemDetails.color === color ? "35px" : "30px",
             border: cartItemDetails.color === color ? "2px solid #ba68c8" : "",
           }}
           onClick={() => { setCartItemDetails({ ...cartItemDetails, color: color }) }}
@@ -378,23 +378,23 @@ function ProductDetail() {
               </Typography>
             </Box>
             <Divider />
-            <Typography fontSize={20} className="leftText" variant="caption">Product Details</Typography>
+            <Typography fontSize={18} className="leftText" variant="caption" >Product Details</Typography>
             <TableContainer component={Paper}>
               <Table aria-label="customized table">
                 {renderProductDetails()}
               </Table>
             </TableContainer>
             <Divider />
-            <Typography fontSize={20} className="leftText" variant="caption">Select Colors</Typography>
+            <Typography fontSize={18} className="leftText" variant="caption">Select Colors</Typography>
             {<Typography fontSize={12}>{`Selected Color : ${cartItemDetails.color || "none"}`}</Typography>}
-            <Stack direction="row" spacing={4}>
+            <Stack direction="row" sx={{alignItems:"center"}} spacing={4}>
               {renderColors()}
             </Stack>
             <Divider />
-            <Typography fontSize={20} className="leftText" variant="caption">Select Quantity</Typography>
+            <Typography fontSize={18} className="leftText" variant="caption">Select Quantity</Typography>
             {renderQuantitySelector()}
             <Divider />
-            <Typography fontSize={20} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Select Size</Typography>
+            <Typography fontSize={18} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Select Size</Typography>
             <Stack direction="row" className='my-2' spacing={2}>
               {renderSizes()}
             </Stack>
@@ -407,8 +407,8 @@ function ProductDetail() {
               {isAlreadyCartItem && <Button color="secondary" onClick={() => { navigate("/user/shoppingCart") }} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Go to Cart</Button>}
             </Stack>
             <Divider />
-            <Typography fontSize={20} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Customer Ratings</Typography>
-            <Typography fontSize={12} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Total 0 rating and 0 reviews</Typography>
+            <Typography fontSize={18} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Customer Ratings</Typography>
+            <Typography fontSize={12} sx={{ marginTop: "16px" }} className="leftText" variant="caption">Total 0 ratings and 0 reviews</Typography>
             {renderRatingComponent()}
           </Stack>
         </Box>
@@ -417,7 +417,9 @@ function ProductDetail() {
       <ProdHeader />
       <Divider />
       <ProductScroll name="Recommended" />
+
       {/* {renderContactForm()} */}
+      
       <Modal
         open={open}
         onClose={handleClose}

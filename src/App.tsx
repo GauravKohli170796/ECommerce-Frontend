@@ -14,7 +14,7 @@ import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
 import AllProducts from "./components/product/AllProducts";
 import ProductDetail from "./components/product/ProductDetail";
-import { axiosInstance, AxiosProtectedInstance } from "./services/axiosInstance";
+import { axiosInstance } from "./services/axiosInstance";
 import { showNotificationMsg } from "./services/createNotification";
 
 function App() {
@@ -40,22 +40,7 @@ function App() {
       AppState?.setLoading(false);
       showNotificationMsg(error.response?.data?.message || "Something went wrong.");
     });
-
-    new AxiosProtectedInstance().getInstance().interceptors.request.use((config) => {
-      AppState?.setLoading(true);
-      return config;
-    }, (error) => {
-      return Promise.reject(error);
-    });  
-    new AxiosProtectedInstance().getInstance().interceptors.response.use(
-    response => {
-      AppState?.setLoading(false);
-      return response
-    },
-    error => {
-      AppState?.setLoading(false);
-      showNotificationMsg(error.response?.data?.message || "Something went wrong.");
-    });
+    
   const theme = createTheme({
     components: {
       MuiInputLabel: {

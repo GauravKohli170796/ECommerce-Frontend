@@ -37,7 +37,8 @@ function AllProducts() {
       return;
     }
     fetchAllProducts();
-  }, [AppState]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
 
@@ -98,11 +99,12 @@ function AllProducts() {
 
         {paginationCount > 0 && (
           <Pagination
+            color="secondary"
             count={paginationCount}
             onChange={(_e: React.ChangeEvent<unknown>, page: number) => {
               callProductsPage(page.toString());
             }}
-            variant="outlined"
+            variant="text"
           />
         )}
       </Box>

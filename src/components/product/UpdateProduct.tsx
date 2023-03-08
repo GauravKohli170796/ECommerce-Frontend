@@ -160,7 +160,6 @@ function UpdateProduct() {
           {sizeArr.map((size: string) => {
             return <FormControlLabel
               onChange={(e: any) => {
-                console.log(e.target.checked);
                 if (e.target.checked) {
                   arrayHelpers.push(e.target.value);
                   return;

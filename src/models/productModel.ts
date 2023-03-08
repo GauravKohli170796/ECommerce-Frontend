@@ -66,3 +66,11 @@ export interface ICartProductReq{
     size: string,
     color: string;
 }
+
+export interface ISearchresult {
+    images: string[],
+    price: number,
+    name: string,
+    _id: string,
+    description: string
+}

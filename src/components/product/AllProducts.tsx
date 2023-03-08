@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { GetAppState } from "../../AppContext";
 import { AppConst } from "../../constants/AppConst";
 import { IAllProductApiResponse, IProduct } from "../../models/productModel";
-import { getAllProducts } from "../../services/productServices";
+import { getAllProducts, getFilterredProduct } from "../../services/productServices";
 import CarouselProvider from "../carousel/CarouselProvider";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
@@ -27,24 +27,47 @@ function AllProducts() {
 
   useEffect(() => {
     async function fetchAllProducts() {
-      const { data } = await getAllProducts("1");
-      AppState?.setInitialProducts(data);
+      let data;
+      if (!checkForFilter) {
+        const response = await getAllProducts("1");
+        data = response.data;
+        AppState?.setInitialProducts(data);
+      }
+      else {
+        const response = await getFilterredProduct("1", JSON.stringify(AppState.filters));
+        data = response.data;
+      }
       setProducts(data);
     }
     const initialProducts = AppState.initialProducts;
-    if (initialProducts) {
+    if (initialProducts && !checkForFilter()) {
       setProducts(initialProducts);
       return;
     }
     fetchAllProducts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [AppState.filters]);
 
 
-
+  const checkForFilter = (): boolean => {
+    const appStateFilter = AppState.filters;
+    if (appStateFilter.categories.length === 0 && appStateFilter.price[0] === 0 && appStateFilter.price[1] === 8000 && !appStateFilter.priceSort && !appStateFilter.discountSort) {
+      console.log(appStateFilter);
+      return false;
+    }
+    return true;
+  }
 
   const callProductsPage = async (page: string) => {
-    const { data } = await getAllProducts(page);
+    let data;
+    if (!checkForFilter()) {
+      const response = await getAllProducts(page);
+      data = response.data;
+    }
+    else{
+      const response = await getFilterredProduct(page,JSON.stringify(AppState.filters));
+      data = response.data;
+    }
     const tmpProducts = Object.assign({}, products);
     tmpProducts.allProducts = data.allProducts;
     tmpProducts.totalProducts = data.totalProducts;
@@ -77,12 +100,12 @@ function AllProducts() {
       >
 
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <ProductScroll name="Latest"/>
+        <ProductScroll name="Latest" />
         <Typography ref={featureProductRef} ></Typography>
-        <ProdHeader/>
+        <ProdHeader />
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
         <Typography className="section-head" sx={{ fontSize: "25px" }}>
-          Featured Products
+          {checkForFilter() ? "Filtered Products" : "Featured Products"}
         </Typography>
         <Box
           sx={{

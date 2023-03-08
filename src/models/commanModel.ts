@@ -13,10 +13,16 @@ export interface IUpdateApiResponse {
 export interface IFilters{
     price: number []
     categories: string [],
-    ratingSort: string,
-    priceSort: string
+    ratingSort: boolean,
+    priceSort: boolean,
+    discountSort: boolean
 }
 
 export interface ILoginDetails{ 
     token: string
 }
+
+export interface IEmailBody {
+    email: string;
+    type: string;
+  }

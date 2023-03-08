@@ -6,7 +6,7 @@ import { Stack } from "@mui/system";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetAppState } from "../../AppContext";
-import { notificationType } from '../../constants/AppConst';
+import { AppConst, notificationType } from '../../constants/AppConst';
 import useCartWishListFetch from "../../hooks/useCartWishListFetch";
 import { ICartProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
@@ -39,6 +39,7 @@ function CartList() {
       }
     getcartProducts();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
 
@@ -158,6 +159,12 @@ function CartList() {
     </>
   };
 
+  const handleUserCheckout = ()=>{
+     sessionStorage.removeItem(AppConst.checkoutKey);
+     sessionStorage.setItem(AppConst.checkoutKey,JSON.stringify(cartProducts));
+     navigate("/checkout");
+  };
+
   const renderCartCheckout = () => {
     return <Box sx={{ width: { xs: "98%", md: "60%" } }}>
       <Typography variant="h6" sx={{marginY:"16px"}}>Checkout Details</Typography>
@@ -192,7 +199,7 @@ function CartList() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button sx={{float:"right",marginY:"16px"}} variant="contained" color="secondary">Checkout</Button>
+      <Button sx={{float:"right",marginY:"16px"}} variant="contained" color="secondary" onClick={handleUserCheckout}>Checkout</Button>
     </Box>
   }
 

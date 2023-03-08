@@ -54,6 +54,7 @@ function WishList() {
 
     getWishListProducts();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
 

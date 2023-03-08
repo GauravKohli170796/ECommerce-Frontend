@@ -1,14 +1,17 @@
 export const AppConst = Object.freeze({
    BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
-   productsPerPage:10
+   FrontendUrl: "https://kirans-sehgal-online-shop.onrender.com/",
+   productsPerPage:10,
+   checkoutKey: "userCheckoutDetails"
 });
 
 
 export const filterInitailValue = {
    price: [0,8000],
    categories: [],
-   priceSort: "",
-   ratingSort:""
+   priceSort: false,
+   ratingSort:false,
+   discountSort:false
  }
 
 export enum drawerShowOptions {

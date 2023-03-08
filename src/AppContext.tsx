@@ -42,7 +42,7 @@ const AppContextWrapper = ({ children }: any) => {
     cartList,
     setCartList,
     wishList,
-    setWishList
+    setWishList,
   }), [authDetails, loading, openDrawer, drawerOption, initialProducts, categories, filters,cartList,wishList]);
 
   return <AppContext.Provider value={contextProvider}>

@@ -10,6 +10,7 @@ import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import CartList from "./components/cart/CartList";
 import WishList from "./components/cart/WishList";
+import Checkout from "./components/checkout/Checkout";
 import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
 import AllProducts from "./components/product/AllProducts";
@@ -109,6 +110,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/admin/adminController" element={<AdminController />} />
+        </Routes>
+        <Routes>
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </ThemeProvider>
     </div>

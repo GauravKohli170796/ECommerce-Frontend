@@ -72,14 +72,14 @@ function ProductDetail() {
     const {data} = await addWishListItem(wishListProduct);
     if (data?.productId._id) {
       AppState.setWishList([...AppState.wishList,data]);
-      showNotificationMsg("Product added to Wish List");
+      showNotificationMsg("Product added to Wish List.");
       setIsAlreadyWishListed(true);
     }
   };
 
   const handleAddtoCart = async () => {
     if (!(cartItemDetails.color && cartItemDetails.size)) {
-      showNotificationMsg("Please select size and color first", notificationType.DANGER);
+      showNotificationMsg("Please select size and color first.", notificationType.DANGER);
       return;
     }
     const authDetails = localStorage.getItem("auth");
@@ -99,7 +99,7 @@ function ProductDetail() {
     const {data} = await addCartItems(cartProduct);
     if (data?.productId?._id) {
       AppState.setCartList([...AppState.cartList,data]);
-      showNotificationMsg("Product added to Cart!!");
+      showNotificationMsg("Product added to Cart.");
       setIsAlreadyCartItem(true);
     }
   }

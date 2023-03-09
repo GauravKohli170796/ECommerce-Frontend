@@ -59,7 +59,7 @@ function AddProduct() {
       await axiosInstance.post(`/api/v1/product/addProduct`, {
         ...addProductBody
       });
-      showNotificationMsg("Product successfully added!!");
+      showNotificationMsg("Product successfully added.");
       addProductForm.resetForm();
       navigation("/admin/adminController");
       

@@ -25,7 +25,7 @@ function WishList() {
   const removeItemFromWishList = async (productId: string) => {
     const { data } = await deleteWishListItems(productId);
     if (data.deletedCount === 1) {
-      showNotificationMsg('Product removed from Wish list');
+      showNotificationMsg('Product removed from Wish list.');
       const tmpWishListProducts:IWishListProduct[] = wishListProducts?.filter(item=> item._id !==productId);
       setWishListProducts(tmpWishListProducts);
       AppState.setWishList(tmpWishListProducts);
@@ -40,7 +40,7 @@ function WishList() {
   useEffect(() => {
     const tokenDetails = localStorage.getItem("auth");
     if (!tokenDetails) {
-      showNotificationMsg("You need to login first",notificationType.WARNING);
+      showNotificationMsg("You need to login first.",notificationType.WARNING);
       navigate("/auth/login");
       return;
     };

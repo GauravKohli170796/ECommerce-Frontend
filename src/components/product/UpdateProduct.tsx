@@ -55,7 +55,7 @@ function UpdateProduct() {
       await axiosInstance.put(`/api/v1/product/updateProduct/${searchProductForm.values.productId}`, {
         ...updateProductBody
       });
-      showNotificationMsg("Product successfully updated!!");
+      showNotificationMsg("Product successfully updated.");
       setProductDetails(initialProductDetails);
     }
   });

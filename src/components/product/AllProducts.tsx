@@ -28,7 +28,7 @@ function AllProducts() {
   useEffect(() => {
     async function fetchAllProducts() {
       let data;
-      if (!checkForFilter) {
+      if (!checkForFilter()) {
         const response = await getAllProducts("1");
         data = response.data;
         AppState?.setInitialProducts(data);
@@ -36,6 +36,9 @@ function AllProducts() {
       else {
         const response = await getFilterredProduct("1", JSON.stringify(AppState.filters));
         data = response.data;
+        setTimeout(() => {
+          featureProductRef.current?.scrollIntoView({ behavior: "smooth", inline: "start" });
+        }, 10)
       }
       setProducts(data);
     }

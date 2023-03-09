@@ -27,7 +27,7 @@ function CartList() {
   useEffect(() => {
     const tokenDetails = localStorage.getItem("auth");
     if (!tokenDetails) {
-      showNotificationMsg("You need to login first", notificationType.WARNING);
+      showNotificationMsg("You need to login first.", notificationType.WARNING);
       navigate("/auth/login");
       return;
     }
@@ -50,7 +50,7 @@ function CartList() {
   const removeItemFromCart = async (productId: string) => {
     const { data } = await deleteCartItem(productId);
     if (data.deletedCount === 1) {
-      showNotificationMsg('Product removed from Cart');
+      showNotificationMsg('Product removed from Cart.');
       const tmpCartProducts: ICartProduct[] = cartProducts?.filter(item => item._id !== productId);
       setCartProducts(tmpCartProducts);
       AppState.setCartList(tmpCartProducts);
@@ -97,7 +97,7 @@ function CartList() {
       })
 
       setCartProducts(tmpCartProducts);
-      showNotificationMsg("Cart successfully updated !!");
+      showNotificationMsg("Cart successfully updated.");
       return;
     };
     showNotificationMsg("Something went wrong.", notificationType.DANGER);

@@ -94,7 +94,7 @@ function Checkout() {
         }
         const response = await sendEmail({type:"order",email: htmlForMail});
        if(!response.data){
-         showNotificationMsg("failed to send order details",notificationType.DANGER);
+         showNotificationMsg("Failed to send order details.",notificationType.DANGER);
        }
        else{
         showOrderMessage();

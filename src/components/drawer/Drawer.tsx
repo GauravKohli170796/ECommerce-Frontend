@@ -108,7 +108,11 @@ function Drawer() {
   const handleSearch =async (event:React.ChangeEvent<HTMLInputElement>)=>{
      clearTimeout(searchInterval);
       searchInterval = setTimeout(()=>{
+        if(event.target.value){
           searchProduct(event.target.value);
+          return;
+        }
+        setSearchProducts([]);
       },800)
   };
 
@@ -117,7 +121,7 @@ function Drawer() {
     const {data} = await searchProducts(searchString);
     if(data.length ===0){
       setSearchProducts([]);
-      showNotificationMsg("No product found!!.Try something different", notificationType.INFO);
+      showNotificationMsg("No product found. Try something different.", notificationType.INFO);
       return;
     }
     setSearchProducts(data);
@@ -251,7 +255,7 @@ function Drawer() {
         AppState?.setOpenDrawer(true);
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column", width: { xs: "75vw", md: "25vw" } }}>
+      <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column",overflowX:"clip", width: { xs: "75vw", md: "25vw" } }}>
         <img src={logo} height="60px" style={{ margin: "30px 0px 30px 0px" }} alt="Website Logo" />
         <Divider />
         {AppState?.drawerOption === drawerShowOptions.filter && renderFliterComponent()}

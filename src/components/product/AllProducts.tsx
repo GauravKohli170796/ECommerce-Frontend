@@ -2,7 +2,7 @@ import { Divider, Pagination, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useRef, useState } from "react";
 import { GetAppState } from "../../AppContext";
-import { AppConst } from "../../constants/AppConst";
+import { AppConst, productHeadingType } from "../../constants/AppConst";
 import { IAllProductApiResponse, IProduct } from "../../models/productModel";
 import { getAllProducts, getFilterredProduct } from "../../services/productServices";
 import CarouselProvider from "../carousel/CarouselProvider";
@@ -55,7 +55,6 @@ function AllProducts() {
   const checkForFilter = (): boolean => {
     const appStateFilter = AppState.filters;
     if (appStateFilter.categories.length === 0 && appStateFilter.price[0] === 0 && appStateFilter.price[1] === 8000 && !appStateFilter.priceSort && !appStateFilter.discountSort) {
-      console.log(appStateFilter);
       return false;
     }
     return true;
@@ -103,7 +102,7 @@ function AllProducts() {
       >
 
         <Divider sx={{ marginY: "16px", width: "96vw" }} />
-        <ProductScroll name="Latest" />
+        <ProductScroll name={productHeadingType.LATEST} />
         <Typography ref={featureProductRef} ></Typography>
         <ProdHeader />
         <Divider sx={{ marginY: "16px", width: "96vw" }} />

@@ -1,12 +1,13 @@
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DeleteIcon from '@mui/icons-material/Delete';
+import GradingIcon from '@mui/icons-material/Grading';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Stack } from "@mui/system";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetAppState } from "../../AppContext";
-import { AppConst, notificationType } from '../../constants/AppConst';
+import { AppConst, notificationType, productHeadingType } from '../../constants/AppConst';
 import useCartWishListFetch from "../../hooks/useCartWishListFetch";
 import { ICartProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
@@ -199,7 +200,7 @@ function CartList() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button sx={{float:"right",marginY:"16px"}} variant="contained" color="secondary" onClick={handleUserCheckout}>Checkout</Button>
+      <Button sx={{float:"right",marginY:"16px"}} variant="contained" color="secondary" startIcon={<GradingIcon/>} onClick={handleUserCheckout}>Checkout</Button>
     </Box>
   }
 
@@ -210,7 +211,7 @@ function CartList() {
       {cartProducts.length === 0 && renderEmptyCart()}
       <Divider sx={{ marginY: "16px", width: "96vw" }} />
       <ProdHeader />
-      <ProductScroll name="Shop" />
+      <ProductScroll name={productHeadingType.SHOP} />
       <Footer />
     </>
 

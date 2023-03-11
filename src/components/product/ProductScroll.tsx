@@ -3,11 +3,12 @@ import { IconButton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useRef } from 'react';
 import { GetAppState } from '../../AppContext';
+import { productHeadingType } from '../../constants/AppConst';
 import { IProduct } from '../../models/productModel';
 import ProductCard from './ProductCard';
 
 interface IProp{
-    name: string,
+    name: productHeadingType,
 }
 
 function ProductScroll(prop: IProp) {
@@ -15,7 +16,11 @@ function ProductScroll(prop: IProp) {
     const AppState = GetAppState();
 
     const renderLatestProducts = () => {
-        return AppState?.initialProducts?.latestProduct.map((product: IProduct) => {
+        let products = AppState?.initialProducts?.latestProduct;
+        if(prop.name!==productHeadingType.LATEST){
+            products = products.reverse();
+        }
+        return products?.map((product: IProduct) => {
             return <ProductCard key={product._id} product={product}/>;
         });
     };

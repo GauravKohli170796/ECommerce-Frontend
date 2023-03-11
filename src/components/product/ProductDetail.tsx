@@ -3,6 +3,7 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import EmailIcon from '@mui/icons-material/Email';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MessageIcon from '@mui/icons-material/Message';
+import ShareIcon from '@mui/icons-material/Share';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Button, Divider, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Paper, Rating, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
@@ -11,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
-import { colorsWithCodes, notificationType } from '../../constants/AppConst';
+import { AppConst, colorsWithCodes, notificationType, productHeadingType } from '../../constants/AppConst';
 import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { ICartProductReq } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
@@ -310,7 +311,7 @@ function ProductDetail() {
 
   const renderSizes = () => {
     return <>
-      {["xs", "s", "m", "l", "xl", "xxl", "free Size"].map((size: string) => {
+      {["xs", "s", "m", "l", "xl", "xxl", "fs"].map((size: string) => {
         if (productDetail.sizes.includes(size)) {
           return <Button disableFocusRipple disableRipple size="small"
 
@@ -331,6 +332,19 @@ function ProductDetail() {
 
       })}
     </>
+  }
+
+  const handleShare= async()=>{
+    const shareData = {
+      title: `${productDetail.name}`,
+      text: `${productDetail.description}`,
+      url: `${AppConst.FrontendUrl}/product/productDetail/${id}`
+    };
+    try {
+      await navigator.share(shareData)
+    } catch (err) {
+      showNotificationMsg("Failed to share.",notificationType.DANGER);
+    }
   }
 
   const renderColors = () => {
@@ -366,7 +380,10 @@ function ProductDetail() {
         <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
         <Box sx={{ width: { xs: "95vw", lg: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px", borderLeft: ".1px solid lightgrey", paddingLeft: "8px" }}>
           <Stack spacing={2}>
+            <Stack direction="row" className='fRow' sx={{justifyContent:"space-between",alignItems:"center"}}>
             <Typography fontSize={24} className="leftText" variant="h3">{productDetail.name}</Typography>
+            <IconButton onClick={handleShare} sx={{justifySelf:"flex-end" , backgroundColor: "#9c27b0", color: "white", marginY: "8px" }}><ShareIcon /></IconButton>
+            </Stack>
             <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
             <Box sx={{ fontSize: "20px", textAlign: "left" }}>
               <CurrencyRupeeIcon fontSize="small" />  {productDetail.price}
@@ -378,7 +395,7 @@ function ProductDetail() {
               </Typography>
             </Box>
             <Divider />
-            <Typography fontSize={18} className="leftText" variant="caption" >Product Details</Typography>
+            <Typography fontSize={18} className="leftText" variant="body1" >Product Details</Typography>
             <TableContainer component={Paper}>
               <Table aria-label="customized table">
                 {renderProductDetails()}
@@ -400,10 +417,10 @@ function ProductDetail() {
             </Stack>
             <Divider />
             <Stack direction="row" spacing={2}>
-              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Wishlist</Button>}
+              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="outlined" endIcon={<FavoriteIcon />} fullWidth>Wishlist</Button>}
               {isAlreadyWishlisted && <Button color="secondary" onClick={() => { navigate("/user/wishlist") }} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Go to Wishlist</Button>}
 
-              {!isAlreadyCartItem && <Button color="secondary" onClick={handleAddtoCart} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Add to Cart</Button>}
+              {!isAlreadyCartItem && <Button color="secondary" onClick={handleAddtoCart} variant="outlined" endIcon={<ShoppingCartIcon />} fullWidth>Add to Cart</Button>}
               {isAlreadyCartItem && <Button color="secondary" onClick={() => { navigate("/user/shoppingCart") }} variant="contained" endIcon={<ShoppingCartIcon />} fullWidth>Go to Cart</Button>}
             </Stack>
             <Divider />
@@ -416,7 +433,7 @@ function ProductDetail() {
       <Divider />
       <ProdHeader />
       <Divider />
-      <ProductScroll name="Recommended" />
+      <ProductScroll name={productHeadingType.RECOMMENDED} />
 
       {/* {renderContactForm()} */}
       

@@ -1,3 +1,4 @@
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
@@ -165,11 +166,11 @@ function Drawer() {
           Filters
         </Typography>
         <Stack direction="row" className="fCenter fRow">
-          <Button variant="outlined" color="secondary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={() => { AppState.setFilters(filterInitailValue);setFilters(filterInitailValue) }}>
-            Clear Filters
+          <Button variant="contained" endIcon={<FilterAltIcon/>} color="secondary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={() => { AppState.setFilters(filterInitailValue);setFilters(filterInitailValue) }}>
+            Clear
           </Button>
-          <Button variant="outlined" color="primary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={getFilteredProducts}>
-            Apply Filters
+          <Button variant="contained" endIcon={<FilterAltIcon/>} color="primary" size="small" sx={{ alignSelf: "flex-end", marginTop: "20px" }} onClick={getFilteredProducts}>
+            Apply
           </Button>
         </Stack>
         <Divider sx={{ marginY: "20px" }} />

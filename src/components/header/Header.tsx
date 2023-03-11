@@ -13,7 +13,7 @@ import { Store } from "react-notifications-component";
 import { useNavigate } from "react-router-dom";
 import { GetAppState } from "../../AppContext";
 import logo from "../../assets/images/logo.png";
-import { drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
+import { AppConst, drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
 import BottomNav from "../bottomNavigation/BottomNav";
 
 
@@ -35,6 +35,7 @@ function Header() {
 
   const handleLogOut = async () => {
     await localStorage.removeItem("auth");
+    await sessionStorage.clear();
     AppState?.setAuthDetails(null);
     Store.addNotification({
       message: "Successfully logged out.",
@@ -48,8 +49,8 @@ function Header() {
         onScreen: true
       }
     });
-
     setIsLoggedIn(false);
+    window.location.reload();
 
   }
 
@@ -138,7 +139,7 @@ function Header() {
                 </IconButton>
               </Tooltip>}
 
-              {isLoggedIn && <Tooltip title="Logut" arrow>
+              {!AppConst.PathLogoutNotShown.includes(window.location.pathname) && isLoggedIn && <Tooltip title="Logut" arrow>
                 <IconButton onClick={()=>{handleLogOut();playSound()}} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white" }}>
                   <LogoutIcon />
                 </IconButton>

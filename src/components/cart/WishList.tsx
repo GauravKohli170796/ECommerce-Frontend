@@ -5,7 +5,7 @@ import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetAppState } from '../../AppContext';
-import { notificationType } from '../../constants/AppConst';
+import { notificationType, productHeadingType } from '../../constants/AppConst';
 import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { IWishListProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
@@ -127,7 +127,7 @@ function WishList() {
       {wishListProducts.length === 0  && renderEmptyWishList()}
       <Divider sx={{ marginY: "16px", width: "96vw" }} />
       <ProdHeader />
-      <ProductScroll name="Shop" />
+      <ProductScroll name={productHeadingType.SHOP} />
       <Footer />
     </>
 

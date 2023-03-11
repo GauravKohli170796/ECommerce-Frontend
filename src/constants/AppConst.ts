@@ -1,8 +1,9 @@
 export const AppConst = Object.freeze({
-   BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
+   BackendURL: "http://localhost:4000/",//"https://ecommerce-backend-repo-og97.onrender.com/",
    FrontendUrl: "https://kirans-sehgal-online-shop.onrender.com/",
    productsPerPage:10,
-   checkoutKey: "userCheckoutDetails"
+   checkoutKey: "userCheckoutDetails",
+   PathLogoutNotShown: ["/checkout","/user/shoppingCart","/user/wishList"]
 });
 
 
@@ -22,13 +23,13 @@ export enum drawerShowOptions {
 }
 
 export enum SIZES {
-   xs = "Extra Small",
-   s = "Small",
-   m = "Medium",
-   lg = "Large",
-   xl = "Extra Large",
-   xxl = "Double Extra Large",
-   fs = "Free Size"
+   xs = "xs",
+   s = "s",
+   m = "m",
+   lg = "l",
+   xl = "xl",
+   xxl = "xxl",
+   fs = "fs"
 }
 
 export enum notificationType {
@@ -36,6 +37,12 @@ export enum notificationType {
    WARNING = "warning",
    DANGER = "danger",
    SUCCESS= "success"
+ }
+
+ export enum productHeadingType{
+   LATEST = "Latest",
+   RECOMMENDED = "Recommended",
+   SHOP = "Shop"
  }
 
 

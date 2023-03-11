@@ -64,7 +64,7 @@ function WishList() {
 
   const renderWishListProducts = () => {
     return <>
-      <Typography className="section-head my-4" sx={{ fontSize: "25px" }}>
+      <Typography className="section-head my-4" sx={{ fontSize: "25px",marginLeft:"auto",marginRight:"auto" }}>
         My Wishlist
       </Typography>
       <Divider sx={{ marginY: "16px", width: "96vw" }} />

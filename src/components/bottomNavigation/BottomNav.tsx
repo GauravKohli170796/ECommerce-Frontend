@@ -2,10 +2,12 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { BottomNavigation } from '@mui/material';
+import { BottomNavigation, Button, Paper, Typography } from '@mui/material';
 import MuiBottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { styled } from "@mui/material/styles";
+import { Box, Stack } from '@mui/system';
 import React from 'react';
+import { confirmAlert } from 'react-confirm-alert';
 import { useNavigate } from "react-router-dom";
 import { GetAppState } from "../../AppContext";
 import { drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
@@ -24,6 +26,38 @@ function BottomNav() {
   const playSound = ()=>{
     sound.play();
   }
+
+  const showAlertMessage = ()=>{
+    confirmAlert({
+      customUI: ({ onClose }) => {
+          return (
+              <Paper elevation={10}>
+                  <Box className="fCol fCenter my-2" sx={{ padding: "32px"}}>
+                      <Typography variant="body2">To Use Cart or Wishist. Use need to Login First.</Typography>
+                      <Stack direction="row" spacing={2}>
+                          <Button size="small" onClick={() => {
+                              onClose();
+                              navigate("/auth/login")
+                          }} color="primary" variant="contained">Log In</Button>
+                          <Button size="small" onClick={() => {
+                              onClose();
+                          }} color="primary" variant="contained">Close</Button>
+                      </Stack>
+                  </Box>
+              </Paper>
+          );
+      }
+  });
+  };
+
+  const navigatetoPage = (urlPath: string)=>{
+    const auth = localStorage.getItem("auth");
+    if(!auth){
+      showAlertMessage();
+      return;
+    }
+       navigate(urlPath);
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -69,7 +103,7 @@ function BottomNav() {
           sx={{minWidth:"71px"}}
           onClick={() => {
             playSound();
-            navigate("/user/shoppingCart");
+            navigatetoPage("/user/shoppingCart");
           }}
           icon={<ShoppingCartIcon />}
         />
@@ -80,7 +114,7 @@ function BottomNav() {
           value="Wishlist"
           onClick={() => {
             playSound();
-            navigate("/user/wishList");
+            navigatetoPage("/user/wishList");
           }}
           icon={<FavoriteIcon />}
         />

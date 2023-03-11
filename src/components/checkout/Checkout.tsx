@@ -228,7 +228,7 @@ function Checkout() {
                             fullWidth
                             renderInput={(params) => <TextField {...params} label="Select from previous locations" />}
                         />
-                        <Typography className="section-head" variant="overline" fontSize="large">
+                        <Typography className="section-head selfCenter" variant="overline" fontSize="large">
                             Add New Address
                         </Typography>
                         <TextField
@@ -323,7 +323,7 @@ function Checkout() {
                             helperText={adressForm.errors.country}
                             autoComplete='new-password'
                         />
-                        <Typography className="section-head" variant="overline" fontSize="large">
+                        <Typography className="section-head selfCenter" variant="overline" fontSize="large">
                             Payment Method
                         </Typography>
                         <Paper elevation={5} className="p-2 my-2 mx-2">

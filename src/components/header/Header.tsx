@@ -6,9 +6,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { AppBar, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, Button, IconButton, Paper, Stack, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
+import { confirmAlert } from 'react-confirm-alert';
 import { Store } from "react-notifications-component";
 import { useNavigate } from "react-router-dom";
 import { GetAppState } from "../../AppContext";
@@ -53,6 +54,38 @@ function Header() {
     window.location.reload();
 
   }
+
+  const showAlertMessage = ()=>{
+    confirmAlert({
+      customUI: ({ onClose }) => {
+          return (
+              <Paper elevation={10}>
+                  <Box className="fCol fCenter my-2" sx={{ padding: "32px"}}>
+                      <Typography variant="body2">To Use Cart or Wishist. Use need to Login First.</Typography>
+                      <Stack direction="row" spacing={2}>
+                          <Button size="small" onClick={() => {
+                              onClose();
+                              navigate("/auth/login")
+                          }} color="primary" variant="contained">Log In</Button>
+                          <Button size="small" onClick={() => {
+                              onClose();
+                          }} color="primary" variant="contained">Close</Button>
+                      </Stack>
+                  </Box>
+              </Paper>
+          );
+      }
+  });
+  };
+
+  const navigatetoPage = (urlPath: string)=>{
+    const auth = localStorage.getItem("auth");
+    if(!auth){
+      showAlertMessage();
+      return;
+    }
+       navigate(urlPath);
+  };
 
   const playSound = ()=>{
     sound.play();
@@ -115,7 +148,7 @@ function Header() {
               <Tooltip title="My Cart" arrow>
                 <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white", display: { xs: "none", sm: "Inherit" } }} onClick={() => {
                   playSound();
-                  navigate("/user/shoppingCart");
+                  navigatetoPage("/user/shoppingCart");
                 }}>
                   <ShoppingCartIcon />
                 </IconButton>
@@ -124,7 +157,7 @@ function Header() {
               <Tooltip title="My WishList" arrow>
                 <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white", display: { xs: "none", sm: "Inherit" } }} onClick={() => {
                  playSound();
-                 navigate("/user/wishList");
+                 navigatetoPage("/user/wishList");
                 }}>
                   <FavoriteIcon />
                 </IconButton>

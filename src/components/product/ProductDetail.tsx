@@ -343,7 +343,7 @@ function ProductDetail() {
     try {
       await navigator.share(shareData)
     } catch (err) {
-      showNotificationMsg("Failed to share.",notificationType.DANGER);
+      console.error(err);
     }
   }
 

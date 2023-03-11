@@ -162,7 +162,7 @@ function Drawer() {
   const renderFliterComponent = () => {
     return (
       <Box sx={{ width: "86%", margin: "5px 5px", display: "flex", flexDirection: "column" }}>
-        <Typography className="section-head" sx={{ fontSize: "20px" }}>
+        <Typography className="section-head selfCenter" sx={{ fontSize: "20px" }}>
           Filters
         </Typography>
         <Stack direction="row" className="fCenter fRow">

@@ -34,7 +34,7 @@ function ProductScroll(prop: IProp) {
     return (
         <>
             {AppState?.initialProducts?.latestProduct && <><Box>
-                <Typography className="section-head" sx={{ fontSize: "25px" }}>
+                <Typography className="section-head" sx={{ fontSize: "25px",marginLeft:"auto",marginRight:"auto"  }}>
                     {`${prop.name} Products`}
                 </Typography>
             </Box>

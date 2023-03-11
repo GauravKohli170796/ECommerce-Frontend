@@ -95,7 +95,7 @@ function SignUp() {
 
         <Stack className='p-2' spacing={2}>
 
-          <Typography className="section-head" variant="overline" fontSize="large">
+          <Typography className="section-head selfCenter" variant="overline" fontSize="large">
             SignUp
           </Typography>
 

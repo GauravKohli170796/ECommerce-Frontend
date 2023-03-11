@@ -338,7 +338,7 @@ function ProductDetail() {
     const shareData = {
       title: `${productDetail.name}`,
       text: `${productDetail.description}`,
-      url: `${AppConst.FrontendUrl}/product/productDetail/${id}`
+      url: `${AppConst.FrontendUrl}product/productDetail/${id}`
     };
     try {
       await navigator.share(shareData)
@@ -382,7 +382,7 @@ function ProductDetail() {
           <Stack spacing={2}>
             <Stack direction="row" className='fRow' sx={{justifyContent:"space-between",alignItems:"center"}}>
             <Typography fontSize={24} className="leftText" variant="h3">{productDetail.name}</Typography>
-            <IconButton onClick={handleShare} sx={{justifySelf:"flex-end" , backgroundColor: "#9c27b0", color: "white", marginY: "8px" }}><ShareIcon /></IconButton>
+            <IconButton disableFocusRipple disableRipple onClick={handleShare} sx={{justifySelf:"flex-end" , backgroundColor: "#9c27b0", color: "white", marginY: "8px" }}><ShareIcon /></IconButton>
             </Stack>
             <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
             <Box sx={{ fontSize: "20px", textAlign: "left" }}>

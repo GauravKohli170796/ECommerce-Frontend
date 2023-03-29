@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
 import { AppConst, colorsWithCodes, notificationType, productHeadingType } from '../../constants/AppConst';
 import useCartWishListFetch from '../../hooks/useCartWishListFetch';
+import useLogInPopup from '../../hooks/useLogInPopup';
 import { ICartProductReq } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
 import { addCartItems, addWishListItem, getProductById } from "../../services/productServices";
@@ -50,6 +51,7 @@ function ProductDetail() {
   const navigate = useNavigate();
   const fetchCartWishProducts = useCartWishListFetch();
   const AppState = GetAppState();
+  const showAlertMessage = useLogInPopup();
 
   useEffect(() => {
     setIsAlreadyWishListed(false);
@@ -61,7 +63,7 @@ function ProductDetail() {
   const handleAddtoWishlist = async () => {
     const authDetails = localStorage.getItem("auth");
     if (!authDetails) {
-      showNotificationMsg("Please login to use Wishlist.", notificationType.WARNING);
+      showAlertMessage();
       return;
     };
     if (!id) {
@@ -85,7 +87,7 @@ function ProductDetail() {
     }
     const authDetails = localStorage.getItem("auth");
     if (!authDetails) {
-      showNotificationMsg("Please login to use Cart.", notificationType.WARNING);
+      showAlertMessage();
       return;
     };
     if (!id) {
@@ -417,7 +419,7 @@ function ProductDetail() {
             </Stack>
             <Divider />
             <Stack direction="row" spacing={2}>
-              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="outlined" endIcon={<FavoriteIcon />} fullWidth>Wishlist</Button>}
+              {!isAlreadyWishlisted && <Button color="secondary" onClick={handleAddtoWishlist} variant="outlined" endIcon={<FavoriteIcon />} fullWidth>Add to Wishlist</Button>}
               {isAlreadyWishlisted && <Button color="secondary" onClick={() => { navigate("/user/wishlist") }} variant="contained" endIcon={<FavoriteIcon />} fullWidth>Go to Wishlist</Button>}
 
               {!isAlreadyCartItem && <Button color="secondary" onClick={handleAddtoCart} variant="outlined" endIcon={<ShoppingCartIcon />} fullWidth>Add to Cart</Button>}

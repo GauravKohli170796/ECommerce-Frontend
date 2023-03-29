@@ -16,7 +16,7 @@ function ProductScroll(prop: IProp) {
     const AppState = GetAppState();
 
     const renderLatestProducts = () => {
-        let products = AppState?.initialProducts?.latestProduct;
+        let products = [...AppState?.initialProducts?.latestProduct];
         if(prop.name!==productHeadingType.LATEST){
             products = products.reverse();
         }

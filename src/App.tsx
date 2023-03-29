@@ -6,7 +6,9 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import { GetAppState } from "./AppContext";
 import AdminController from "./components/adminController/AdminController";
+import ChangePassword from "./components/auth/ChangePassword";
 import Login from "./components/auth/Login";
+import Otp from "./components/auth/Otp";
 import SignUp from "./components/auth/SignUp";
 import CartList from "./components/cart/CartList";
 import WishList from "./components/cart/WishList";
@@ -15,6 +17,7 @@ import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
 import AllProducts from "./components/product/AllProducts";
 import ProductDetail from "./components/product/ProductDetail";
+import { notificationType } from "./constants/AppConst";
 import { axiosInstance } from "./services/axiosInstance";
 import { showNotificationMsg } from "./services/createNotification";
 
@@ -39,7 +42,7 @@ function App() {
     },
     error => {
       AppState?.setLoading(false);
-      showNotificationMsg(error.response?.data?.message || "Something went wrong.");
+      showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
     });
     
   const theme = createTheme({
@@ -113,6 +116,12 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/checkout" element={<Checkout />} />
+        </Routes>
+        <Routes>
+          <Route path="/auth/get-otp" element={<Otp />} />
+        </Routes>
+        <Routes>
+          <Route path="/auth/change-password" element={<ChangePassword />} />
         </Routes>
       </ThemeProvider>
     </div>

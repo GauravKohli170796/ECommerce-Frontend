@@ -22,7 +22,17 @@ export interface ILoginDetails{
     token: string
 }
 
+export enum EmailTypes {
+    SIGNUP = "SIGNUP",
+    FORGET_PASSWORD = "FORGET_PASSWORD"
+  }
+
 export interface IEmailBody {
     email: string;
-    type: string;
+    type: EmailTypes;
+    otp: string;
   }
+
+  export  interface IModelId {
+    _id: string
+}

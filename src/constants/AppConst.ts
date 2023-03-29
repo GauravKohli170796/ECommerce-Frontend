@@ -1,5 +1,5 @@
 export const AppConst = Object.freeze({
-   BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
+   BackendURL: "http://localhost:4000/",//"https://ecommerce-backend-repo-og97.onrender.com/",
    FrontendUrl: "https://kirans-sehgal-online-shop.onrender.com/",
    productsPerPage:10,
    checkoutKey: "userCheckoutDetails",
@@ -30,6 +30,11 @@ export enum SIZES {
    xl = "xl",
    xxl = "xxl",
    fs = "fs"
+}
+
+export enum otpTypes{
+   FORGOT_PASSWORD = "FORGOT_PASSWORD",
+   SIGN_UP = "SIGN_UP"
 }
 
 export enum notificationType {

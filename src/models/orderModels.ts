@@ -17,7 +17,6 @@ export interface IProductDetails {
 }
 
 export interface IAddOrderRequest{
-    email: string,
     addressId: string,
     productIds: string[],
     productDetails: IProductDetails[];

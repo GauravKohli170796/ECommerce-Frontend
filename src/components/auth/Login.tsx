@@ -7,17 +7,21 @@ import { Box } from '@mui/system';
 import { useGoogleLogin } from '@react-oauth/google';
 import { AxiosResponse } from 'axios';
 import { useFormik } from "formik";
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
+import { notificationType } from '../../constants/AppConst';
+import { IForgotPasswordForm, ILogInForm } from '../../models/authModels';
+import { EmailTypes } from '../../models/commanModel';
+import { checkUser } from '../../services/authService';
 import { axiosInstance } from '../../services/axiosInstance';
+import { showNotificationMsg } from '../../services/createNotification';
 
-interface ILogInForm {
-  email: string;
-  password: string;
-}
+
 function Login() {
+  const [isForgotPassword, setIsForgotPassword] = useState<boolean>(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const authToken = localStorage.getItem("auth");
@@ -41,6 +45,10 @@ function Login() {
       if (response.data.token) {
         localStorage.setItem("auth", response.data.token);
         setTimeout(() => {
+          if(location.state?.path){
+            navigate(location.state.path);
+            return;
+          }
           navigate("/product/showProducts");
         }, 10);
       }
@@ -64,16 +72,36 @@ function Login() {
       if (data.token) {
         localStorage.setItem("auth", data.token);
         setTimeout(() => {
+          if(location.state?.path){
+            navigate(location.state.path);
+            return;
+          }
           navigate("/product/showProducts");
         }, 10)
       }
     }
   });
 
-  return (
-    <Box sx={{display:"flex",alignContent:"center",width:"100vw",height:"100vh"}} className="mixBackground">
+  const forgotPasswordForm = useFormik<IForgotPasswordForm>({
+    initialValues: {
+      email: ""
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Must be valid email").required("Please fill Email field"),
+    }),
+    onSubmit: async (values: IForgotPasswordForm) => {
+     const {data} = await checkUser(values.email);
+     if(!data.password){
+      showNotificationMsg('You have signup using google oAuth. Cannot reset your password.', notificationType.WARNING);
+      return;
+     }
+     navigate('/auth/get-otp', { state: {email: values.email, type: EmailTypes.FORGET_PASSWORD} });
+  }});
 
-      <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={loginForm.handleSubmit}>
+  return (
+    <Box sx={{ display: "flex", alignContent: "center", width: "100vw", height: "100vh" }} className="mixBackground">
+
+      {!isForgotPassword && <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={loginForm.handleSubmit}>
         <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
 
           <Stack className='p-2' spacing={2}>
@@ -128,7 +156,7 @@ function Login() {
             <Stack spacing={2}>
 
               <Stack className='fCenter' direction="row" spacing={2} >
-                <Typography component="span" variant="subtitle2">Already have a account?</Typography>
+                <Typography component="span" variant="subtitle2">Dont have a account?</Typography>
                 <Link className='link' to="/auth/signup">
                   Signup
                 </Link>
@@ -140,11 +168,54 @@ function Login() {
                   Shopping
                 </Link>
               </Stack>
+              <Button variant='text' onClick={() => setIsForgotPassword(true)} color="secondary">Forgot Password</Button>
+
+
             </Stack>
 
           </Stack>
         </Paper>
-      </form>
+      </form>}
+
+      {isForgotPassword && <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={forgotPasswordForm.handleSubmit}>
+        <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
+
+          <Stack className='p-2' spacing={2}>
+
+            <Typography className="section-head selfCenter" variant="overline" fontSize="large">
+              Forgot Password
+            </Typography>
+
+            <TextField
+              color="secondary"
+              error={(forgotPasswordForm.touched.email && forgotPasswordForm.errors.email && true) || false}
+              label="Email"
+              helperText={forgotPasswordForm.errors.email}
+              onBlur={forgotPasswordForm.handleBlur}
+              onChange={forgotPasswordForm.handleChange}
+              name="email"
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Button disabled={!(forgotPasswordForm.dirty && forgotPasswordForm.isValid)} type="submit" fullWidth variant="contained" endIcon={<LoginIcon />}>Get Otp</Button>
+            <Stack spacing={2}>
+
+              <Stack className='fCenter' direction="row" spacing={2} >
+                <Typography component="span" variant="subtitle2">Remember Password?</Typography>
+                <Button color="secondary" variant='text' onClick={() => { setIsForgotPassword(false) }}>LogIn</Button>
+              </Stack>
+            </Stack>
+
+          </Stack>
+        </Paper>
+      </form>}
     </Box>
   )
 }

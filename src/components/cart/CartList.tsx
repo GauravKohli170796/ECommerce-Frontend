@@ -33,14 +33,14 @@ function CartList() {
       return;
     }
     async function getcartProducts() {
-      const  data  = await fetchCartProducts();
-        if (data?.cartList.length) {
-          setCartProducts(data.cartList);
-        }
+      const data = await fetchCartProducts();
+      if (data?.cartList.length) {
+        setCartProducts(data.cartList);
       }
+    }
     getcartProducts();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
 
@@ -106,9 +106,14 @@ function CartList() {
 
   const renderWishListProducts = () => {
     return <>
-      <Typography className="section-head my-4 centerAuto" sx={{ fontSize: "25px",marginLeft:"auto",marginRight:"auto"  }}>
+      <Typography className="section-head my-4 centerAuto" sx={{ fontSize: "25px", marginLeft: "auto", marginRight: "auto" }}>
         My Cart
       </Typography>
+      <Box className="fCol fCenter">
+        <Box sx={{ width: { xs: "98%", md: "60%"} }}>
+          <Button variant="contained" size="small" color="secondary" sx={{float:"right",marginY:"16px"}} endIcon={<DeleteIcon />}>Clear Cart</Button>
+        </Box>
+      </Box>
       <Divider sx={{ marginY: "16px", width: "96vw" }} />
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         {cartProducts && cartProducts.map((item) => {
@@ -160,47 +165,47 @@ function CartList() {
     </>
   };
 
-  const handleUserCheckout = ()=>{
-     sessionStorage.removeItem(AppConst.checkoutKey);
-     sessionStorage.setItem(AppConst.checkoutKey,JSON.stringify(cartProducts));
-     navigate("/checkout");
+  const handleUserCheckout = () => {
+    sessionStorage.removeItem(AppConst.checkoutKey);
+    sessionStorage.setItem(AppConst.checkoutKey, JSON.stringify(cartProducts));
+    navigate("/checkout");
   };
 
   const renderCartCheckout = () => {
     return <Box sx={{ width: { xs: "98%", md: "60%" } }}>
-      <Typography variant="h6" sx={{marginY:"16px"}}>Checkout Details</Typography>
+      <Typography variant="h6" sx={{ marginY: "16px" }}>Checkout Details</Typography>
       <TableContainer component={Paper}>
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
               {["S.No", "Price", "Quantity", "Total Price"].map((heading: string) => (
-                <TableCell key={heading} sx={{ backgroundColor: "#ba68c8", color: "white" ,fontWeight:"bold"}} align="center">{heading}</TableCell>
+                <TableCell key={heading} sx={{ backgroundColor: "#ba68c8", color: "white", fontWeight: "bold" }} align="center">{heading}</TableCell>
               )
 
               )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {cartProducts.map((cartItem,index)=>{
-            totalPrice+=parseInt(cartItem.quantity.toString()) * cartItem.productId.price
-            return <TableRow key={cartItem._id}>
-              <TableCell align="center">{index+1}</TableCell>
-              <TableCell align="center">{cartItem.productId.price}</TableCell>
-              <TableCell align="center">{cartItem.quantity}</TableCell>
-              <TableCell align="center">{parseInt(cartItem.quantity.toString()) * cartItem.productId.price}</TableCell>
-            </TableRow>
+            {cartProducts.map((cartItem, index) => {
+              totalPrice += parseInt(cartItem.quantity.toString()) * cartItem.productId.price
+              return <TableRow key={cartItem._id}>
+                <TableCell align="center">{index + 1}</TableCell>
+                <TableCell align="center">{cartItem.productId.price}</TableCell>
+                <TableCell align="center">{cartItem.quantity}</TableCell>
+                <TableCell align="center">{parseInt(cartItem.quantity.toString()) * cartItem.productId.price}</TableCell>
+              </TableRow>
 
-           })}
+            })}
             <TableRow>
               <TableCell align="center"></TableCell>
               <TableCell align="center"></TableCell>
-              <TableCell align="center" sx={{fontWeight:"bold"}}>To Pay</TableCell>
-              <TableCell align="center" sx={{fontWeight:"bold"}}>{totalPrice}</TableCell>
+              <TableCell align="center" sx={{ fontWeight: "bold" }}>To Pay</TableCell>
+              <TableCell align="center" sx={{ fontWeight: "bold" }}>{totalPrice}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
-      <Button sx={{float:"right",marginY:"16px"}} variant="contained" color="secondary" startIcon={<GradingIcon/>} onClick={handleUserCheckout}>Checkout</Button>
+      <Button sx={{ float: "right", marginY: "16px" }} variant="contained" color="secondary" startIcon={<GradingIcon />} onClick={handleUserCheckout}>Checkout</Button>
     </Box>
   }
 

@@ -1,4 +1,5 @@
 import { GetAppState } from '../AppContext';
+import { notificationType } from '../constants/AppConst';
 import { AxiosProtectedInstance } from '../services/axiosInstance';
 import { showNotificationMsg } from '../services/createNotification';
 import { getCartItems, getWishListItems } from '../services/productServices';
@@ -63,7 +64,7 @@ function useCartWishListFetch() {
           },
           error => {
             AppState?.setLoading(false);
-            showNotificationMsg(error.response?.data?.message || "Something went wrong.");
+            showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
           });
     }
 

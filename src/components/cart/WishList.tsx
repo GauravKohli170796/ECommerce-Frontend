@@ -67,6 +67,11 @@ function WishList() {
       <Typography className="section-head my-4" sx={{ fontSize: "25px",marginLeft:"auto",marginRight:"auto" }}>
         My Wishlist
       </Typography>
+      <Box className="fCol fCenter">
+        <Box sx={{ width: { xs: "98%", md: "60%"} }}>
+          <Button variant="contained" size="small" color="secondary" sx={{float:"right",marginY:"16px"}} endIcon={<DeleteIcon />}>Clear Wishlist</Button>
+        </Box>
+      </Box>
       <Divider sx={{ marginY: "16px", width: "96vw" }} />
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         {wishListProducts && wishListProducts.map((item) => {

@@ -10,15 +10,16 @@ import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
 import { AppConst, notificationType } from '../../constants/AppConst';
 import { IAddressInfo } from '../../models/addressModel';
+import { IAddOrderRequest, ORDER_STATUS } from '../../models/orderModels';
 import { ICartProduct } from '../../models/productModel';
 import { addUserAddress, fetchUserAddress, updateUserAddress } from '../../services/addressService';
 import { showNotificationMsg } from '../../services/createNotification';
-import { sendEmail } from '../../services/emailService';
+import { addOrder } from '../../services/orderService';
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 
 interface IAddressForm {
-    _id?: "";
+    _id?: string;
     addressLine1: string;
     addressLine2: string;
     pinCode: string;
@@ -79,7 +80,8 @@ function Checkout() {
         }),
         onSubmit: async (values: IAddressForm) => {
             if (!values._id) {
-                await addUserAddress(values);
+                const newAddress = await addUserAddress(values);
+                values._id = newAddress.data._id;
                 handleOrderDetail(values);
                 return;
             }
@@ -88,12 +90,13 @@ function Checkout() {
         }
     });
 
-    const showOrderMessage = () => {
+    const showOrderMessage = (orderId: string) => {
         confirmAlert({
             customUI: ({ onClose }) => {
                 return (
                     <Paper elevation={10}>
                         <Box className="fCol fCenter my-2" sx={{ padding: "32px" }}>
+                            <Typography variant='body2'> {`Your order id is ${orderId}`}</Typography>
                             <Typography variant="body2">Your request is send to product owner via email.Please check your email for order details.Product owners will contact you soon on your provided contact details.Please follow emails for further communication.</Typography>
                             <Stack direction="row" spacing={2}>
                                 <Button size="small" onClick={() => {
@@ -109,84 +112,32 @@ function Checkout() {
     };
 
     const handleOrderDetail = async (addressDetails: IAddressForm) => {
-        const htmlForMail = formHtmlMail(addressDetails);
-        if (!htmlForMail) {
+        const checkoutDetails = sessionStorage.getItem(AppConst.checkoutKey);
+        if (!addressDetails._id || !checkoutDetails) {
+            showNotificationMsg("Something went wrong.Please try again",notificationType.WARNING);
             return;
-        }
-        const response = await sendEmail({ type: "order", email: htmlForMail });
-        if (!response.data) {
-            showNotificationMsg("Failed to send order details.", notificationType.DANGER);
-        }
-        else {
-            showOrderMessage();
-        }
-
-    };
-
-    const formHtmlMail = (addressDetails: IAddressForm) => {
-        const cartDetails: ICartProduct[] = JSON.parse(sessionStorage.getItem(AppConst.checkoutKey) || "");
-        if (Object.keys(cartDetails).length === 0) {
-            return null;
         };
-
-        let html = `<!DOCTYPE html>
-                    <html>
-                    <head>
-                    <style>
-                            table {
-                            font-family: arial, sans-serif;
-                            border-collapse: collapse;
-                            width: 100%;
-                            }
-                            
-                            td, th {
-                            border: 1px solid #dddddd;
-                            text-align: left;
-                            padding: 8px;
-                            }
-                            
-                            tr:nth-child(even) {
-                            background-color: #dddddd;
-                            }
-                    </style>
-                    </head>
-                    <body>
-        
-                        <p>Hello Kiran ! One customer is interested in your products.</p>
-                        <p>Below are contact details of customer.</p>
-                        
-                        <ul>
-                        <li>Email: {%Email%}</li>
-                        <li>Address Line 1: ${addressDetails.addressLine1}</li>
-                        <li>Address Line 2: ${addressDetails.addressLine2}</li>
-                        <li>Pincode: ${addressDetails.pinCode}</li>
-                        <li>City: ${addressDetails.city}</li>
-                        <li>State: ${addressDetails.state}</li>
-                        <li>Phone: ${addressDetails.phoneNumber}</li>
-                        </ul>  
-                        
-                        <p>Below are products summary in which he/she is interested. You can click on Product Id to see product.</p>
-                        <table>
-                        <tr>
-                            <th>Product Id</th>
-                            <th>Quantity</th>
-                            <th>Total Price</th>
-                        </tr>`;
-
-        for (const cartItem of cartDetails) {
-            html += `<tr>
-                                <td><a href=${AppConst.FrontendUrl}product/productDetail/${cartItem.productId._id}>${cartItem.productId._id}</a></td>
-                                <td>${cartItem.quantity}</td>
-                                <td>${parseInt(cartItem.quantity.toString()) * parseInt(cartItem.productId.price.toString())}</td>
-                            </tr>`
+        let orderDetails: IAddOrderRequest = {
+            addressId: addressDetails._id,
+            productIds: [],
+            productDetails: [],
+            orderStatus: ORDER_STATUS.NotAccepted
+        };
+        const checkoutDetailsJson: ICartProduct[] = JSON.parse(checkoutDetails);
+        for (let item of checkoutDetailsJson) {
+            orderDetails.productIds.push(item.productId._id);
+            orderDetails.productDetails.push({
+                productId: item.productId._id,
+                quantity: parseInt(item.quantity.toString()),
+                price: item.productId.price,
+                color: item.color,
+                size: item.size
+            })
         }
+        const {data} = await addOrder(orderDetails);
+        AppState.setCartList([]);
+        showOrderMessage(data._id);
 
-        html += `</table>
-                        <p>Please connect with this customer on his/her contact details.</p>
-                    </body>
-                    </html>`;
-
-        return html;
     };
 
     const handleAddressSelection = (addressInfo: IAddressInfo | null) => {

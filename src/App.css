@@ -63,6 +63,8 @@ body{
 }
 
 
+
+
 .section-head{
   color:#9c27b0;
   text-underline-offset: 5px;
@@ -212,6 +214,10 @@ body{
   align-items: flex-end;
 }
 
+.right{
+  float: right;
+}
+
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #FFFFFF inset;
 }
@@ -270,9 +276,17 @@ input:-webkit-autofill {
   margin: 0px 0px;
 
 }
+.font-20{
+ font-size: 20px;
+}
 
 .prodImage {
   height:510px
+}
+.otpInput{
+  height: 45px;
+  width: 70px;
+  text-align: center;
 }
 
 @media screen and (max-width: 800px) {

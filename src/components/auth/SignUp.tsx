@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
+import { EmailTypes } from '../../models/commanModel';
 import { axiosInstance } from '../../services/axiosInstance';
 
 
@@ -73,19 +74,8 @@ function SignUp() {
     }),
 
     onSubmit: async (values: ISignUpForm) => {
-      const { data } = await axiosInstance.post(`api/v1/auth/Signup`, {
-        email: values.email,
-        password: values.password,
-        name: values.name,
-        phoneNumber: values.phoneNumber
-
-      });
-      if (data.token) {
-        localStorage.setItem("auth", data.token);
-        setTimeout(()=>{
-          navigate("/product/showProducts");
-        },10)
-      }
+      sessionStorage.setItem("signupDetails",JSON.stringify(values));
+      navigate('/auth/get-otp', { state: {email: values.email, type: EmailTypes.SIGNUP} });
     }
   })
   return (

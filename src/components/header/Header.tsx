@@ -6,15 +6,15 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { AppBar, Button, IconButton, Paper, Stack, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import { confirmAlert } from 'react-confirm-alert';
 import { Store } from "react-notifications-component";
 import { useNavigate } from "react-router-dom";
 import { GetAppState } from "../../AppContext";
 import logo from "../../assets/images/logo.png";
 import { AppConst, drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
+import useLogInPopup from '../../hooks/useLogInPopup';
 import BottomNav from "../bottomNavigation/BottomNav";
 
 
@@ -23,6 +23,7 @@ function Header() {
   const sound = new Audio("/clickSound.mp3");
   const navigate = useNavigate();
   const AppState = GetAppState();
+  const showAlertMessage = useLogInPopup();
 
   useEffect(() => {
     async function checkLogInStatus() {
@@ -54,29 +55,6 @@ function Header() {
     window.location.reload();
 
   }
-
-  const showAlertMessage = ()=>{
-    confirmAlert({
-      customUI: ({ onClose }) => {
-          return (
-              <Paper elevation={10}>
-                  <Box className="fCol fCenter my-2" sx={{ padding: "32px"}}>
-                      <Typography variant="body2">To Use Cart or Wishist. Use need to Login First.</Typography>
-                      <Stack direction="row" spacing={2}>
-                          <Button size="small" onClick={() => {
-                              onClose();
-                              navigate("/auth/login")
-                          }} color="primary" variant="contained">Log In</Button>
-                          <Button size="small" onClick={() => {
-                              onClose();
-                          }} color="primary" variant="contained">Close</Button>
-                      </Stack>
-                  </Box>
-              </Paper>
-          );
-      }
-  });
-  };
 
   const navigatetoPage = (urlPath: string)=>{
     const auth = localStorage.getItem("auth");

@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { IEmailBody } from "../models/commanModel";
-import { AxiosProtectedInstance } from "./axiosInstance";
+import { axiosInstance } from "./axiosInstance";
 
 export const sendEmail = async(emailBody:IEmailBody): Promise<AxiosResponse<boolean>>=>{
-    return await new AxiosProtectedInstance().getInstance().post(`api/v1/email/send-email`,emailBody); 
+    return await axiosInstance.post(`api/v1/email/send-otp`,emailBody); 
 }

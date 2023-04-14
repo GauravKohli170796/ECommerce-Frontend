@@ -1,7 +1,5 @@
 import { GetAppState } from '../AppContext';
-import { notificationType } from '../constants/AppConst';
-import { AxiosProtectedInstance } from '../services/axiosInstance';
-import { showNotificationMsg } from '../services/createNotification';
+import { AppConst } from '../constants/AppConst';
 import { getCartItems, getWishListItems } from '../services/productServices';
 
 function useCartWishListFetch() {
@@ -11,13 +9,12 @@ function useCartWishListFetch() {
          let wishList = null;
          let cartList = null; 
 
-         const token = localStorage.getItem("auth");
+         const token = localStorage.getItem(AppConst.storageKeys.accessToken);
          if(!token){
             return;
          }
 
         if (!AppState.wishList) {
-           setAxiosProtectedinstanceInterceptors(); 
            wishList = await fetchWishListProducts();
         }
         else{
@@ -48,24 +45,6 @@ function useCartWishListFetch() {
         const {data} = await getCartItems();
         AppState.setCartList(data)
         return data;
-    }
-
-    const setAxiosProtectedinstanceInterceptors = () =>{
-        new AxiosProtectedInstance().getInstance().interceptors.request.use((config) => {
-            AppState?.setLoading(true);
-            return config;
-          }, (error) => {
-            return Promise.reject(error);
-          });  
-          new AxiosProtectedInstance().getInstance().interceptors.response.use(
-          response => {
-            AppState?.setLoading(false);
-            return response
-          },
-          error => {
-            AppState?.setLoading(false);
-            showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
-          });
     }
 
     return fetchCartWishListProducts;

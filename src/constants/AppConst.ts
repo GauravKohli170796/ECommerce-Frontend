@@ -2,34 +2,28 @@ export const AppConst = Object.freeze({
    BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
    FrontendUrl: "https://kirans-sehgal-online-shop.onrender.com/",
    productsPerPage:10,
-   checkoutKey: "userCheckoutDetails",
-   PathLogoutNotShown: ["/checkout","/user/shoppingCart","/user/wishList"]
+   PathLogoutNotShown: ["/manage-address","/user/shoppingCart","/user/wishList"],
+   storageKeys:{
+      accessToken: "ACCESS_TOKEN",
+      refreshToken: "REFRESH_TOKEN",
+      checkoutKey: "USER_CHECKOUT_DETAILS"
+   }
 });
 
-
-export const filterInitailValue = {
-   price: [0,8000],
-   categories: [],
-   priceSort: false,
-   ratingSort:false,
-   discountSort:false
- }
-
 export enum drawerShowOptions {
-   filter = "filter",
-   search = "search",
-   menu = "menu",
-   default= "nothing"
+   FILTER = "filter",
+   SEARCH = "search",
+   DEFAULT= "nothing"
 }
 
-export enum SIZES {
-   xs = "xs",
-   s = "s",
-   m = "m",
-   lg = "l",
-   xl = "xl",
-   xxl = "xxl",
-   fs = "fs"
+export enum sizes {
+   XS = "xs",
+   S = "s",
+   M = "m",
+   LG = "l",
+   XL = "xl",
+   XXL = "xxl",
+   FS = "fs"
 }
 
 export enum otpTypes{
@@ -192,4 +186,12 @@ export enum notificationType {
    WhiteSmoke	:"#F5F5F5",
    Yellow	:"#FFFF00",
    YellowGreen	:"#9ACD32"
+ }
+
+ export const filterInitailValue = {
+   price: [0,8000],
+   categories: [],
+   priceSort: false,
+   ratingSort:false,
+   discountSort:false
  }

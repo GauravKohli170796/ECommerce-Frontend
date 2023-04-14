@@ -11,7 +11,7 @@ function useLogInPopup() {
                 return (
                     <Paper elevation={10}>
                         <Box className="fCol fCenter my-2" sx={{ padding: "32px" }}>
-                            <Typography variant="caption">Facilities like Cart and Wishlist are available only after logIn. Please Login First. </Typography>
+                            <Typography variant="caption">Functionalities like Cart and Wishlist are available only after Login. Please Login First. </Typography>
                             <Stack direction="row" spacing={2}>
                                 <Button size="small" color="secondary" onClick={() => {
                                     onClose();

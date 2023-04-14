@@ -139,6 +139,10 @@ function Drawer() {
   };
 
   const getFilteredProducts= ()=>{
+    if(filters.price[0]> filters.price[1]){
+         showNotificationMsg("Price lower limit should be less than higher limit in filters.",notificationType.WARNING);
+         return;
+    }
     const Appfilters = Object.assign({},filters);
     AppState.setFilters(Appfilters);
     navigation("/product/showProducts")
@@ -259,8 +263,8 @@ function Drawer() {
       <Box sx={{ display: "flex", alignItems: "center", flexDirection: "column",overflowX:"clip", width: { xs: "75vw", md: "25vw" } }}>
         <img src={logo} height="60px" style={{ margin: "30px 0px 30px 0px" }} alt="Website Logo" />
         <Divider />
-        {AppState?.drawerOption === drawerShowOptions.filter && renderFliterComponent()}
-        {AppState?.drawerOption === drawerShowOptions.search && renderSearchComponent()}
+        {AppState?.drawerOption === drawerShowOptions.FILTER && renderFliterComponent()}
+        {AppState?.drawerOption === drawerShowOptions.SEARCH && renderSearchComponent()}
       </Box>
     </SwipeableDrawer>
   );

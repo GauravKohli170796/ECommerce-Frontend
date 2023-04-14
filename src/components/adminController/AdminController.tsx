@@ -13,7 +13,7 @@ function AdminController() {
         <>
         <Header/>
         <Box className="fCenter fCol my-2 mx-2">
-            <Typography className="section-head my-2 font-20">
+            <Typography variant='h6' className="section-head my-2 font-20">
                 Product
             </Typography>
 

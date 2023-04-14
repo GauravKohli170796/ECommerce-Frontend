@@ -1,10 +1,12 @@
 import { createTheme, ThemeProvider } from "@mui/material";
+import axios, { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 import React, { useEffect } from "react";
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import { GetAppState } from "./AppContext";
+import AddressOrder from "./components/address/Address";
 import AdminController from "./components/adminController/AdminController";
 import ChangePassword from "./components/auth/ChangePassword";
 import Login from "./components/auth/Login";
@@ -12,29 +14,30 @@ import Otp from "./components/auth/Otp";
 import SignUp from "./components/auth/SignUp";
 import CartList from "./components/cart/CartList";
 import WishList from "./components/cart/WishList";
-import Checkout from "./components/checkout/Checkout";
 import Drawer from "./components/drawer/Drawer";
 import Loader from "./components/loader/Loader";
+import Orders from "./components/order/Orders";
 import AllProducts from "./components/product/AllProducts";
 import ProductDetail from "./components/product/ProductDetail";
-import { notificationType } from "./constants/AppConst";
-import { axiosInstance } from "./services/axiosInstance";
+import { AppConst, notificationType } from "./constants/AppConst";
+import { renewAccessToken } from "./services/authService";
+import { axiosInstance, axiosProtectedInstance } from "./services/axiosInstance";
 import { showNotificationMsg } from "./services/createNotification";
 
 function App() {
   const AppState = GetAppState();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [navigate])
+
   axiosInstance.interceptors.request.use((config) => {
     AppState?.setLoading(true);
     return config;
   }, (error) => {
     return Promise.reject(error);
   });
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [navigate])
-
   axiosInstance.interceptors.response.use(
     response => {
       AppState?.setLoading(false);
@@ -44,7 +47,45 @@ function App() {
       AppState?.setLoading(false);
       showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
     });
-    
+
+  axiosProtectedInstance.interceptors.request.use(
+    (config: AxiosRequestConfig) => {
+      const authToken = localStorage.getItem(AppConst.storageKeys.accessToken);
+      if (authToken) {
+        (config.headers as AxiosRequestHeaders)["Authorization"] = `Bearer ${authToken}`;
+      }
+      AppState?.setLoading(true);
+      return config;
+    },
+    (error) => {
+      AppState?.setLoading(false);
+      showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
+    });
+
+  axiosProtectedInstance.interceptors.response.use(
+    response => {
+      AppState?.setLoading(false);
+      return response
+    },
+    async (error) => {
+      if (error.response.data.status === 401 && error.response.data.message === "jwt expired") {
+        const refreshToken = localStorage.getItem(AppConst.storageKeys.refreshToken);
+        if (!refreshToken) {
+          AppState?.setLoading(false);
+          showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
+          return;
+        }
+        const { data } = await renewAccessToken(refreshToken);
+        localStorage.setItem(AppConst.storageKeys.accessToken, data);
+        error.response.config.headers!.Authorization = `Bearer ${data}`;
+        return axios(error.response.config);
+      }
+      else {
+        AppState?.setLoading(false);
+        showNotificationMsg(error.response?.data?.message || "Something went wrong.", notificationType.DANGER);
+      }
+    });
+
   const theme = createTheme({
     components: {
       MuiInputLabel: {
@@ -59,16 +100,17 @@ function App() {
         styleOverrides: {
           staticTooltipLabel: {
             backgroundColor: '#9c27b0',
-            color: "white"
+            color: "white",
+            whiteSpace: "nowrap"
           },
         }
       },
-     MuiButton:{
-      defaultProps:{
-        disableRipple:true,
-        disableTouchRipple:true
+      MuiButton: {
+        defaultProps: {
+          disableRipple: true,
+          disableTouchRipple: true
+        }
       }
-     } 
     },
     typography: {
       fontFamily: [
@@ -115,7 +157,7 @@ function App() {
           <Route path="/admin/adminController" element={<AdminController />} />
         </Routes>
         <Routes>
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/manage-address" element={<AddressOrder />} />
         </Routes>
         <Routes>
           <Route path="/auth/get-otp" element={<Otp />} />
@@ -123,6 +165,12 @@ function App() {
         <Routes>
           <Route path="/auth/change-password" element={<ChangePassword />} />
         </Routes>
+        <Routes>
+          <Route path="/orders/my-orders" element={<Orders />} />
+        </Routes>
+        {/* <Routes>
+          <Route path="*" element={<AllProducts />} />
+        </Routes> */}
       </ThemeProvider>
     </div>
   );

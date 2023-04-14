@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
-import { notificationType } from '../../constants/AppConst';
+import { AppConst, notificationType } from '../../constants/AppConst';
 import { IForgotPasswordForm, ILogInForm } from '../../models/authModels';
 import { EmailTypes } from '../../models/commanModel';
 import { checkUser } from '../../services/authService';
@@ -24,8 +24,8 @@ function Login() {
   const location = useLocation();
 
   useEffect(() => {
-    const authToken = localStorage.getItem("auth");
-    if (authToken) {
+    const accessToken = localStorage.getItem(AppConst.storageKeys.accessToken);
+    if (accessToken) {
       navigate("/product/showProducts");
     }
   }, [navigate]);
@@ -40,10 +40,11 @@ function Login() {
 
       const response: AxiosResponse = await axiosInstance.post(`api/v1/auth/GoogleAuth`, {
         email: data.email,
-        password: data.name
+        name: data.name
       });
-      if (response.data.token) {
-        localStorage.setItem("auth", response.data.token);
+      if (response.data.accessToken) {
+        localStorage.setItem(AppConst.storageKeys.accessToken, response.data.accessToken);
+        localStorage.setItem(AppConst.storageKeys.refreshToken, response.data.refreshToken);
         setTimeout(() => {
           if(location.state?.path){
             navigate(location.state.path);
@@ -69,8 +70,9 @@ function Login() {
         email: values.email,
         password: values.password
       });
-      if (data.token) {
-        localStorage.setItem("auth", data.token);
+      if (data.accessToken) {
+        localStorage.setItem(AppConst.storageKeys.accessToken, data.accessToken);
+        localStorage.setItem(AppConst.storageKeys.refreshToken, data.refreshToken);
         setTimeout(() => {
           if(location.state?.path){
             navigate(location.state.path);

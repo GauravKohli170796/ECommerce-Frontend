@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
+import { AppConst } from '../../constants/AppConst';
 import { EmailTypes } from '../../models/commanModel';
 import { axiosInstance } from '../../services/axiosInstance';
 
@@ -29,8 +30,8 @@ function SignUp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const authToken = localStorage.getItem("auth");
-    if (authToken) {
+    const accessToken = localStorage.getItem(AppConst.storageKeys.accessToken);
+    if (accessToken) {
       navigate("/product/showProducts");
     }
   }, [navigate]);
@@ -45,10 +46,12 @@ function SignUp() {
 
       const response: AxiosResponse = await axiosInstance.post(`api/v1/auth/GoogleAuth`, {
         email: data.email,
-        password: data.name
+        name: data.name
       });
-      if (response.data.token) {
-        localStorage.setItem("auth", response.data.token);
+      if (response.data.accessToken) {
+        localStorage.setItem(AppConst.storageKeys.accessToken, response.data.accessToken);
+        localStorage.setItem(AppConst.storageKeys.refreshToken, response.data.refreshToken);
+        
         setTimeout(()=>{
           navigate("/product/showProducts");
         },10)

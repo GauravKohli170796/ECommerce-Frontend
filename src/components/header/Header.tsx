@@ -1,13 +1,16 @@
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { AppBar, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, IconButton, SpeedDial, SpeedDialAction, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import jwt from 'jwt-decode';
 import React, { useEffect, useState } from "react";
 import { Store } from "react-notifications-component";
 import { useNavigate } from "react-router-dom";
@@ -15,11 +18,13 @@ import { GetAppState } from "../../AppContext";
 import logo from "../../assets/images/logo.png";
 import { AppConst, drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
 import useLogInPopup from '../../hooks/useLogInPopup';
+import { IUserDetails, eRole } from '../../models/authModels';
 import BottomNav from "../bottomNavigation/BottomNav";
 
 
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin , setIsAdmin] = useState(false);
   const sound = new Audio("/clickSound.mp3");
   const navigate = useNavigate();
   const AppState = GetAppState();
@@ -27,8 +32,12 @@ function Header() {
 
   useEffect(() => {
     async function checkLogInStatus() {
-      const authToken = await localStorage.getItem("auth");
-      if (authToken) {
+      const accessToken = await localStorage.getItem(AppConst.storageKeys.accessToken);
+      if (accessToken) {
+        const userDetails:IUserDetails = jwt<IUserDetails>(accessToken);
+        if(userDetails?.role === eRole.Admin){
+          setIsAdmin(true);
+        }
         setIsLoggedIn(true);
       }
     }
@@ -36,9 +45,11 @@ function Header() {
   }, [navigate]);
 
   const handleLogOut = async () => {
-    await localStorage.removeItem("auth");
+    await localStorage.removeItem(AppConst.storageKeys.accessToken);
+    await localStorage.removeItem(AppConst.storageKeys.refreshToken);
     await sessionStorage.clear();
-    AppState?.setAuthDetails(null);
+    AppState?.setCartList(null);
+    AppState?.setWishList(null);
     Store.addNotification({
       message: "Successfully logged out.",
       type: "info",
@@ -52,20 +63,19 @@ function Header() {
       }
     });
     setIsLoggedIn(false);
-    window.location.reload();
-
+    navigate("/product/showProducts")
   }
 
-  const navigatetoPage = (urlPath: string)=>{
-    const auth = localStorage.getItem("auth");
-    if(!auth){
+  const navigatetoPage = (urlPath: string) => {
+    const auth = localStorage.getItem(AppConst.storageKeys.accessToken);
+    if (!auth) {
       showAlertMessage();
       return;
     }
-       navigate(urlPath);
+    navigate(urlPath);
   };
 
-  const playSound = ()=>{
+  const playSound = () => {
     sound.play();
   }
 
@@ -77,9 +87,9 @@ function Header() {
   return (
     <>
       <Box sx={{ flexGrow: 1, marginBottom: "8px", position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000 }}>
-        <AppBar position="static" className="mixBackground">
+        <AppBar position="static" className="mixBackground" sx={{maxHeight:"90px"}}>
           <Toolbar>
-            <img style={{ padding: "16px" }} src={logo} onClick={() => { AppState.setFilters(filterInitailValue);navigate("/product/showProducts")}} height="55px" alt="Main logo"></img>
+            <img style={{ padding: "16px" }} src={logo} onClick={() => { AppState.setFilters(filterInitailValue); navigate("/product/showProducts") }} height="55px" alt="Main logo"></img>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
             <Box sx={{ display: "flex", flexDirection: "row", columnGap: "16px" }}>
               <Tooltip title="Shop" arrow>
@@ -102,7 +112,7 @@ function Header() {
                   size="small"
                   onClick={() => {
                     playSound();
-                    openDrawer(drawerShowOptions.filter);
+                    openDrawer(drawerShowOptions.FILTER);
                   }}
                   sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white", display: { xs: "none", sm: "Inherit" } }}
                 >
@@ -115,7 +125,7 @@ function Header() {
                   size="small"
                   onClick={() => {
                     playSound();
-                    openDrawer(drawerShowOptions.search);
+                    openDrawer(drawerShowOptions.SEARCH);
                   }}
                   sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white" }}
                 >
@@ -134,38 +144,109 @@ function Header() {
 
               <Tooltip title="My WishList" arrow>
                 <IconButton aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white", display: { xs: "none", sm: "Inherit" } }} onClick={() => {
-                 playSound();
-                 navigatetoPage("/user/wishList");
+                  playSound();
+                  navigatetoPage("/user/wishList");
                 }}>
                   <FavoriteIcon />
                 </IconButton>
               </Tooltip>
 
-              {isLoggedIn && <Tooltip title="Admin Controller" arrow>
-                <IconButton onClick={() => {
+            </Box>
+            <SpeedDial
+              direction="down"
+              ariaLabel="SpeedDial basic example"
+              sx={{ '& .MuiFab-primary': { width: 40, height: 40 },marginLeft:"8px",marginTop: isLoggedIn ? (isAdmin ? "238px" : "182px"):"70px"}}
+              icon={<MenuIcon />}
+              FabProps={{
+                sx: {
+                  bgcolor: 'secondary.main',
+                  '&:hover': {
+                    bgcolor: 'secondary.main',
+                  }
+                }
+              }}
+            >
+              {isLoggedIn &&<SpeedDialAction
+                tooltipOpen
+                key=" My Orders"
+                icon={<ShoppingBagIcon />}
+                tooltipTitle="My Orders"
+                onClick={() => {
                   playSound();
-                  navigate('/admin/adminController');
-                }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white", }}>
-                  <AdminPanelSettingsIcon />
-                </IconButton>
-              </Tooltip>}
-
-              {!AppConst.PathLogoutNotShown.includes(window.location.pathname) && isLoggedIn && <Tooltip title="Logut" arrow>
-                <IconButton onClick={()=>{handleLogOut();playSound()}} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white" }}>
-                  <LogoutIcon />
-                </IconButton>
-              </Tooltip>}
-
-              {!isLoggedIn && <Tooltip title="Login/Signup" arrow>
-                <IconButton onClick={() => {
+                  navigate("/orders/my-orders");
+                }}
+                FabProps={{
+                  sx: {
+                    bgcolor: 'secondary.main',
+                    color: "white"
+                  }
+                }}
+              />}
+              {isLoggedIn &&<SpeedDialAction
+                tooltipOpen
+                key=" My Address"
+                icon={<HomeIcon />}
+                tooltipTitle="My Address"
+                onClick={() => {
+                  playSound();
+                  navigate("/manage-address",{state: {renderAsOrder: false}});
+                }}
+                FabProps={{
+                  sx: {
+                    bgcolor: 'secondary.main',
+                    color: "white"
+                  }
+                }}
+              />}
+              {isLoggedIn && isAdmin &&<SpeedDialAction
+                tooltipOpen
+                key="Admin Panel"
+                icon={<AdminPanelSettingsIcon />}
+                tooltipTitle="Admin Panel"
+                onClick={() => {
+                  playSound();
+                  navigate("/admin/admincontroller");
+                }}
+                FabProps={{
+                  sx: {
+                    bgcolor: 'secondary.main',
+                    color: "white"
+                  }
+                }}
+              />}
+             {isLoggedIn && <SpeedDialAction
+                tooltipOpen
+                key="Logout"
+                icon={<LogoutIcon />}
+                tooltipTitle="Logout"
+                onClick={() => {
+                  playSound();
+                  handleLogOut(); 
+                }}
+                FabProps={{
+                  sx: {
+                    bgcolor: 'secondary.main',
+                    color: "white"
+                  }
+                }}
+              />}
+              {!isLoggedIn && <SpeedDialAction
+                tooltipOpen
+                key="Login"
+                icon={<LoginIcon />}
+                tooltipTitle="Login"
+                onClick={() => {
                   playSound();
                   navigate("/auth/login");
-                }} aria-label="delete" size="small" sx={{ backgroundColor: "#9c27b0", padding: "8px", color: "white" }}>
-                  <LoginIcon />
-                </IconButton>
-              </Tooltip>}
-            </Box>
-
+                }}
+                FabProps={{
+                  sx: {
+                    bgcolor: 'secondary.main',
+                    color: "white"
+                  }
+                }}
+              />}
+            </SpeedDial>
             <Box sx={{ display: { xs: "block", sm: "none" } }}>
               <BottomNav />
             </Box>

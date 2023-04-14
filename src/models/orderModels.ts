@@ -1,4 +1,6 @@
-import { SIZES } from "../constants/AppConst";
+import { sizes } from "../constants/AppConst";
+import { IAddressInfo } from "./addressModel";
+import { IProduct, orderProductDetails } from "./productModel";
 
 export enum ORDER_STATUS {
     NotAccepted = "Not Accepted",
@@ -13,7 +15,7 @@ export interface IProductDetails {
     quantity: number,
     price: number,
     color: string,
-    size: SIZES
+    size: sizes
 }
 
 export interface IAddOrderRequest{
@@ -21,6 +23,15 @@ export interface IAddOrderRequest{
     productIds: string[],
     productDetails: IProductDetails[];
     orderStatus?: ORDER_STATUS;
+}
+
+export interface IOrderDetails{
+        id: string,
+        email: string,
+        addressId: IAddressInfo,
+        productIds: IProduct[],
+        productDetails: orderProductDetails[],
+        orderStatus: ORDER_STATUS
 }
 
 export interface IUpdateOrderStatus{

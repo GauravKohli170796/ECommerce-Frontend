@@ -5,7 +5,7 @@ import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GetAppState } from '../../AppContext';
-import { notificationType, productHeadingType } from '../../constants/AppConst';
+import { AppConst, notificationType, productHeadingType } from '../../constants/AppConst';
 import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { IWishListProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
@@ -38,7 +38,7 @@ function WishList() {
   };
 
   useEffect(() => {
-    const tokenDetails = localStorage.getItem("auth");
+    const tokenDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
     if (!tokenDetails) {
       showNotificationMsg("You need to login first.",notificationType.WARNING);
       navigate("/auth/login");

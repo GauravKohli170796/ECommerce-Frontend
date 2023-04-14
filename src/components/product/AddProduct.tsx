@@ -196,7 +196,7 @@ function AddProduct() {
             />
             <ErrorMessage name={`productDetails.${index}.propValue`} component="div" className="errorMsg" />
           </TableCell>
-          <TableCell>{addProductForm.values.productDetails.length > 2 && <IconButton onClick={() => arrayHelpers.remove(index)} aria-label="fingerprint" color="primary">
+          <TableCell>{addProductForm.values.productDetails.length > 2 && <IconButton onClick={() => arrayHelpers.remove(index)} aria-label="fingerprint" color="secondary">
             <DeleteIcon />
           </IconButton>}
           </TableCell>

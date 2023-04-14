@@ -1,14 +1,16 @@
+import HomeIcon from '@mui/icons-material/Home';
 import PaymentIcon from '@mui/icons-material/Payment';
-import { Autocomplete, Box, Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import axios from "axios";
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
 import { AppConst, notificationType } from '../../constants/AppConst';
+import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { IAddressInfo } from '../../models/addressModel';
 import { IAddOrderRequest, ORDER_STATUS } from '../../models/orderModels';
 import { ICartProduct } from '../../models/productModel';
@@ -40,13 +42,20 @@ const initialAddress = {
 
 };
 
-function Checkout() {
+function AddressOrder() {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [userAddress, setUserAddress] = useState<IAddressInfo[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<IAddressInfo>(initialAddress);
+    const fetchCartProducts = useCartWishListFetch();
     useEffect(() => {
+        if(location.state?.renderAsOrder?.constructor?.name!== 'Boolean'){
+            navigate("/product/showProducts");
+            return;
+        };
         const fetchAddressDetails = async () => {
+            fetchCartProducts();
             const { data } = await fetchUserAddress();
             const addressArr = [];
             for (let address of data) {
@@ -54,9 +63,9 @@ function Checkout() {
             }
             setUserAddress(addressArr);
         };
-        const authDetails = localStorage.getItem("auth");
-        const orderDetails = sessionStorage.getItem(AppConst.checkoutKey);
-        if (!(authDetails && orderDetails)) {
+        const authDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
+        const orderDetails = sessionStorage.getItem(AppConst.storageKeys.checkoutKey);
+        if (!(authDetails && (orderDetails || !location.state?.renderAsOrder))) {
             navigate("/product/showProducts");
         }
         fetchAddressDetails();
@@ -82,11 +91,18 @@ function Checkout() {
             if (!values._id) {
                 const newAddress = await addUserAddress(values);
                 values._id = newAddress.data._id;
+                if (location.state?.renderAsOrder) {
+                    handleOrderDetail(values);
+                    return;
+                }
+                showNotificationMsg("Address is successfully added",notificationType.INFO);
+            }
+            await updateUserAddress(values._id, values);
+            if (location.state?.renderAsOrder) {
                 handleOrderDetail(values);
                 return;
             }
-            await updateUserAddress(values._id, values);
-            handleOrderDetail(values);
+            showNotificationMsg("Address is successfully updated",notificationType.INFO);
         }
     });
 
@@ -112,9 +128,9 @@ function Checkout() {
     };
 
     const handleOrderDetail = async (addressDetails: IAddressForm) => {
-        const checkoutDetails = sessionStorage.getItem(AppConst.checkoutKey);
+        const checkoutDetails = sessionStorage.getItem(AppConst.storageKeys.checkoutKey);
         if (!addressDetails._id || !checkoutDetails) {
-            showNotificationMsg("Something went wrong.Please try again",notificationType.WARNING);
+            showNotificationMsg("Something went wrong.Please try again", notificationType.WARNING);
             return;
         };
         let orderDetails: IAddOrderRequest = {
@@ -134,15 +150,19 @@ function Checkout() {
                 size: item.size
             })
         }
-        const {data} = await addOrder(orderDetails);
+        const { data } = await addOrder(orderDetails);
         AppState.setCartList([]);
         showOrderMessage(data._id);
 
     };
 
-    const handleAddressSelection = (addressInfo: IAddressInfo | null) => {
+    const handleAddressSelection = (addressInfo: IAddressInfo | null,reason: string) => {
         if (addressInfo) {
             setSelectedAddress(addressInfo);
+            return;
+        }
+        if(reason === 'clear'){
+            setSelectedAddress(initialAddress);
         }
     }
 
@@ -168,6 +188,7 @@ function Checkout() {
     return (
         <>
             <Header />
+            <Alert sx={{justifyContent:"center"}} severity="info">You can either Add a new Address or you can select an address from the below dropdown and can further edit any details within it.</Alert>
             <form onSubmit={adressForm.handleSubmit}>
                 <Box className='fCenter fCol my-4'>
                     <Stack spacing={2} sx={{ width: { xs: "90%", md: "70%" } }}>
@@ -175,7 +196,7 @@ function Checkout() {
                             id="combo-box-demo"
                             options={userAddress}
                             autoComplete={false}
-                            onChange={(_e, value: IAddressInfo | null) => { handleAddressSelection(value) }}
+                            onChange={(_e, value: IAddressInfo | null,reason: string) => { handleAddressSelection(value,reason) }}
                             fullWidth
                             renderInput={(params) => <TextField {...params} label="Select from previous locations" />}
                         />
@@ -274,17 +295,21 @@ function Checkout() {
                             helperText={adressForm.errors.country}
                             autoComplete='new-password'
                         />
-                        <Typography className="section-head selfCenter" variant="overline" fontSize="large">
-                            Payment Method
-                        </Typography>
-                        <Paper elevation={5} className="p-2 my-2 mx-2">
-                            <FormControlLabel
-                                control={<Checkbox />}
-                                label="Cash On Delivery"
-                                checked={true}
-                            />
-                        </Paper>
-                        <Button sx={{ alignSelf: "flex-end", width: "fit-content" }} startIcon={<PaymentIcon />} type="submit" variant="contained" color="secondary" disabled={!(adressForm.isValid)}>Confirm Order</Button>
+                        {location.state?.renderAsOrder && <>
+                            <Typography className="section-head selfCenter" variant="overline" fontSize="large">
+                                Payment Method
+                            </Typography>
+                            <Alert sx={{justifyContent:"center"}} severity="info">Currently, we only accept cash on delivery. So please go ahead.</Alert>
+                            <Paper elevation={5} className="p-2 my-2 mx-2">
+                                <FormControlLabel
+                                    control={<Checkbox />}
+                                    label="Cash On Delivery"
+                                    checked={true}
+                                />
+                            </Paper>
+                        </>
+                        }
+                        <Button sx={{ alignSelf: "flex-end", width: "fit-content" }} startIcon={location.state?.renderAsOrder ? <PaymentIcon /> : <HomeIcon/>} type="submit" variant="contained" color="secondary" disabled={!(adressForm.isValid)}>{location.state?.renderAsOrder ? "Confirm Order" : selectedAddress.addressLine1 !== "" ? "Update Address" : "Add Address"}</Button>
                     </Stack>
                 </Box>
             </form>
@@ -293,4 +318,4 @@ function Checkout() {
     )
 }
 
-export default Checkout;
+export default AddressOrder;

@@ -1,4 +1,4 @@
-import { SIZES } from "../constants/AppConst";
+import { sizes } from "../constants/AppConst";
 
 export interface IProduct {
     _id?: string;
@@ -57,7 +57,7 @@ export interface ICartProduct{
     }
     email: string;
     quantity: number | string;
-    size: SIZES,
+    size: sizes,
     color: string;
 }
 export interface ICartProductReq{
@@ -65,6 +65,14 @@ export interface ICartProductReq{
     quantity: string;
     size: string,
     color: string;
+}
+
+export interface orderProductDetails{
+    productId: string;
+    quantity: number;
+    size: sizes,
+    color: string;
+    price: number
 }
 
 export interface ISearchresult {

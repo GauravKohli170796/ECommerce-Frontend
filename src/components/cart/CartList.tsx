@@ -26,7 +26,7 @@ function CartList() {
   let totalPrice = 0;
 
   useEffect(() => {
-    const tokenDetails = localStorage.getItem("auth");
+    const tokenDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
     if (!tokenDetails) {
       showNotificationMsg("You need to login first.", notificationType.WARNING);
       navigate("/auth/login");
@@ -166,9 +166,9 @@ function CartList() {
   };
 
   const handleUserCheckout = () => {
-    sessionStorage.removeItem(AppConst.checkoutKey);
-    sessionStorage.setItem(AppConst.checkoutKey, JSON.stringify(cartProducts));
-    navigate("/checkout");
+    sessionStorage.removeItem(AppConst.storageKeys.checkoutKey);
+    sessionStorage.setItem(AppConst.storageKeys.checkoutKey, JSON.stringify(cartProducts));
+    navigate("/manage-address",{state:{renderAsOrder: true}});
   };
 
   const renderCartCheckout = () => {

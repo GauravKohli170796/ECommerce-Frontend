@@ -1,7 +1,7 @@
 import { Box, Button, OutlinedInput, Paper, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { notificationType } from '../../constants/AppConst';
+import { AppConst, notificationType } from '../../constants/AppConst';
 import { EmailTypes } from '../../models/commanModel';
 import { axiosInstance } from '../../services/axiosInstance';
 import { showNotificationMsg } from '../../services/createNotification';
@@ -73,8 +73,9 @@ function Otp() {
         }
         const { data } = await axiosInstance.post(`api/v1/auth/Signup`, JSON.parse(signUpDetails));
         sessionStorage.clear();
-        if (data.token) {
-            localStorage.setItem("auth", data.token);
+        if (data.accessToken) {
+            localStorage.setItem(AppConst.storageKeys.accessToken, data.accessToken);
+            localStorage.setItem(AppConst.storageKeys.refreshToken, data.refreshToken);
             setTimeout(() => {
                 navigate("/product/showProducts");
             }, 10)

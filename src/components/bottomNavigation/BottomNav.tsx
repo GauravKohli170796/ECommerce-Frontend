@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles";
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { GetAppState } from "../../AppContext";
-import { drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
+import { AppConst, drawerShowOptions, filterInitailValue } from "../../constants/AppConst";
 import useLogInPopup from '../../hooks/useLogInPopup';
 
 function BottomNav() {
@@ -28,7 +28,7 @@ function BottomNav() {
   }
 
   const navigatetoPage = (urlPath: string)=>{
-    const auth = localStorage.getItem("auth");
+    const auth = localStorage.getItem(AppConst.storageKeys.accessToken);
     if(!auth){
       showAlertMessage();
       return;
@@ -68,7 +68,7 @@ function BottomNav() {
           sx={{minWidth:"71px"}}
           icon={<FilterAltIcon />}
           onClick={() => {
-            openDrawer(drawerShowOptions.filter);
+            openDrawer(drawerShowOptions.FILTER);
             playSound();
           }}
         />

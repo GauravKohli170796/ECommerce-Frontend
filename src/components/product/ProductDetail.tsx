@@ -1,16 +1,12 @@
 import CloseIcon from '@mui/icons-material/Close';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import EmailIcon from '@mui/icons-material/Email';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import MessageIcon from '@mui/icons-material/Message';
 import ShareIcon from '@mui/icons-material/Share';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Button, Divider, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, Paper, Rating, Select, Stack, Table, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Divider, FormControl, IconButton, InputLabel, MenuItem, Modal, Paper, Rating, Select, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useFormik } from 'formik';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
 import { AppConst, colorsWithCodes, notificationType, productHeadingType } from '../../constants/AppConst';
 import useCartWishListFetch from '../../hooks/useCartWishListFetch';
@@ -22,11 +18,6 @@ import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
 import ProductScroll from './ProductScroll';
-
-interface IContactForm {
-  email: string;
-  message: string
-}
 
 const initialCartDetails: ICartProductReq = {
   productId: "",
@@ -54,6 +45,29 @@ function ProductDetail() {
   const showAlertMessage = useLogInPopup();
 
   useEffect(() => {
+    const updateCartSelection = async () => {
+      const response = await fetchCartWishProducts();
+      let count = 0;
+      let responseLength = response?.cartList.length || 0;
+      console.log(responseLength);
+      while (count < responseLength) {
+        if ((response?.cartList[count].productId._id === id)  && (response?.cartList[count].size === cartItemDetails.size) && (response?.cartList[count].color === cartItemDetails.color)) {
+          setIsAlreadyCartItem(true);
+          break;
+        }
+        count++;
+      }
+      console.log(count);
+      if (count === responseLength){
+        setIsAlreadyCartItem(false);
+      }
+    }
+    updateCartSelection();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartItemDetails.color, cartItemDetails.size])
+
+  useEffect(() => {
     setIsAlreadyWishListed(false);
     fetchProductDetail();
     fetchWishCartListProducts();
@@ -61,7 +75,7 @@ function ProductDetail() {
   }, [id]);
 
   const handleAddtoWishlist = async () => {
-    const authDetails = localStorage.getItem("auth");
+    const authDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
     if (!authDetails) {
       showAlertMessage();
       return;
@@ -72,9 +86,9 @@ function ProductDetail() {
     const wishListProduct = {
       productId: id
     };
-    const {data} = await addWishListItem(wishListProduct);
+    const { data } = await addWishListItem(wishListProduct);
     if (data?.productId._id) {
-      AppState.setWishList([...AppState.wishList,data]);
+      AppState.setWishList([...AppState.wishList, data]);
       showNotificationMsg("Product added to Wish List.");
       setIsAlreadyWishListed(true);
     }
@@ -85,7 +99,7 @@ function ProductDetail() {
       showNotificationMsg("Please select size and color first.", notificationType.DANGER);
       return;
     }
-    const authDetails = localStorage.getItem("auth");
+    const authDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
     if (!authDetails) {
       showAlertMessage();
       return;
@@ -99,16 +113,16 @@ function ProductDetail() {
       color: cartItemDetails.color,
       size: cartItemDetails.size
     };
-    const {data} = await addCartItems(cartProduct);
+    const { data } = await addCartItems(cartProduct);
     if (data?.productId?._id) {
-      AppState.setCartList([...AppState.cartList,data]);
+      AppState.setCartList([...AppState.cartList, data]);
       showNotificationMsg("Product added to Cart.");
       setIsAlreadyCartItem(true);
     }
   }
 
   const fetchWishCartListProducts = async () => {
-    const authDetails = localStorage.getItem("auth");
+    const authDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
     if (!authDetails) {
       return;
     }
@@ -119,7 +133,7 @@ function ProductDetail() {
       }
     }
     for (const item of response?.cartList) {
-      if (item.productId._id === id) {
+      if ((item.productId._id === id) &&  (item.size === cartItemDetails.size) && (item.color === cartItemDetails.color)) {
         setIsAlreadyCartItem(true);
       }
     }
@@ -142,20 +156,6 @@ function ProductDetail() {
     }, 3000);
   };
 
-  const contactForm = useFormik<IContactForm>({
-    initialValues: {
-      email: "",
-      message: ""
-    },
-    validationSchema: Yup.object({
-      email: Yup.string().email("Must be valid email").required("Please fill Email field"),
-      message: Yup.string().max(250, "Message must be less than 250 characters").min(25, "Message must be more than 25 characters long").required("Please fill Message field"),
-    }),
-    onSubmit: async (values: IContactForm) => {
-      console.log(values);
-    }
-  });
-
 
   const handleImageClick = (index: number) => {
     handleOpen();
@@ -176,7 +176,7 @@ function ProductDetail() {
   const renderProductImages = () => {
     if (productDetail.images) {
       return <>
-        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px", scrollBehavior: "smooth"}}>
+        <Box id="imageContainer" sx={{ overflowX: "scroll", display: "flex", marginBottom: "16px", scrollBehavior: "smooth" }}>
           {productDetail.images.map((imgx: string, index: number) => {
             return <img className='prodImage' onClick={() => { handleImageClick(index) }} id={`image${index}`} src={imgx} alt="xxx" key={imgx} style={{ marginRight: "20px" }}></img>
           })}
@@ -237,80 +237,6 @@ function ProductDetail() {
     </FormControl>
   }
 
-  const renderContactForm = () => {
-    return <Box className="mixBackground" sx={{ marginY: "32px", padding: "32px" }}>
-
-      <form style={{ width: "100%" }} className="centreFlex my-4" onSubmit={contactForm.handleSubmit}>
-        <Paper elevation={5} sx={{ width: { xs: "90%", md: "60%", lg: "40%" } }}>
-
-          <Stack className='p-2' spacing={2}>
-
-            <Typography className="section-head" fontSize="large">
-              Interested in Product
-            </Typography>
-
-            <TextField
-              color="secondary"
-              error={(contactForm.touched.email && contactForm.errors.email && true) || false}
-              label="Email"
-              helperText={contactForm.errors.email}
-              onBlur={contactForm.handleBlur}
-              onChange={contactForm.handleChange}
-              name="email"
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              color="secondary"
-              error={(contactForm.touched.email && contactForm.errors.email && true) || false}
-              label="Product Id"
-              fullWidth
-              defaultValue={id}
-              disabled
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <TextField
-              color="secondary"
-              error={(contactForm.touched.message && contactForm.errors.message && true) || false}
-              label="Message"
-              helperText={contactForm.errors.message}
-              onBlur={contactForm.handleBlur}
-              onChange={contactForm.handleChange}
-              name="message"
-              multiline
-              minRows={3}
-              maxRows={3}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MessageIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <Button disabled={!(contactForm.dirty && contactForm.isValid)} type="submit" fullWidth variant="contained">Contact Me</Button>
-
-          </Stack>
-        </Paper>
-      </form>
-    </Box>
-  }
-
   const renderSizes = () => {
     return <>
       {["xs", "s", "m", "l", "xl", "xxl", "fs"].map((size: string) => {
@@ -320,7 +246,7 @@ function ProductDetail() {
             key={size}
             variant="outlined"
             sx={{
-             "&:hover":{backgroundColor: cartItemDetails.size === size ? "#ba68c8" : ""},
+              "&:hover": { backgroundColor: cartItemDetails.size === size ? "#ba68c8" : "" },
               backgroundColor: cartItemDetails.size === size ? "#ba68c8" : "",
               color: cartItemDetails.size === size ? "white" : "",
               padding: "4px",
@@ -336,7 +262,7 @@ function ProductDetail() {
     </>
   }
 
-  const handleShare= async()=>{
+  const handleShare = async () => {
     const shareData = {
       title: `${productDetail.name}`,
       text: `${productDetail.description}`,
@@ -352,10 +278,10 @@ function ProductDetail() {
   const renderColors = () => {
     return <>
       {productDetail.colors.map((color: string) => {
-        return <Button disableRipple  key={color} variant="outlined"
+        return <Button disableRipple key={color} variant="outlined"
           sx={{
             backgroundColor: colorsWithCodes[color],
-            "&:hover":{backgroundColor: colorsWithCodes[color]},
+            "&:hover": { backgroundColor: colorsWithCodes[color] },
             height: "30px",
             width: "30px",
             minHeight: cartItemDetails.color === color ? "35px" : "30px",
@@ -382,9 +308,9 @@ function ProductDetail() {
         <Divider sx={{ display: { xs: "block", md: "none", width: "100%" } }}></Divider>
         <Box sx={{ width: { xs: "95vw", lg: "45vw" }, marginY: "16px", alignSelf: "flex-start", justifyContent: "flex-start", marginX: "5px", borderLeft: ".1px solid lightgrey", paddingLeft: "8px" }}>
           <Stack spacing={2}>
-            <Stack direction="row" className='fRow' sx={{justifyContent:"space-between",alignItems:"center"}}>
-            <Typography fontSize={24} className="leftText" variant="h3">{productDetail.name}</Typography>
-            <IconButton disableFocusRipple disableRipple onClick={handleShare} sx={{justifySelf:"flex-end" , backgroundColor: "#9c27b0", color: "white", marginY: "8px" }}><ShareIcon /></IconButton>
+            <Stack direction="row" className='fRow' sx={{ justifyContent: "space-between", alignItems: "center" }}>
+              <Typography fontSize={24} className="leftText" variant="h3">{productDetail.name}</Typography>
+              <IconButton disableFocusRipple disableRipple onClick={handleShare} sx={{ justifySelf: "flex-end", backgroundColor: "#9c27b0", color: "white", marginY: "8px" }}><ShareIcon /></IconButton>
             </Stack>
             <Typography className="leftText" variant="body1">{productDetail.description}</Typography>
             <Box sx={{ fontSize: "20px", textAlign: "left" }}>
@@ -406,7 +332,7 @@ function ProductDetail() {
             <Divider />
             <Typography fontSize={18} className="leftText" variant="caption">Select Colors</Typography>
             {<Typography fontSize={12}>{`Selected Color : ${cartItemDetails.color || "none"}`}</Typography>}
-            <Stack direction="row" sx={{alignItems:"center"}} spacing={4}>
+            <Stack direction="row" sx={{ alignItems: "center" }} spacing={4}>
               {renderColors()}
             </Stack>
             <Divider />
@@ -437,8 +363,6 @@ function ProductDetail() {
       <Divider />
       <ProductScroll name={productHeadingType.RECOMMENDED} />
 
-      {/* {renderContactForm()} */}
-      
       <Modal
         open={open}
         onClose={handleClose}

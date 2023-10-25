@@ -215,6 +215,7 @@ function ManageOrders() {
             {!isEditOrderView && <> <Alert sx={{ justifyContent: "center" }} severity="info">Please select order status to view all orders with that status.You can also change status of orders by clicking on checkbox and then edit order button.</Alert>
                 <Tabs
                     className='fRow fLeft'
+                    variant="scrollable"
                     value={orderStatus}
                     onChange={handleOrderStatusChange}
                     textColor="secondary"

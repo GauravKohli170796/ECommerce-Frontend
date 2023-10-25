@@ -1,5 +1,5 @@
 export const AppConst = Object.freeze({
-   BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
+   BackendURL: "http://localhost:4000/",//"https://ecommerce-backend-repo-og97.onrender.com/",
    FrontendUrl: "https://kirans-sehgal-online-shop.onrender.com/",
    productsPerPage:10,
    PathLogoutNotShown: ["/manage-address","/user/shoppingCart","/user/wishList"],
@@ -9,6 +9,16 @@ export const AppConst = Object.freeze({
       checkoutKey: "USER_CHECKOUT_DETAILS"
    }
 });
+
+export const orderStatusOptions = {
+   "Not Accepted":"1",
+   "Accepted":"2",
+   "Rejected":"3",
+   "In Process":"4",
+   "Dispatched":"5"
+}
+
+export const ordersPerPage = 10;
 
 export enum drawerShowOptions {
    FILTER = "filter",

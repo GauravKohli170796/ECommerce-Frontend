@@ -20,6 +20,10 @@ export interface ISearchProduct {
     productId: string
 }
 
+export interface IAddCategory {
+    category: string
+}
+
 interface IProductCount{
     totalProducts : number
 }

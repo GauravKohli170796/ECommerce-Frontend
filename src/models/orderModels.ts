@@ -25,6 +25,10 @@ export interface IAddOrderRequest{
     orderStatus?: ORDER_STATUS;
 }
 
+interface IOrdersCount{
+    totalOrders : number
+}
+
 export interface IOrderDetails{
         id: string,
         email: string,
@@ -32,6 +36,13 @@ export interface IOrderDetails{
         productIds: IProduct[],
         productDetails: orderProductDetails[],
         orderStatus: ORDER_STATUS
+}
+
+export interface IOrderByStatus{
+    orderDetails: (IOrderDetails & {addressDetails: IAddressInfo[],_id:string})[],
+    totalOrders: IOrdersCount[]
+
+
 }
 
 export interface IUpdateOrderStatus{

@@ -10,7 +10,7 @@ import shortid from 'shortid';
 import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
 import { IProduct, ISearchProduct } from '../../models/productModel';
-import { axiosInstance } from '../../services/axiosInstance';
+import { axiosProtectedInstance } from '../../services/axiosInstance';
 import { showNotificationMsg } from '../../services/createNotification';
 import { getProductById } from '../../services/productServices';
 
@@ -52,11 +52,13 @@ function UpdateProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const updateProductBody = convertFormToUpdateRequest(values);
-      await axiosInstance.put(`/api/v1/product/updateProduct/${searchProductForm.values.productId}`, {
+      const response = await axiosProtectedInstance.put(`/api/v1/product/updateProduct/${searchProductForm.values.productId}`, {
         ...updateProductBody
       });
-      showNotificationMsg("Product successfully updated.");
-      setProductDetails(initialProductDetails);
+      if(response?.data){
+        showNotificationMsg("Product successfully updated.");
+        setProductDetails(initialProductDetails);
+      }
     }
   });
 
@@ -71,7 +73,7 @@ function UpdateProduct() {
     const formData = new FormData();
     for (const file of files)
       formData.append("images", file);
-    const { data } = await axiosInstance.post("/api/v1/product/uploadFile", formData, {
+    const { data } = await axiosProtectedInstance.post("/api/v1/product/uploadFile", formData, {
       headers: {
         'content-type': 'multipart/form-data'
       }
@@ -113,7 +115,7 @@ function UpdateProduct() {
             accept: "image/png, image/jpeg"
           }}
         />
-        <Button onClick={() => handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
+        <Button color="secondary" onClick={() => handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
       </>
     )} />
   }
@@ -153,7 +155,7 @@ function UpdateProduct() {
   }
 
   const renderSizesOptions = () => {
-    const sizeArr = ["xs", "s", "m", "l", "xl", "xxl", "free size"];
+    const sizeArr = ["xs", "s", "m", "l", "xl", "xxl", "fs"];
     return <Box className="fRow fLeft fWrap fullWidth mx-2">
       <FieldArray name="sizes" render={arrayHelpers => (
         <>
@@ -168,7 +170,7 @@ function UpdateProduct() {
                 arrayHelpers.remove(index);
               }}
               control={<Checkbox color='secondary' defaultChecked={productDetails.sizes?.includes(size)} />}
-              label={size.toLowerCase()}
+              label={size==="fs" ? "free size":size.toLowerCase()}
               value={size.toLowerCase()}
               key={size}
             />
@@ -200,7 +202,7 @@ function UpdateProduct() {
           helperText={searchProductForm.errors.productId}
           error={(searchProductForm.touched.productId && searchProductForm.errors.productId && true) || false}
         />
-        <Button type="submit" disabled={!(searchProductForm.dirty && searchProductForm.isValid)} variant="contained" size="small">Search Product</Button>
+        <Button type="submit" color="secondary" disabled={!(searchProductForm.dirty && searchProductForm.isValid)} variant="contained" size="small">Search Product</Button>
         <Divider />
       </Box>
     </form>
@@ -384,7 +386,7 @@ function UpdateProduct() {
             </AccordionDetails>
           </Accordion>
         </FormikProvider>
-        <Button type="submit" disabled={!(updateProductForm.dirty && updateProductForm.isValid)} variant="contained" size="small">Update Product</Button>
+        <Button type="submit" color="secondary" disabled={!(updateProductForm.dirty && updateProductForm.isValid)} variant="contained" size="small">Update Product</Button>
         <Divider />
       </Box>
     </form >

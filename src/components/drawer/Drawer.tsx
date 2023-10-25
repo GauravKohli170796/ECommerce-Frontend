@@ -46,7 +46,6 @@ function Drawer() {
   };
 
   const handleCategory = (event: any): void => {
-    console.log(event.target.value,event.target.checked);
     const categoryValue = event.target.value.toString().toUpperCase();
     if (event.target.checked) {
       setFilters({ ...filters, categories: [...filters.categories, categoryValue] });

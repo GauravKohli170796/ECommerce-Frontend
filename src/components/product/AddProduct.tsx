@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
 import { colorsWithCodes } from '../../constants/AppConst';
 import { IProduct } from '../../models/productModel';
-import { axiosInstance } from '../../services/axiosInstance';
+import { axiosProtectedInstance } from '../../services/axiosInstance';
 import { showNotificationMsg } from '../../services/createNotification';
 
 const initialProductDetails: IProduct = {
@@ -56,7 +56,7 @@ function AddProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const addProductBody = convertFormToAddRequest(values);
-      await axiosInstance.post(`/api/v1/product/addProduct`, {
+      await axiosProtectedInstance.post(`/api/v1/product/addProduct`, {
         ...addProductBody
       });
       showNotificationMsg("Product successfully added.");
@@ -77,7 +77,7 @@ function AddProduct() {
     const formData = new FormData();
     for (const file of files)
       formData.append("images", file);
-    const { data } = await axiosInstance.post("/api/v1/product/uploadFile", formData, {
+    const { data } = await axiosProtectedInstance.post("/api/v1/product/uploadFile", formData, {
       headers: {
         'content-type': 'multipart/form-data'
       }
@@ -119,7 +119,7 @@ function AddProduct() {
             accept: "image/png, image/jpeg"
           }}
         />
-        <Button onClick={() => handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
+        <Button color="secondary" onClick={() => handleImageUpload(arrayHelpers)} disabled={files.length === 0 ? true : false} type="button" variant="contained" size="small" sx={{ marginY: "16px", float: "right" }}>Upload Images</Button>
       </>
     )} />
   }
@@ -134,7 +134,7 @@ function AddProduct() {
   }
 
   const renderSizesOptions = () => {
-    const sizeArr = ["xs", "s", "m", "l", "xl", "xxl", "free Size"];
+    const sizeArr = ["xs", "s", "m", "l", "xl", "xxl", "fs"];
     return <Box className="fRow fLeft fWrap fullWidth mx-2">
       <FieldArray name="sizes" render={arrayHelpers => (
         <>
@@ -150,7 +150,7 @@ function AddProduct() {
               }}
               onBlur={addProductForm.handleBlur}
               control={<Checkbox color='secondary'/>}
-              label={size.toLowerCase()}
+              label={size==="fs" ? "free size":size.toLowerCase()}
               value={size.toLowerCase()}
               
               key={size}
@@ -343,7 +343,7 @@ function AddProduct() {
                   error={(addProductForm.touched.colors && addProductForm.errors.colors && true) || false}
                   helperText={addProductForm.errors.colors}
                   name="colors"
-                  onChange={(e) => { console.log("FGHJHGFGHJK") }}
+                  onChange={(e) => { console.log("colors") }}
                 />
               )}
               renderTags={(tagValue) => {
@@ -395,7 +395,7 @@ function AddProduct() {
             </AccordionDetails>
           </Accordion>
         </FormikProvider>
-        <Button type="submit" disabled={!(addProductForm.dirty && addProductForm.isValid)} variant="contained" size="small">Add Product</Button>
+        <Button color="secondary" type="submit" disabled={!(addProductForm.dirty && addProductForm.isValid)} variant="contained" size="small">Add Product</Button>
         <Divider />
       </Box>
     </form >

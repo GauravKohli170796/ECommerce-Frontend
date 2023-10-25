@@ -49,7 +49,6 @@ function ProductDetail() {
       const response = await fetchCartWishProducts();
       let count = 0;
       let responseLength = response?.cartList.length || 0;
-      console.log(responseLength);
       while (count < responseLength) {
         if ((response?.cartList[count].productId._id === id)  && (response?.cartList[count].size === cartItemDetails.size) && (response?.cartList[count].color === cartItemDetails.color)) {
           setIsAlreadyCartItem(true);
@@ -57,7 +56,6 @@ function ProductDetail() {
         }
         count++;
       }
-      console.log(count);
       if (count === responseLength){
         setIsAlreadyCartItem(false);
       }

@@ -20,8 +20,8 @@ export const getAllCategories = async (): Promise<AxiosResponse<string[]>> => {
    return await axiosInstance.get(`api/v1/product/getAllCategories`);
 };
 
-export const addCategory = async (category: string): Promise<AxiosResponse<unknown>> => {
-   return await axiosInstance.put(`api/v1/product/addNewCategories`, { category: category });
+export const addCategory = async (category: string): Promise<AxiosResponse<IUpdateApiResponse>> => {
+   return await axiosProtectedInstance.put(`api/v1/product/addNewCategories`, { category: category });
 };
 
 export const getCartItems = async (): Promise<AxiosResponse<ICartProduct[]>> => {

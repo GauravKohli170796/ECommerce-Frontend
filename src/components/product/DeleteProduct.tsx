@@ -6,10 +6,11 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import * as Yup from "yup";
 import { ISearchProduct } from '../../models/productModel';
-import { axiosInstance } from '../../services/axiosInstance';
+import { axiosProtectedInstance } from '../../services/axiosInstance';
+import { showNotificationMsg } from '../../services/createNotification';
 import { getProductById } from '../../services/productServices';
 
-const showDeleteConfirmation = (prodId: string ,handleProductDelete : (prodId: string) => Promise<void>) => {
+const showDeleteConfirmation = (prodId: string ,handleProductDelete : (prodId: string,imagesToDelete:string[]) => Promise<void>,imagesToDelete:string[]) => {
   confirmAlert({
     customUI: ({ onClose }) => {
       return (
@@ -18,7 +19,7 @@ const showDeleteConfirmation = (prodId: string ,handleProductDelete : (prodId: s
             <Typography variant="h6">Delete Product</Typography>
             <Typography variant="body2">{`Are you sure to delete product with id ${prodId}`}</Typography>
             <Stack direction="row" spacing={2}>
-              <Button size="small" color="secondary" variant="contained" onClick={()=>{handleProductDelete(prodId);onClose()}}>Delete</Button>
+              <Button size="small" color="secondary" variant="contained" onClick={()=>{handleProductDelete(prodId,imagesToDelete);onClose()}}>Delete</Button>
               <Button size="small" onClick={onClose} color="primary" variant="contained">Cancel</Button>
             </Stack>
           </Box>
@@ -39,12 +40,13 @@ function DeleteProduct() {
     }),
     onSubmit: async (values: ISearchProduct) => {
       const { data } = await getProductById(values.productId);
-      showDeleteConfirmation(data._id || "",handleProductDelete);
+      showDeleteConfirmation(data._id || "",handleProductDelete,data.images);
     }
   });
 
-  const handleProductDelete = async(prodId: string) => {
-    await axiosInstance.delete(`/api/v1/product/deleteProduct/${prodId}`);
+  const handleProductDelete = async(prodId: string,imagesToDelete: string[]) => {
+    await axiosProtectedInstance.delete(`/api/v1/product/deleteProduct/${prodId}`,{data:{imagesToDelete}});
+    showNotificationMsg("Product successfully deleted.");
   }
 
   const renderSearchProduct = () => {
@@ -61,7 +63,7 @@ function DeleteProduct() {
           helperText={searchProductForm.errors.productId}
           error={(searchProductForm.touched.productId && searchProductForm.errors.productId && true) || false}
         />
-        <Button type="submit" disabled={!(searchProductForm.dirty && searchProductForm.isValid)} variant="contained" size="small">Search Product</Button>
+        <Button type="submit" color="secondary" disabled={!(searchProductForm.dirty && searchProductForm.isValid)} variant="contained" size="small">Search Product</Button>
       </Box>
     </form>
   };

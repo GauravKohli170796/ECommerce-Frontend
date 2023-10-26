@@ -56,12 +56,14 @@ function AddProduct() {
     }),
     onSubmit: async (values: Partial<IProduct>) => {
       const addProductBody = convertFormToAddRequest(values);
-      await axiosProtectedInstance.post(`/api/v1/product/addProduct`, {
+     const res = await axiosProtectedInstance.post(`/api/v1/product/addProduct`, {
         ...addProductBody
       });
-      showNotificationMsg("Product successfully added.");
-      addProductForm.resetForm();
-      navigation("/admin/adminController");
+      if(res?.data){
+        showNotificationMsg("Product successfully added.");
+        addProductForm.resetForm();
+        navigation("/admin/adminController");
+       }
       
     }
   });

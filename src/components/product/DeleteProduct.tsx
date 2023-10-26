@@ -45,8 +45,10 @@ function DeleteProduct() {
   });
 
   const handleProductDelete = async(prodId: string,imagesToDelete: string[]) => {
-    await axiosProtectedInstance.delete(`/api/v1/product/deleteProduct/${prodId}`,{data:{imagesToDelete}});
-    showNotificationMsg("Product successfully deleted.");
+    const {data} = await axiosProtectedInstance.delete(`/api/v1/product/deleteProduct/${prodId}`,{data:{imagesToDelete}});
+    if(data?.deletedCount){
+      showNotificationMsg("Product successfully deleted.");
+    }
   }
 
   const renderSearchProduct = () => {

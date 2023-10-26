@@ -9,7 +9,7 @@ import { AppConst, notificationType, productHeadingType } from '../../constants/
 import useCartWishListFetch from '../../hooks/useCartWishListFetch';
 import { IWishListProduct } from '../../models/productModel';
 import { showNotificationMsg } from '../../services/createNotification';
-import { deleteWishListItems } from '../../services/productServices';
+import { deleteUserWishList, deleteWishListItems } from '../../services/productServices';
 import Footer from '../footer/Footer';
 import Header from '../header/Header';
 import ProdHeader from '../header/ProdHeader';
@@ -62,6 +62,15 @@ function WishList() {
     return <EmptyList listName='Wish List' />
   };
 
+  const handleDeleteUserWishList = async()=>{
+    const {data} = await deleteUserWishList();
+    if(data.deletedCount){
+       showNotificationMsg("Successfully deleted all wishlist items");
+       AppState?.setWishList([]);
+       setWishListProducts([]);
+    };
+};
+
   const renderWishListProducts = () => {
     return <>
       <Typography className="section-head my-4" sx={{ fontSize: "25px",marginLeft:"auto",marginRight:"auto" }}>
@@ -69,7 +78,7 @@ function WishList() {
       </Typography>
       <Box className="fCol fCenter">
         <Box sx={{ width: { xs: "98%", md: "60%"} }}>
-          <Button variant="contained" size="small" color="secondary" sx={{float:"right",marginY:"16px"}} endIcon={<DeleteIcon />}>Clear Wishlist</Button>
+          <Button onClick={handleDeleteUserWishList} variant="contained" size="small" color="secondary" sx={{float:"right",marginY:"16px"}} endIcon={<DeleteIcon />}>Clear Wishlist</Button>
         </Box>
       </Box>
       <Divider sx={{ marginY: "16px", width: "96vw" }} />

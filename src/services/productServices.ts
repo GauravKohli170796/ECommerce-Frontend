@@ -40,6 +40,10 @@ export const deleteCartItem = async (productId: string): Promise<AxiosResponse<I
    return await axiosProtectedInstance.delete(`api/v1/user/deleteCartItem/${productId}`);
 };
 
+export const deleteUserCart = async (): Promise<AxiosResponse<IDeleteApiResponse>> => {
+   return await axiosProtectedInstance.delete(`api/v1/user/deleteUserCart`);
+};
+
 export const addWishListItem = async (wishListProduct: IWishListProductReq): Promise<AxiosResponse<IWishListProduct>> => {
    return await axiosProtectedInstance.post('api/v1/user/addWishListItem', wishListProduct);
 };
@@ -50,6 +54,10 @@ export const getWishListItems = async (): Promise<AxiosResponse<IWishListProduct
 
 export const deleteWishListItems = async (productId: string): Promise<AxiosResponse<IDeleteApiResponse>> => {
    return await axiosProtectedInstance.delete<IDeleteApiResponse>(`api/v1/user/deleteWishListItem/${productId}`);
+}
+
+export const deleteUserWishList = async (): Promise<AxiosResponse<IDeleteApiResponse>> => {
+   return await axiosProtectedInstance.delete<IDeleteApiResponse>(`api/v1/user/deleteUserWishList`);
 }
 
 export const searchProducts = async (searchStr: string) : Promise<AxiosResponse<ISearchresult[]>>=>{

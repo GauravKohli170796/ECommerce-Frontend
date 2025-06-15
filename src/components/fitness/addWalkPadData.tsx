@@ -4,7 +4,7 @@ import StraightenOutlinedIcon from '@mui/icons-material/StraightenOutlined';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import { Button, Divider, InputAdornment, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
@@ -14,6 +14,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useFormik } from 'formik';
 import { axiosProtectedInstance } from '../../services/axiosInstance';
 import { showNotificationMsg } from '../../services/createNotification';
+import { AppConst, notificationType } from '../../constants/AppConst';
+import Header from '../header/Header';
 
 
 const initialProductDetails: IWalkPadData = {
@@ -29,10 +31,19 @@ const initialProductDetails: IWalkPadData = {
 
 
 function AddWalkPadData() {
-
-    const [files, setFiles] = useState<any>([]);
     const AppState = GetAppState();
-    const navigation = useNavigate();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const tokenDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
+        if (!tokenDetails) {
+            showNotificationMsg("You need to login first.", notificationType.WARNING);
+            navigate("/auth/login");
+            return;
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigate]);
 
     const addWalkPadDataForm = useFormik<Partial<IWalkPadData>>({
         enableReinitialize: true,
@@ -74,139 +85,142 @@ function AddWalkPadData() {
 
 
     const renderAddWalkPadData = () => {
-        return <form style={{ maxWidth: "1180px", marginLeft: "auto", marginRight: "auto" }} onSubmit={addWalkPadDataForm.handleSubmit}>
-            <Box className="fCenter fCol my-2 mx-2">
-                <Typography variant='h6' className="section-head my-2 font-20">
-                    Add Activity Data
-                </Typography>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                        label="Walk Date *"
-                        value={addWalkPadDataForm.values.walkDate}
-                        onChange={(value) => addWalkPadDataForm.setFieldValue('walkDate', value)}
-                        maxDate={new Date()}
-                        slotProps={{
-                            textField: {
-                                fullWidth: true,
-                                size: "medium",
-                                margin: 'none',
-                                color: 'secondary',
-                                name: 'walkDate',
-                                onBlur: addWalkPadDataForm.handleBlur,
-                                // helperText: addWalkPadDataForm.errors.walkDate,
-                                error: addWalkPadDataForm.touched.walkDate && Boolean(addWalkPadDataForm.errors.walkDate),
-                            },
+        return <>
+            <Header />
+            <form style={{ maxWidth: "1180px", marginLeft: "auto", marginRight: "auto" }} onSubmit={addWalkPadDataForm.handleSubmit}>
+                <Box className="fCenter fCol my-2 mx-2">
+                    <Typography variant='h6' className="section-head my-2 font-20">
+                        Add Activity Data
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            label="Walk Date *"
+                            value={addWalkPadDataForm.values.walkDate}
+                            onChange={(value) => addWalkPadDataForm.setFieldValue('walkDate', value)}
+                            maxDate={new Date()}
+                            slotProps={{
+                                textField: {
+                                    fullWidth: true,
+                                    size: "medium",
+                                    margin: 'none',
+                                    color: 'secondary',
+                                    name: 'walkDate',
+                                    onBlur: addWalkPadDataForm.handleBlur,
+                                    // helperText: addWalkPadDataForm.errors.walkDate,
+                                    error: addWalkPadDataForm.touched.walkDate && Boolean(addWalkPadDataForm.errors.walkDate),
+                                },
+                            }}
+
+                        />
+
+                        <TimePicker
+                            label="Walk Time *"
+                            value={addWalkPadDataForm.values.walkTime}
+                            onChange={(value) => addWalkPadDataForm.setFieldValue('walkTime', value)}
+                            ampm={false}
+                            slotProps={{
+                                textField: {
+                                    fullWidth: true,
+                                    size: 'medium',
+                                    margin: 'none',
+                                    color: 'secondary',
+                                    name: 'walkTime',
+                                    onBlur: addWalkPadDataForm.handleBlur,
+                                    // helperText: {addWalkPadDataForm.errors.walkTime},
+                                    error: addWalkPadDataForm.touched.walkTime && Boolean(addWalkPadDataForm.errors.walkTime),
+                                },
+                            }}
+                        />
+                    </LocalizationProvider>
+
+                    <TextField
+                        color="secondary"
+                        label="Duration in minutes"
+                        required
+                        fullWidth
+                        size="medium"
+                        name="durationMinutes"
+                        onChange={addWalkPadDataForm.handleChange}
+                        onBlur={addWalkPadDataForm.handleBlur}
+                        helperText={addWalkPadDataForm.errors.durationMinutes}
+                        error={(addWalkPadDataForm.touched.durationMinutes && addWalkPadDataForm.errors.durationMinutes && true) || false}
+                        value={addWalkPadDataForm.values.durationMinutes}
+                        type="number"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <AccessTimeRoundedIcon />
+                                </InputAdornment>
+                            ),
                         }}
-                        
+                    />
+                    <TextField
+                        color="secondary"
+                        label="Distance in Km"
+                        required
+                        fullWidth
+                        size="medium"
+                        name="distanceKm"
+                        onChange={addWalkPadDataForm.handleChange}
+                        onBlur={addWalkPadDataForm.handleBlur}
+                        helperText={addWalkPadDataForm.errors.distanceKm}
+                        error={(addWalkPadDataForm.touched.distanceKm && addWalkPadDataForm.errors.distanceKm && true) || false}
+                        value={addWalkPadDataForm.values.distanceKm}
+                        type="number"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <StraightenOutlinedIcon />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
 
-                    <TimePicker
-                        label="Walk Time *"
-                        value={addWalkPadDataForm.values.walkTime}
-                        onChange={(value) => addWalkPadDataForm.setFieldValue('walkTime', value)}
-                        ampm={false}
-                        slotProps={{
-                            textField: {
-                                fullWidth: true,
-                                size: 'medium',
-                                margin: 'none',
-                                color: 'secondary',
-                                name: 'walkTime',
-                                onBlur: addWalkPadDataForm.handleBlur,
-                                // helperText: {addWalkPadDataForm.errors.walkTime},
-                                error: addWalkPadDataForm.touched.walkTime && Boolean(addWalkPadDataForm.errors.walkTime),
-                            },
+                    <TextField
+                        color="secondary"
+                        label="Calories burned"
+                        fullWidth
+                        size="medium"
+                        name="caloriesBurned"
+                        onChange={addWalkPadDataForm.handleChange}
+                        onBlur={addWalkPadDataForm.handleBlur}
+                        helperText={addWalkPadDataForm.errors.caloriesBurned}
+                        error={(addWalkPadDataForm.touched.caloriesBurned && addWalkPadDataForm.errors.caloriesBurned && true) || false}
+                        value={addWalkPadDataForm.values.caloriesBurned}
+                        type="number"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <LocalFireDepartmentOutlinedIcon />
+                                </InputAdornment>
+                            ),
                         }}
                     />
-                </LocalizationProvider>
-
-                <TextField
-                    color="secondary"
-                    label="Duration in minutes"
-                    required
-                    fullWidth
-                    size="medium"
-                    name="durationMinutes"
-                    onChange={addWalkPadDataForm.handleChange}
-                    onBlur={addWalkPadDataForm.handleBlur}
-                    helperText={addWalkPadDataForm.errors.durationMinutes}
-                    error={(addWalkPadDataForm.touched.durationMinutes && addWalkPadDataForm.errors.durationMinutes && true) || false}
-                    value={addWalkPadDataForm.values.durationMinutes}
-                    type="number"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <AccessTimeRoundedIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <TextField
-                    color="secondary"
-                    label="Distance in Km"
-                    required
-                    fullWidth
-                    size="medium"
-                    name="distanceKm"
-                    onChange={addWalkPadDataForm.handleChange}
-                    onBlur={addWalkPadDataForm.handleBlur}
-                    helperText={addWalkPadDataForm.errors.distanceKm}
-                    error={(addWalkPadDataForm.touched.distanceKm && addWalkPadDataForm.errors.distanceKm && true) || false}
-                    value={addWalkPadDataForm.values.distanceKm}
-                    type="number"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <StraightenOutlinedIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-
-                <TextField
-                    color="secondary"
-                    label="Calories burned"
-                    fullWidth
-                    size="medium"
-                    name="caloriesBurned"
-                    onChange={addWalkPadDataForm.handleChange}
-                    onBlur={addWalkPadDataForm.handleBlur}
-                    helperText={addWalkPadDataForm.errors.caloriesBurned}
-                    error={(addWalkPadDataForm.touched.caloriesBurned && addWalkPadDataForm.errors.caloriesBurned && true) || false}
-                    value={addWalkPadDataForm.values.caloriesBurned}
-                    type="number"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <LocalFireDepartmentOutlinedIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <TextField
-                    color="secondary"
-                    label="Note"
-                    fullWidth
-                    size="medium"
-                    name="note"
-                    onChange={addWalkPadDataForm.handleChange}
-                    onBlur={addWalkPadDataForm.handleBlur}
-                    helperText={addWalkPadDataForm.errors.note}
-                    error={(addWalkPadDataForm.touched.note && addWalkPadDataForm.errors.note && true) || false}
-                    value={addWalkPadDataForm.values.note}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <EditNoteRoundedIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <Button color="secondary" type="submit" disabled={!(addWalkPadDataForm.dirty && addWalkPadDataForm.isValid)} variant="contained" size="medium">Add Walkpad Data</Button>
-                <Button color="primary"  variant="text" size="small">View My Progress</Button>
-                <Divider />
-            </Box>
-        </form >
+                    <TextField
+                        color="secondary"
+                        label="Note"
+                        fullWidth
+                        size="medium"
+                        name="note"
+                        onChange={addWalkPadDataForm.handleChange}
+                        onBlur={addWalkPadDataForm.handleBlur}
+                        helperText={addWalkPadDataForm.errors.note}
+                        error={(addWalkPadDataForm.touched.note && addWalkPadDataForm.errors.note && true) || false}
+                        value={addWalkPadDataForm.values.note}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <EditNoteRoundedIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <Button color="secondary" type="submit" disabled={!(addWalkPadDataForm.dirty && addWalkPadDataForm.isValid)} variant="contained" size="medium">Add Walkpad Data</Button>
+                    <Button color="primary" variant="text" size="small">View My Progress</Button>
+                    <Divider />
+                </Box>
+            </form >
+        </>
     }
 
     return (

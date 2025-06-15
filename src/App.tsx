@@ -23,6 +23,7 @@ import { AppConst, notificationType } from "./constants/AppConst";
 import { renewAccessToken } from "./services/authService";
 import { axiosInstance, axiosProtectedInstance } from "./services/axiosInstance";
 import { showNotificationMsg } from "./services/createNotification";
+import AddWalkPadData from "./components/fitness/addWalkPadData";
 
 function App() {
   const AppState = GetAppState();
@@ -137,6 +138,9 @@ function App() {
         <Loader isVisible={AppState?.loading} />
         <Routes>
           <Route path="/product/showProducts" element={<AllProducts />} />
+        </Routes>
+        <Routes>
+          <Route path="/fitness/addFitnessData" element={<AddWalkPadData />} />
         </Routes>
         <Routes>
           <Route path="/product/productDetail/:id" element={<ProductDetail />} />

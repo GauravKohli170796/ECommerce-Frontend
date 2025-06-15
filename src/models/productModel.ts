@@ -15,6 +15,17 @@ export interface IProduct {
 
 
 }
+export interface IWalkPadData {
+    _id?: string;
+    email: string,
+    durationMinutes: number | undefined;
+    distanceKm: number | undefined;
+    caloriesBurned: number | undefined;
+    avgSpeedKmph?: number | undefined;
+    walkDate:  any;
+    walkTime: any;
+    note?: string;
+}
 
 export interface ISearchProduct {
     productId: string

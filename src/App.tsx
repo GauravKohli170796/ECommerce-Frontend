@@ -138,6 +138,9 @@ function App() {
         <ReactNotifications />
         <Loader isVisible={AppState?.loading} />
         <Routes>
+          <Route path="/" element={<FitnessMetrics />} />
+        </Routes>
+        <Routes>
           <Route path="/product/showProducts" element={<AllProducts />} />
         </Routes>
         <Routes>

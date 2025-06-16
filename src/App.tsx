@@ -24,6 +24,7 @@ import { renewAccessToken } from "./services/authService";
 import { axiosInstance, axiosProtectedInstance } from "./services/axiosInstance";
 import { showNotificationMsg } from "./services/createNotification";
 import AddWalkPadData from "./components/fitness/addWalkPadData";
+import FitnessMetrics from "./components/fitness/fitnessMetrics";
 
 function App() {
   const AppState = GetAppState();
@@ -141,6 +142,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/fitness/addFitnessData" element={<AddWalkPadData />} />
+        </Routes>
+        <Routes>
+          <Route path="/fitness/getMyFitnessMetrics" element={<FitnessMetrics />} />
         </Routes>
         <Routes>
           <Route path="/product/productDetail/:id" element={<ProductDetail />} />

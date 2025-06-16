@@ -20,6 +20,8 @@ export const orderStatusOptions = {
 
 export const ordersPerPage = 10;
 
+export const fitnessDataPerPage = 30;
+
 export enum drawerShowOptions {
    FILTER = "filter",
    SEARCH = "search",

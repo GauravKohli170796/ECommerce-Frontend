@@ -65,7 +65,7 @@ function AddWalkPadData() {
             if (res?.data) {
                 showNotificationMsg("Walkpad data successfully added.");
                 addWalkPadDataForm.resetForm();
-                // navigation("/admin/adminController");
+                navigate("/fitness/getMyFitnessMetrics");
             }
 
         }
@@ -216,7 +216,7 @@ function AddWalkPadData() {
                         }}
                     />
                     <Button color="secondary" type="submit" disabled={!(addWalkPadDataForm.dirty && addWalkPadDataForm.isValid)} variant="contained" size="medium">Add Walkpad Data</Button>
-                    <Button color="primary" variant="text" size="small">View My Progress</Button>
+                    <Button color="primary" variant="text" size="small" onClick={()=> {navigate('/fitness/getMyFitnessMetrics')}}>View My Progress</Button>
                     <Divider />
                 </Box>
             </form >

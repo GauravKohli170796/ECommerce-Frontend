@@ -87,7 +87,7 @@ function AddWalkPadData() {
     const renderAddWalkPadData = () => {
         return <>
             <Header />
-            <form style={{ maxWidth: "1180px", marginLeft: "auto", marginRight: "auto" }} onSubmit={addWalkPadDataForm.handleSubmit}>
+            <form style={{ maxWidth: "1180px", marginLeft: "auto", marginRight: "auto", marginBottom:"60px" }} onSubmit={addWalkPadDataForm.handleSubmit}>
                 <Box className="fCenter fCol my-2 mx-2">
                     <Typography variant='h6' className="section-head my-2 font-20">
                         Add Activity Data

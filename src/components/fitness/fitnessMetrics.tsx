@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { DataGrid, GridColDef, GridPaginationModel, GridValueGetterParams } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,15 +11,20 @@ import FitnessWidget from './fitnessWidget';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import HikingIcon from '@mui/icons-material/Hiking';
 import { showNotificationMsg } from '../../services/createNotification';
+import CalendarGrid from './fitnessCalenderView';
 
 function FitnessMetrics() {
     const navigate = useNavigate();
+    const stepFactor = 75;
     const [paginationModel, setPaginationModel] = React.useState({
         pageSize: fitnessDataPerPage,
         page: 0,
     });
     const [fitnessData, setFitnessData] = useState<FitnessData | null>(null);
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
 
     useEffect(() => {
@@ -150,17 +155,17 @@ function FitnessMetrics() {
                     Weekly Progress Report
                 </Typography>
                 <Grid container spacing={3} sx={{ p: 3 }}>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Calories Burned"
-                            value={fitnessData?.last7Days[0]?.totalCalories?.toFixed(2) || 0}
+                            value={fitnessData?.last7Days[0]?.totalCalories || 0}
                             unit={'kcal'}
                             icon={<LocalFireDepartmentIcon fontSize="medium" />}
                             color="#FF5722"
                             progress={100}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Distance Traveled"
                             value={fitnessData?.last7Days[0]?.totalDistance?.toFixed(2) || 0}
@@ -170,7 +175,7 @@ function FitnessMetrics() {
                             progress={100}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Active Minutes"
                             value={fitnessData?.last7Days[0]?.totalDuration?.toFixed(2) || 0}
@@ -180,23 +185,33 @@ function FitnessMetrics() {
                             progress={100}
                         />
                     </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <FitnessWidget
+                            title="Steps"
+                            value={parseInt((((fitnessData?.last7Days[0]?.totalDistance || 0) * 100000)/stepFactor).toString())}
+                            unit={'steps'}
+                            icon={<HikingIcon fontSize="medium" />}
+                            color="#00bcd4"
+                            progress={100}
+                        />
+                    </Grid>
                 </Grid>
                 <Divider />
                 <Typography variant='h6' className="section-head font-20">
                     Monthly Progress Report
                 </Typography>
                 <Grid container spacing={3} sx={{ p: 3 }}>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Calories Burned"
-                            value={fitnessData?.last30Days[0]?.totalCalories?.toFixed(2) || 0}
+                            value={fitnessData?.last30Days[0]?.totalCalories || 0}
                             unit={'kcal'}
                             icon={<LocalFireDepartmentIcon fontSize="medium" />}
                             color="#FF5722"
                             progress={100}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Distance Traveled"
                             value={fitnessData?.last30Days[0]?.totalDistance?.toFixed(2) || 0}
@@ -206,7 +221,7 @@ function FitnessMetrics() {
                             progress={100}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Active Minutes"
                             value={fitnessData?.last30Days[0]?.totalDuration?.toFixed(2) || 0}
@@ -216,23 +231,33 @@ function FitnessMetrics() {
                             progress={100}
                         />
                     </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <FitnessWidget
+                            title="Steps"
+                            value={parseInt((((fitnessData?.last30Days[0]?.totalDistance || 0) * 100000)/stepFactor).toString())}
+                            unit={'steps'}
+                            icon={<HikingIcon fontSize="medium" />}
+                            color="#00bcd4"
+                            progress={100}
+                        />
+                    </Grid>
                 </Grid>
                 <Divider />
                 <Typography variant='h6' className="section-head font-20">
                     Overall Progress Report
                 </Typography>
                 <Grid container spacing={3} sx={{ p: 3 }}>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Calories Burned"
-                            value={fitnessData?.allTime[0]?.totalCalories?.toFixed(2) || 0}
+                            value={fitnessData?.allTime[0]?.totalCalories || 0}
                             unit={'kcal'}
                             icon={<LocalFireDepartmentIcon fontSize="medium" />}
                             color="#FF5722"
                             progress={100}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Distance Traveled"
                             value={fitnessData?.allTime[0]?.totalDistance?.toFixed(2) || 0}
@@ -242,7 +267,7 @@ function FitnessMetrics() {
                             progress={100}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={3}>
                         <FitnessWidget
                             title="Active Minutes"
                             value={fitnessData?.allTime[0]?.totalDuration?.toFixed(2) || 0}
@@ -252,12 +277,23 @@ function FitnessMetrics() {
                             progress={100}
                         />
                     </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <FitnessWidget
+                            title="Steps"
+                            value={parseInt((((fitnessData?.allTime[0]?.totalDistance || 0) * 100000)/stepFactor).toString())}
+                            unit={'steps'}
+                            icon={<HikingIcon fontSize="medium" />}
+                            color="#00bcd4"
+                            progress={100}
+                        />
+                    </Grid>
                 </Grid>
                 <Divider />
 
                 <Typography variant='h6' className="section-head font-20">
                     Walkpad data
                 </Typography>
+                {/* <CalendarGrid/> */}
                 {renderFitnessData()}
             </Box>
         </>

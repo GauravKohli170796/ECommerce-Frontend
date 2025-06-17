@@ -26,11 +26,11 @@ const FitnessWidget = ({ title, value, unit, icon, color, progress }: FitnessWid
           {icon}
         </Box>
         <Box>
-          <Typography variant="subtitle2" color="text.secondary">
+          <Typography variant="subtitle2" sx={{color}} color="text.secondary">
             {title}
           </Typography>
           <Typography variant="h4" fontWeight="bold">
-            {value} <Typography variant="body2" component="span">{unit}</Typography>
+            {value} <Typography variant="body2" sx={{color}} component="span">{unit}</Typography>
           </Typography>
         </Box>
       </Box>
@@ -52,7 +52,7 @@ const FitnessWidget = ({ title, value, unit, icon, color, progress }: FitnessWid
               }}
             />
           </Box>
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+          <Typography variant="caption"  sx={{ mt: 0.5, color }}>
             {progress}% of daily goal
           </Typography>
         </Box>

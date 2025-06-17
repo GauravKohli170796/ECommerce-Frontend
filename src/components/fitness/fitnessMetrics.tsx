@@ -24,7 +24,7 @@ function FitnessMetrics() {
 
     useEffect(() => {
         getFitnessData();
-    }, [paginationModel]);
+    }, [paginationModel.page]);
 
     useEffect(() => {
         const tokenDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
@@ -153,7 +153,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Calories Burned"
-                            value={fitnessData?.last7Days[0]?.totalCalories || 0}
+                            value={fitnessData?.last7Days[0]?.totalCalories?.toFixed(2) || 0}
                             unit={'kcal'}
                             icon={<LocalFireDepartmentIcon fontSize="medium" />}
                             color="#FF5722"
@@ -163,7 +163,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Distance Traveled"
-                            value={fitnessData?.last7Days[0]?.totalDistance || 0}
+                            value={fitnessData?.last7Days[0]?.totalDistance?.toFixed(2) || 0}
                             unit={'km'}
                             icon={<DirectionsWalkIcon fontSize="medium" />}
                             color="#4CAF50"
@@ -173,7 +173,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Active Minutes"
-                            value={fitnessData?.last7Days[0]?.totalDuration || 0}
+                            value={fitnessData?.last7Days[0]?.totalDuration?.toFixed(2) || 0}
                             unit={'minutes'}
                             icon={<AccessTimeIcon fontSize="medium" />}
                             color="#2196F3"
@@ -189,7 +189,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Calories Burned"
-                            value={fitnessData?.last30Days[0]?.totalCalories || 0}
+                            value={fitnessData?.last30Days[0]?.totalCalories?.toFixed(2) || 0}
                             unit={'kcal'}
                             icon={<LocalFireDepartmentIcon fontSize="medium" />}
                             color="#FF5722"
@@ -199,7 +199,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Distance Traveled"
-                            value={fitnessData?.last30Days[0]?.totalDistance || 0}
+                            value={fitnessData?.last30Days[0]?.totalDistance?.toFixed(2) || 0}
                             unit={'km'}
                             icon={<DirectionsWalkIcon fontSize="medium" />}
                             color="#4CAF50"
@@ -209,7 +209,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Active Minutes"
-                            value={fitnessData?.last30Days[0]?.totalDuration || 0}
+                            value={fitnessData?.last30Days[0]?.totalDuration?.toFixed(2) || 0}
                             unit={'minutes'}
                             icon={<AccessTimeIcon fontSize="medium" />}
                             color="#2196F3"
@@ -225,7 +225,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Calories Burned"
-                            value={fitnessData?.allTime[0]?.totalCalories || 0}
+                            value={fitnessData?.allTime[0]?.totalCalories?.toFixed(2) || 0}
                             unit={'kcal'}
                             icon={<LocalFireDepartmentIcon fontSize="medium" />}
                             color="#FF5722"
@@ -235,7 +235,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Distance Traveled"
-                            value={fitnessData?.allTime[0]?.totalDistance || 0}
+                            value={fitnessData?.allTime[0]?.totalDistance?.toFixed(2) || 0}
                             unit={'km'}
                             icon={<DirectionsWalkIcon fontSize="medium" />}
                             color="#4CAF50"
@@ -245,7 +245,7 @@ function FitnessMetrics() {
                     <Grid item xs={12} sm={6} md={4}>
                         <FitnessWidget
                             title="Active Minutes"
-                            value={fitnessData?.allTime[0]?.totalDuration || 0}
+                            value={fitnessData?.allTime[0]?.totalDuration?.toFixed(2) || 0}
                             unit={'minutes'}
                             icon={<AccessTimeIcon fontSize="medium" />}
                             color="#2196F3"

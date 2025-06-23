@@ -11,7 +11,6 @@ const FitnessWidget = ({ title, value, unit, icon, color, progress }: FitnessWid
         p: 3,
         borderRadius: 4,
         bgcolor: 'background.paper',
-        minWidth: '200px',
         border: `.5px solid ${color}`
       }}
     >

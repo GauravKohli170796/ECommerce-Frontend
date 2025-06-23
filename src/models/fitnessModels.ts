@@ -11,7 +11,7 @@ interface WalkRecord {
     __v: number;
 }
 
-interface SummaryEntry {
+export interface SummaryEntry {
     _id: null;
     totalDistance: number;
     totalDuration: number;
@@ -20,7 +20,6 @@ interface SummaryEntry {
 }
 
 export interface FitnessData {
-    last30Entries: SummaryEntry[];
     last7Days: SummaryEntry[];
     last30Days: SummaryEntry[];
     allTime: SummaryEntry[];

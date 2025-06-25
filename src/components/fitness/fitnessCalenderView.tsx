@@ -8,7 +8,9 @@ import {
   format,
   addMonths,
   subMonths,
-  isAfter
+  isAfter,
+  isBefore,
+  isToday
 } from 'date-fns';
 
 import {
@@ -18,14 +20,25 @@ import {
   IconButton,
   Paper,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Divider,
 } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { showNotificationMsg } from '../../services/createNotification';
 import { AppConst, notificationType } from '../../constants/AppConst';
 import { useNavigate } from 'react-router-dom';
 import { axiosProtectedInstance } from '../../services/axiosInstance';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import NotesIcon from '@mui/icons-material/Notes';
+
 
 const CalendarGrid: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<any>(null);
   const navigate = useNavigate();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(startOfMonth(today));
@@ -128,38 +141,27 @@ const CalendarGrid: React.FC = () => {
           const calenderDate = String(format(new Date(date), 'yyyy-MM-dd'));
           if (calenderData[calenderDate]) {
             return <Grid item xs={1} key={date.toISOString()} sx={{ py: 1, px: 0.5, textAlign: 'center' }}>
-              <Tooltip
-                title={
-                  <>
-                    <div><strong>Duration:</strong> {calenderData[calenderDate].durationMinutes} min</div>
-                    <div><strong>Distance:</strong> {calenderData[calenderDate].distanceKm} km</div>
-                    <div><strong>Calories:</strong> {calenderData[calenderDate].caloriesBurned} kcal</div>
-                    <div><strong>Notes:</strong> {calenderData[calenderDate].calories}</div>
-                  </>
-                }
-                arrow
-                placement="top"
+              <Box
+                sx={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  border: "2px solid #4CAF50",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  fontWeight: 'bold',
+                  padding: "2px"
+                }}
+                onClick={() => {
+                  setSelectedDate(calenderDate);
+                  setOpen(true);
+                }}
               >
-                <Box
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '50%',
-                    textDecoration: 'underline',
-                    textDecorationColor: '#9c27b0',
-                    textUnderlineOffset: '4px',
-                    textDecorationThickness: '5px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mx: 'auto',
-                    fontWeight: 'bold',
-                    padding: "6px"
-                  }}
-                >
-                  {getDate(date)}
-                </Box>
-              </Tooltip>
+                {getDate(date)}
+              </Box>
+              {/* </Tooltip> */}
             </Grid>
           }
           else {
@@ -169,12 +171,13 @@ const CalendarGrid: React.FC = () => {
                   width: 36,
                   height: 36,
                   borderRadius: '50%',
+                  border: (isBefore(date, new Date()) && !isToday(date)) ? "2px solid red" : "",
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   mx: 'auto',
                   fontWeight: 'bold',
-                  padding: "6px"
+                  padding: "2px"
                 }}
               >
                 {getDate(date)}
@@ -183,6 +186,40 @@ const CalendarGrid: React.FC = () => {
           }
         })}
       </Grid>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogContent>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1.5,
+              maxWidth: 300
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <AccessTimeIcon fontSize="small" color="primary" />
+              <Typography variant="body2"><strong>Duration:</strong> {calenderData[selectedDate]?.durationMinutes ?? 'N/A'} min</Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <DirectionsWalkIcon fontSize="small" color="success" />
+              <Typography variant="body2"><strong>Distance:</strong> {calenderData[selectedDate]?.distanceKm ?? 'N/A'} km</Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <LocalFireDepartmentIcon fontSize="small" color="error" />
+              <Typography variant="body2"><strong>Calories:</strong> {calenderData[selectedDate]?.caloriesBurned ?? 'N/A'} kcal</Typography>
+            </Box>
+
+            <Divider />
+
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+              <NotesIcon fontSize="small" color="action" />
+              <Typography variant="body2"><strong>Notes:</strong> {calenderData[selectedDate]?.note || 'N/A'}</Typography>
+            </Box>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </Paper>
   );
 };

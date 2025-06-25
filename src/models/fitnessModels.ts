@@ -7,6 +7,9 @@ interface WalkRecord {
     distanceKm: number;
     durationMinutes: number;
     caloriesBurned: number;
+    goalDistanceKm: number;
+    goalDurationMinutes: number;
+    goalCaloriesBurned: number;
     note: string;
     __v: number;
 }
@@ -16,6 +19,9 @@ export interface SummaryEntry {
     totalDistance: number;
     totalDuration: number;
     totalCalories: number;
+    totalGoalDistance: number;
+    totalGoalDuration: number;
+    totalGoalCalories: number;
     records?: WalkRecord[]; // Only present in last30Entries
 }
 

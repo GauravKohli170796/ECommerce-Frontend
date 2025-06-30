@@ -19,9 +19,11 @@ export interface SummaryEntry {
     totalDistance: number;
     totalDuration: number;
     totalCalories: number;
-    totalGoalDistance: number;
-    totalGoalDuration: number;
-    totalGoalCalories: number;
+    goalCaloriesBurned: number,
+    goalDistanceKm: number,
+    goalDurationMinutes: number,
+    goalStepsWalk: number,
+    totalDays: number,
     records?: WalkRecord[]; // Only present in last30Entries
 }
 
@@ -29,14 +31,18 @@ export interface FitnessData {
     last7Days: SummaryEntry[];
     last30Days: SummaryEntry[];
     allTime: SummaryEntry[];
-    totalCount: { count : number} []
+    totalCount: { count: number }[]
 }
 
 export interface FitnessWidgetProps {
     title: string;
-    value: number | string;
-    unit: string;
-    icon: ReactNode;
-    color?: string; 
-    progress?: number;
-  }
+    totalDistance: number,
+    totalDuration: number,
+    totalCalories: number,
+    goalCaloriesBurned: number,
+    goalDistanceKm: number,
+    goalDurationMinutes: number,
+    totalSteps: number,
+    goalStepsWalk: number,
+    totalDays: number,
+}

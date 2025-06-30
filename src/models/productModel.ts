@@ -25,6 +25,18 @@ export interface IWalkPadData {
     walkDate:  any;
     walkTime: any;
     note?: string;
+    goalDurationMinutes?: number | undefined;
+    goalDistanceKm?: number | undefined;
+    goalCaloriesBurned?: number | undefined;
+    goalStepsWalk?: number | undefined;
+}
+export interface IGoalData {
+    _id?: string;
+    email: string,
+    goalDurationMinutes: number | undefined;
+    goalDistanceKm: number | undefined;
+    goalCaloriesBurned: number | undefined;
+    goalStepsWalk: number | undefined;
 }
 
 export interface ISearchProduct {

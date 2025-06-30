@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Box, Button, Card, Divider, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridPaginationModel, GridValueGetterParams } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,13 +7,14 @@ import { axiosProtectedInstance } from '../../services/axiosInstance';
 import { FitnessData, SummaryEntry } from '../../models/fitnessModels';
 import { format } from 'date-fns';
 import Header from '../header/Header';
-import FitnessWidget from './fitnessWidget';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import HikingIcon from '@mui/icons-material/Hiking';
 import { showNotificationMsg } from '../../services/createNotification';
 import CalendarGrid from './fitnessCalenderView';
+import HealthWidget from './HealthWidget';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import StairsOutlinedIcon from '@mui/icons-material/StairsOutlined';
+import { Gauge, gaugeClasses } from '@mui/x-charts';
 
 function FitnessMetrics() {
     const navigate = useNavigate();
@@ -123,8 +124,8 @@ function FitnessMetrics() {
 
 
     const renderFitnessData = () => {
-        return <Box sx={{width: '100%', maxWidth:"1302px", marginTop: "20px" }}>
-            <Box sx={{marginBottom:"20px", display: "flex", justifyContent: "flex-end", mr: { xs: 0.5} }}>
+        return <Box sx={{ width: '100%', maxWidth: "1302px", marginTop: "20px" }}>
+            <Box sx={{ marginBottom: "20px", display: "flex", justifyContent: "flex-end", mr: { xs: 0.5 } }}>
                 <Select
                     size="small"
                     variant="outlined"
@@ -145,8 +146,8 @@ function FitnessMetrics() {
                 }
                 sx={{
                     '& .MuiDataGrid-columnHeaders': {
-                        backgroundColor: '#9c27b0', 
-                        color: 'white',             
+                        backgroundColor: '#9c27b0',
+                        color: 'white',
                     },
                     '& .MuiDataGrid-columnHeaderTitle': {
                         fontWeight: 'bold',
@@ -189,153 +190,47 @@ function FitnessMetrics() {
                 flexDirection: "column",
                 maxWidth: "1350px",
                 marginX: "auto",
-                gap: "20px",
-                marginBottom:"60px" 
+                gap: "10px",
+                marginBottom: "60px",
+                background: "#f8f9fa"
             }}>
-                <Divider />
                 <Button color="secondary" variant="text" sx={{ alignSelf: "flex-end", marginRight: "20px" }} size="medium" onClick={() => { navigate('/fitness/addFitnessData') }}>Add Fitness data</Button>
-                <Typography variant='h6' className="section-head font-20">
-                    Weekly Progress Report
-                </Typography>
-                <Grid container spacing={3} sx={{ p: 3 }}>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Calories Burned"
-                            value={fitnessMetrics?.last7Days[0]?.totalCalories || 0}
-                            unit={'kcal'}
-                            icon={<LocalFireDepartmentIcon fontSize="medium" />}
-                            color="#FF5722"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Distance Traveled"
-                            value={fitnessMetrics?.last7Days[0]?.totalDistance?.toFixed(2) || 0}
-                            unit={'km'}
-                            icon={<DirectionsWalkIcon fontSize="medium" />}
-                            color="#4CAF50"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Active Minutes"
-                            value={fitnessMetrics?.last7Days[0]?.totalDuration?.toFixed(2) || 0}
-                            unit={'minutes'}
-                            icon={<AccessTimeIcon fontSize="medium" />}
-                            color="#2196F3"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Steps"
-                            value={parseInt((((fitnessMetrics?.last7Days[0]?.totalDistance || 0) * 100000) / stepFactor).toString())}
-                            unit={'steps'}
-                            icon={<HikingIcon fontSize="medium" />}
-                            color="#00bcd4"
-                            progress={100}
-                        />
-                    </Grid>
-                </Grid>
-                <Divider />
-                <Typography variant='h6' className="section-head font-20">
-                    Monthly Progress Report
-                </Typography>
-                <Grid container spacing={3} sx={{ p: 3 }}>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Calories Burned"
-                            value={fitnessMetrics?.last30Days[0]?.totalCalories || 0}
-                            unit={'kcal'}
-                            icon={<LocalFireDepartmentIcon fontSize="medium" />}
-                            color="#FF5722"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Distance Traveled"
-                            value={fitnessMetrics?.last30Days[0]?.totalDistance?.toFixed(2) || 0}
-                            unit={'km'}
-                            icon={<DirectionsWalkIcon fontSize="medium" />}
-                            color="#4CAF50"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Active Minutes"
-                            value={fitnessMetrics?.last30Days[0]?.totalDuration?.toFixed(2) || 0}
-                            unit={'minutes'}
-                            icon={<AccessTimeIcon fontSize="medium" />}
-                            color="#2196F3"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Steps"
-                            value={parseInt((((fitnessMetrics?.last30Days[0]?.totalDistance || 0) * 100000) / stepFactor).toString())}
-                            unit={'steps'}
-                            icon={<HikingIcon fontSize="medium" />}
-                            color="#00bcd4"
-                            progress={100}
-                        />
-                    </Grid>
-                </Grid>
-                <Divider />
-                <Typography variant='h6' className="section-head font-20">
-                    Overall Progress Report
-                </Typography>
-                <Grid container spacing={3} sx={{ p: 3 }}>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Calories Burned"
-                            value={fitnessMetrics?.allTime[0]?.totalCalories || 0}
-                            unit={'kcal'}
-                            icon={<LocalFireDepartmentIcon fontSize="medium" />}
-                            color="#FF5722"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Distance Traveled"
-                            value={fitnessMetrics?.allTime[0]?.totalDistance?.toFixed(2) || 0}
-                            unit={'km'}
-                            icon={<DirectionsWalkIcon fontSize="medium" />}
-                            color="#4CAF50"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Active Minutes"
-                            value={fitnessMetrics?.allTime[0]?.totalDuration?.toFixed(2) || 0}
-                            unit={'minutes'}
-                            icon={<AccessTimeIcon fontSize="medium" />}
-                            color="#2196F3"
-                            progress={100}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FitnessWidget
-                            title="Steps"
-                            value={parseInt((((fitnessMetrics?.allTime[0]?.totalDistance || 0) * 100000) / stepFactor).toString())}
-                            unit={'steps'}
-                            icon={<HikingIcon fontSize="medium" />}
-                            color="#00bcd4"
-                            progress={100}
-                        />
-                    </Grid>
-                </Grid>
-                <Divider />
-
-                <Typography variant='h6' className="section-head font-20">
-                    Walkpad data
-                </Typography>
+                <HealthWidget
+                    title={`Weekly Report - (${fitnessMetrics?.last7Days[0]?.totalDays || 0} days)`}
+                    totalSteps={parseInt((((fitnessMetrics?.last7Days[0]?.totalDistance || 0) * 100000) / stepFactor).toString())}
+                    totalCalories={fitnessMetrics?.last7Days[0]?.totalCalories || 0}
+                    totalDuration={fitnessMetrics?.last7Days[0]?.totalDuration || 0}
+                    totalDistance={fitnessMetrics?.last7Days[0]?.totalDistance || 0}
+                    goalCaloriesBurned={fitnessMetrics?.last7Days[0]?.goalCaloriesBurned || 0}
+                    goalDistanceKm={fitnessMetrics?.last7Days[0]?.goalDistanceKm || 0}
+                    goalDurationMinutes={fitnessMetrics?.last7Days[0]?.goalDurationMinutes || 0}
+                    goalStepsWalk={fitnessMetrics?.last7Days[0]?.goalStepsWalk || 0}
+                    totalDays={fitnessMetrics?.last7Days[0]?.totalDays || 0}
+                />
+                <HealthWidget
+                    title={`Monthly Report - (${fitnessMetrics?.last30Days[0]?.totalDays || 0} days)`}
+                    totalSteps={parseInt((((fitnessMetrics?.last30Days[0]?.totalDistance || 0) * 100000) / stepFactor).toString())}
+                    totalCalories={fitnessMetrics?.last30Days[0]?.totalCalories || 0}
+                    totalDuration={fitnessMetrics?.last30Days[0]?.totalDuration || 0}
+                    totalDistance={fitnessMetrics?.last30Days[0]?.totalDistance || 0}
+                    goalCaloriesBurned={fitnessMetrics?.last30Days[0]?.goalCaloriesBurned || 0}
+                    goalDistanceKm={fitnessMetrics?.last30Days[0]?.goalDistanceKm || 0}
+                    goalDurationMinutes={fitnessMetrics?.last30Days[0]?.goalDurationMinutes || 0}
+                    goalStepsWalk={fitnessMetrics?.last30Days[0]?.goalStepsWalk || 0}
+                    totalDays={fitnessMetrics?.last30Days[0]?.totalDays || 0}
+                />
+                <HealthWidget
+                    title={`Overall Report - (${fitnessMetrics?.allTime[0]?.totalDays || 0} days)`}
+                    totalSteps={parseInt((((fitnessMetrics?.allTime[0]?.totalDistance || 0) * 100000) / stepFactor).toString())}
+                    totalCalories={fitnessMetrics?.allTime[0]?.totalCalories || 0}
+                    totalDuration={fitnessMetrics?.allTime[0]?.totalDuration || 0}
+                    totalDistance={fitnessMetrics?.allTime[0]?.totalDistance || 0}
+                    goalCaloriesBurned={fitnessMetrics?.allTime[0]?.goalCaloriesBurned || 0}
+                    goalDistanceKm={fitnessMetrics?.allTime[0]?.goalDistanceKm || 0}
+                    goalDurationMinutes={fitnessMetrics?.allTime[0]?.goalDurationMinutes || 0}
+                    goalStepsWalk={fitnessMetrics?.allTime[0]?.goalStepsWalk || 0}
+                    totalDays={fitnessMetrics?.allTime[0]?.totalDays || 0}
+                />
                 <CalendarGrid />
                 {renderFitnessData()}
             </Box>

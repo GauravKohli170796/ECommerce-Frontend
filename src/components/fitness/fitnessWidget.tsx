@@ -1,9 +1,8 @@
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
-import { FitnessWidgetProps } from '../../models/fitnessModels';
 
 // Widget Component
-const FitnessWidget = ({ title, value, unit, icon, color, progress }: FitnessWidgetProps) => {
+const FitnessWidget = ({ title, value, unit, icon, color, progress }: any) => {
   return (
     <Paper
       elevation={3}

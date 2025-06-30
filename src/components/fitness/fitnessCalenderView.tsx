@@ -8,9 +8,7 @@ import {
   format,
   addMonths,
   subMonths,
-  isAfter,
-  isBefore,
-  isToday
+  isAfter
 } from 'date-fns';
 
 import {
@@ -140,7 +138,7 @@ const CalendarGrid: React.FC = () => {
         {days.map((date) => {
           const calenderDate = String(format(new Date(date), 'yyyy-MM-dd'));
           if (calenderData[calenderDate]) {
-            return <Grid item xs={1} key={date.toISOString()} sx={{ py: 1, px: 0.5, textAlign: 'center' }}>
+            return <Grid item xs={1} key={date.toISOString()} sx={{ py: 0.5, px: 0.5, textAlign: 'center' }}>
               <Box
                 sx={{
                   width: 36,
@@ -152,7 +150,7 @@ const CalendarGrid: React.FC = () => {
                   justifyContent: 'center',
                   mx: 'auto',
                   fontWeight: 'bold',
-                  padding: "2px"
+                  fontSize:"15px"
                 }}
                 onClick={() => {
                   setSelectedDate(calenderDate);
@@ -170,14 +168,12 @@ const CalendarGrid: React.FC = () => {
                 sx={{
                   width: 36,
                   height: 36,
-                  borderRadius: '50%',
-                  border: (isBefore(date, new Date()) && !isToday(date)) ? "2px solid red" : "",
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   mx: 'auto',
-                  fontWeight: 'bold',
-                  padding: "2px"
+                  fontWeight: 200,
+                  fontSize:"15px"
                 }}
               >
                 {getDate(date)}

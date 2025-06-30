@@ -1,5 +1,5 @@
 export const AppConst = Object.freeze({
-   BackendURL: "https://ecommerce-backend-repo-og97.onrender.com/",
+   BackendURL: "http://localhost:8083/",//"https://ecommerce-backend-repo-og97.onrender.com/",
    FrontendUrl: "https://kirans-sehgal-online-shop.onrender.com/",
    productsPerPage:10,
    PathLogoutNotShown: ["/manage-address","/user/shoppingCart","/user/wishList"],
@@ -20,7 +20,7 @@ export const orderStatusOptions = {
 
 export const ordersPerPage = 10;
 
-export const fitnessDataPerPage = 30;
+export const fitnessDataPerPage = 10;
 
 export enum drawerShowOptions {
    FILTER = "filter",

@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 import { GetAppState } from '../../AppContext';
-import { IWalkPadData } from '../../models/productModel';
+import { IGoalData, IWalkPadData } from '../../models/productModel';
 import { DatePicker, TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useFormik } from 'formik';
@@ -33,6 +33,13 @@ const initialProductDetails: IWalkPadData = {
 function AddWalkPadData() {
     const AppState = GetAppState();
     const navigate = useNavigate();
+    const [initialValues, setInitialValues] = useState<IGoalData>({
+        email: "",
+        goalDurationMinutes: undefined,
+        goalDistanceKm: undefined,
+        goalCaloriesBurned: undefined,
+        goalStepsWalk: undefined,
+    });
 
     useEffect(() => {
         const tokenDetails = localStorage.getItem(AppConst.storageKeys.accessToken);
@@ -41,9 +48,23 @@ function AddWalkPadData() {
             navigate("/auth/login");
             return;
         }
+        getGoalsData();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigate]);
+
+    const getGoalsData = async () => {
+        const res = await axiosProtectedInstance.get(`/api/v1/fitness/getFitnessGoalsData`);
+        if (res?.data) {
+            const goalsData = res.data;
+            const tmpInitialValues = { ...initialValues };
+            tmpInitialValues.goalCaloriesBurned = goalsData.goalCaloriesBurned;
+            tmpInitialValues.goalDistanceKm = goalsData.goalDistanceKm;
+            tmpInitialValues.goalDurationMinutes = goalsData.goalDurationMinutes;
+            tmpInitialValues.goalStepsWalk = goalsData.goalStepsWalk;
+            setInitialValues(tmpInitialValues);
+        }
+    }
 
     const addWalkPadDataForm = useFormik<Partial<IWalkPadData>>({
         enableReinitialize: true,
@@ -58,7 +79,15 @@ function AddWalkPadData() {
         }),
         onSubmit: async (values: Partial<IWalkPadData>) => {
             const walkDateTime = combineDateAndTime(values.walkDate, values.walkTime);
-            const addWalkPadDataBody = { ...values, walkDateTime };
+            const addWalkPadDataBody = {
+                ...values,
+                walkDateTime,
+                goalDurationMinutes: initialValues.goalDurationMinutes,
+                goalDistanceKm: initialValues.goalDistanceKm,
+                goalCaloriesBurned: initialValues.goalCaloriesBurned,
+                goalStepsWalk: initialValues.goalStepsWalk,
+
+            };
             const res = await axiosProtectedInstance.post(`/api/v1/fitness/addFitnessData`, {
                 ...addWalkPadDataBody
             });
@@ -87,7 +116,7 @@ function AddWalkPadData() {
     const renderAddWalkPadData = () => {
         return <>
             <Header />
-            <form style={{ maxWidth: "1180px", marginLeft: "auto", marginRight: "auto", marginBottom:"60px" }} onSubmit={addWalkPadDataForm.handleSubmit}>
+            <form style={{ maxWidth: "1180px", marginLeft: "auto", marginRight: "auto", marginBottom: "60px" }} onSubmit={addWalkPadDataForm.handleSubmit}>
                 <Box className="fCenter fCol my-2 mx-2">
                     <Typography variant='h6' className="section-head my-2 font-20">
                         Add Activity Data
@@ -216,7 +245,8 @@ function AddWalkPadData() {
                         }}
                     />
                     <Button color="secondary" type="submit" disabled={!(addWalkPadDataForm.dirty && addWalkPadDataForm.isValid)} variant="contained" size="medium">Add Walkpad Data</Button>
-                    <Button color="primary" variant="text" size="small" onClick={()=> {navigate('/fitness/getMyFitnessMetrics')}}>View My Progress</Button>
+                    <Button color="primary" variant="text" size="small" onClick={() => { navigate('/fitness/getMyFitnessMetrics') }}>View My Progress</Button>
+                    <Button color="primary" variant="text" size="small" onClick={() => { navigate('/fitness/addGoalsData') }}>Update Goals</Button>
                     <Divider />
                 </Box>
             </form >

@@ -91,7 +91,7 @@ function FitnessMetrics() {
             sortable: false,
             flex: 1.5,
             valueGetter: (params: GridValueGetterParams) =>
-                `${format(new Date(params.row.walkDateTime), 'dd/MM/yy HH:mm')}`
+                `${format(new Date(params.row.walkDateTime), 'dd MMM yy HH:mm')}`
         },
         {
             field: 'distanceKm',
